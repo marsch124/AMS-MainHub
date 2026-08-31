@@ -1,0 +1,729 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
+<title>AMS Main Hub</title>
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Hub" />
+<meta name="theme-color" content="#faf1e2" />
+<link rel="manifest" href="manifest.webmanifest" />
+<link rel="apple-touch-icon" href="icons/icon-180.png" />
+<style>
+  :root{
+    --bg:#faf1e2;
+    --ink:#2a2420; --ink-dim:#97897b;
+    --card:#ffffff; --line:rgba(42,36,32,.10);
+    --accent:#d96a45; --tint:#fdeadd;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;height:100%;}
+  /* Solid colour on <html> via longhand so the iOS home-indicator safe-area
+     is always painted — no white/dark strip can show through. */
+  html{ background-color:var(--bg); }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",Roboto,sans-serif;
+    color:var(--ink);
+    background:transparent;
+    min-height:100dvh;
+    display:flex; flex-direction:column;
+    padding: max(env(safe-area-inset-top), 14px) 18px max(env(safe-area-inset-bottom), 18px);
+    -webkit-user-select:none; user-select:none;
+  }
+  .icon-sprite{position:absolute; width:0; height:0; overflow:hidden;}
+  .hi{width:22px; height:22px; display:block;}
+
+  /* ---------- header ---------- */
+  header{display:flex; align-items:center; justify-content:space-between; padding:6px 4px 4px;}
+  .brand{font-size:17px; font-weight:800; letter-spacing:.02em; color:var(--ink);}
+  .brand b{color:var(--accent);}
+  .iconbtn{
+    width:42px; height:42px; border-radius:14px; border:none;
+    background:var(--card); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; cursor:pointer;
+    padding:0; box-shadow:0 1px 3px rgba(28,32,40,.08);
+  }
+  .iconbtn:active{transform:scale(.94);}
+
+  /* ---------- greeting ---------- */
+  .hello{padding:8px 4px 16px;}
+  .hello .hi-line{font-size:26px; font-weight:800; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
+  .hello .hi-line .hi{width:26px; height:26px; color:#c8952b; flex:0 0 auto;}
+  .hello .sub{font-size:14px; color:var(--ink-dim); margin-top:4px; font-weight:500;}
+
+  /* ---------- sections & cards ---------- */
+  main{flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+  .sect{font-size:12.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.14em; padding:16px 6px 10px;}
+  .cards{display:flex; flex-direction:column; gap:12px;}
+  .cardrow{
+    display:flex; align-items:center; gap:15px; width:100%;
+    border:none; border-radius:24px; padding:16px 18px;
+    color:var(--ink); text-align:left; cursor:pointer;
+    font-family:inherit; text-decoration:none;
+  }
+  .cardrow:active{transform:scale(.985);}
+  .badge{
+    flex:0 0 auto; width:52px; height:52px; border-radius:18px;
+    border:none; background:currentColor;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .badge .hi{width:27px; height:27px; color:#fff;}
+  .cardrow:nth-child(odd) .badge{transform:rotate(-3deg);}
+  .cardrow:nth-child(even) .badge{transform:rotate(2.5deg);}
+  .cmid{flex:1; min-width:0;}
+  .cname{font-size:18px; font-weight:800; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
+  .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .cstore{font-size:11px; color:var(--ink-dim); margin-top:3px; font-weight:600; opacity:.85; line-height:1.45;}
+  .cstore b{font-weight:800; letter-spacing:.06em;}
+  .cright{flex:0 0 auto; text-align:right; display:flex; align-items:center; gap:10px;}
+  .verchip{
+    font-size:12px; font-weight:700; font-variant-numeric:tabular-nums;
+    padding:4px 9px; border-radius:10px; background:rgba(255,255,255,.6);
+    opacity:0; transition:opacity .35s ease;
+  }
+  .verchip.on{opacity:1;}
+  .maclbl{font-size:10.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.12em;}
+  .rowbtn{
+    width:34px; height:34px; border-radius:12px; border:none; background:rgba(255,255,255,.6);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); padding:0;
+  }
+  .rowbtn .hi{width:17px; height:17px;}
+  .addrow{
+    display:flex; align-items:center; justify-content:center; gap:10px;
+    border:1.5px dashed rgba(28,32,40,.22); border-radius:24px; padding:15px;
+    background:none; color:var(--ink-dim); font-family:inherit; font-size:15px; font-weight:700; cursor:pointer; width:100%;
+  }
+  .addrow:active{transform:scale(.985);}
+  .empty-hint{font-size:13px; color:var(--ink-dim); padding:2px 6px 8px; line-height:1.5;}
+  footer{padding:14px 4px 2px; font-size:12px; color:var(--ink-dim); text-align:center; font-weight:500;}
+
+  /* ---------- overlays ---------- */
+  .overlay{
+    position:fixed; inset:0; z-index:40; display:none; flex-direction:column;
+    background:rgba(28,32,40,.38); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px);
+    padding: max(env(safe-area-inset-top), 14px) 16px max(env(safe-area-inset-bottom), 18px);
+  }
+  .overlay.show{display:flex;}
+  .sheet{
+    margin:auto; width:min(92vw,460px); max-height:88dvh; overflow-y:auto;
+    background:var(--card);
+    border-radius:24px; padding:22px;
+    -webkit-overflow-scrolling:touch;
+    box-shadow:0 18px 50px rgba(28,32,40,.25);
+  }
+  .sheet h2{margin:0 0 14px; font-size:20px; display:flex; align-items:center; gap:10px;}
+  .sheet h2 .hi{color:var(--accent);}
+  .sheet h3{font-size:15px; color:var(--accent); margin:18px 0 6px;}
+  .sheet p, .sheet li{font-size:14.5px; line-height:1.55; color:var(--ink);}
+  .sheet .dim{color:var(--ink-dim);}
+  label{display:block; font-size:13px; color:var(--ink-dim); margin:14px 0 6px; letter-spacing:.03em; font-weight:600;}
+  input[type=text], input[type=url]{
+    width:100%; padding:13px 14px; border-radius:13px; border:1px solid var(--line);
+    background:var(--bg); color:var(--ink); font-size:16px; outline:none;
+    font-family:inherit; -webkit-appearance:none; min-height:48px;
+  }
+  input:focus{border-color:var(--accent);}
+  .btnrow{display:flex; gap:10px; margin-top:22px;}
+  .btn{
+    flex:1; padding:14px; border-radius:14px; border:1px solid var(--line);
+    background:var(--bg); color:var(--ink); font-size:16px; font-weight:700; cursor:pointer; font-family:inherit;
+  }
+  .btn.primary{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .btn.danger{background:none; border-color:rgba(200,60,60,.35); color:#c43c3c; flex:0 0 auto; padding:14px 18px;}
+  .btn.full{width:100%; flex:none; margin-top:10px;}
+  .btn:active{transform:scale(.97);}
+
+  /* foldable settings sections */
+  details.fold{border:1px solid var(--line); border-radius:16px; background:var(--bg); margin-top:12px; overflow:hidden;}
+  details.fold > summary{
+    list-style:none; display:flex; align-items:center; gap:12px;
+    padding:15px 16px; font-size:16px; font-weight:700; cursor:pointer;
+  }
+  details.fold > summary::-webkit-details-marker{display:none;}
+  details.fold > summary .hi{color:var(--accent); flex:0 0 auto;}
+  details.fold > summary .chev{margin-left:auto; color:var(--ink-dim); transition:transform .2s ease;}
+  details.fold[open] > summary .chev{transform:rotate(90deg);}
+  details.fold > .foldbody{padding:2px 16px 16px;}
+
+  /* update toast */
+  #toast{
+    position:fixed; left:50%; transform:translateX(-50%);
+    bottom:calc(max(env(safe-area-inset-bottom), 18px) + 8px);
+    z-index:60; display:flex; align-items:center; gap:12px;
+    background:var(--ink); color:#fff; border-radius:16px;
+    padding:13px 16px; font-size:14.5px; box-shadow:0 8px 30px rgba(28,32,40,.35);
+    max-width:min(92vw,420px);
+  }
+  #toast[hidden]{display:none;}
+  #toast button{
+    border:none; border-radius:10px; background:#ffc964; color:#241503;
+    font-weight:700; font-size:14px; padding:9px 14px; cursor:pointer; font-family:inherit;
+  }
+
+  /* version log */
+  .vlog .v{font-weight:700; color:var(--accent); font-size:14px; margin-top:12px;}
+  .vlog p{margin:4px 0 0;}
+  .closex{position:sticky; top:0; float:right; margin:-4px -4px 0 0; z-index:2; box-shadow:none; background:var(--bg);}
+  .backup-meta{font-size:12.5px; color:var(--ink-dim); margin-top:10px;}
+</style>
+</head>
+<body>
+
+<!-- Hand-drawn icon set. Every icon is a single wobbly stroke drawn by hand —
+     lines bend a little and don't quite close, so they read as drawn rather
+     than downloaded. stroke="currentColor" so each picks up its context colour. -->
+<svg class="icon-sprite" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">
+  <symbol id="icon-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.1 4.6c-.2 2.5-.2 5-.1 7.4.1 2.4 0 4.9-.2 7.3"/>
+    <path d="M4.7 12.2c2.5-.3 4.9-.3 7.3-.2 2.4.1 4.8 0 7.2-.2"/>
+  </symbol>
+  <symbol id="icon-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14.9 5.3c1-.9 2-1.1 2.9-.3.9.7 1.5 1.5.8 2.5-2.9 3.6-6 7.1-9.3 10.4-1.2.5-2.4.9-3.7 1.1.2-1.3.5-2.6 1-3.8 2.6-3.4 5.3-6.7 8.3-9.9Z"/>
+    <path d="M13.6 6.9c1 .8 2 1.7 2.9 2.7"/>
+  </symbol>
+  <symbol id="icon-settings" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.2 7.3c.9-.1 1.8-.2 2.7-.2M11.5 7.1c2.8-.1 5.5 0 8.3.2"/>
+    <path d="M7.05 7.2C7 6 7.95 5.05 9.2 5.05c1.3 0 2.15.95 2.15 2.15 0 1.3-.95 2.2-2.15 2.15C7.9 9.3 7.05 8.4 7.05 7.2Z"/>
+    <path d="M4.2 12.1c2.7-.2 5.4-.2 8.5-.2M17.3 11.9c.9 0 1.8.1 2.7.2"/>
+    <path d="M12.85 12c-.05-1.25.9-2.15 2.15-2.15 1.3 0 2.15.95 2.15 2.15 0 1.3-.95 2.2-2.15 2.15-1.3-.05-2.15-.95-2.15-2.15Z"/>
+    <path d="M4.2 16.9c.5-.1 1-.1 1.5-.1M10.5 16.7c3.1-.1 6.2 0 9.3.2"/>
+    <path d="M6.05 16.8C6 15.55 6.95 14.65 8.2 14.65c1.3 0 2.15.95 2.15 2.15 0 1.3-.95 2.2-2.15 2.15-1.3-.05-2.15-.95-2.15-2.15Z"/>
+  </symbol>
+  <symbol id="icon-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.2 6.5c3.9 3.5 7.6 7.2 11.3 11.1"/>
+    <path d="M17.8 6.2c-3.7 3.8-7.4 7.5-11.4 11.2"/>
+  </symbol>
+  <symbol id="icon-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6.2C9.9 4.9 7.4 4.6 4.6 5c-.2 4.3-.1 8.6.1 12.8 2.6-.3 5-.1 7.2 1.2 2.2-1.4 4.6-1.6 7.3-1.3.2-4.3.2-8.6 0-12.9-2.8-.3-5.2.1-7.2 1.4Z"/>
+    <path d="M12 6.6c0 4.1 0 8.2.1 12.2"/>
+  </symbol>
+  <symbol id="icon-backup" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.1 3.9c.1 3.3.1 6.5 0 9.8"/>
+    <path d="M8.6 10.5c1.1 1.2 2.2 2.3 3.5 3.4 1.2-1.1 2.3-2.3 3.4-3.5"/>
+    <path d="M4.8 14.9c-.2 1.7-.2 3.3 0 4.9 4.8.3 9.6.3 14.4 0 .2-1.6.2-3.2 0-4.8"/>
+  </symbol>
+  <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.3 3.9c4.5.1 8 3.7 7.8 8.1-.2 4.4-3.7 7.9-8.1 7.9-4.4-.1-7.9-3.6-7.9-8"/>
+    <path d="M4.2 8.9C4.7 7 5.8 5.5 7.3 4.3"/>
+    <path d="M12 7.6c-.1 1.7-.1 3.3 0 4.9 1.2.9 2.4 1.7 3.7 2.4"/>
+  </symbol>
+  <symbol id="icon-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.3 5.2c2.4 2.2 4.6 4.5 6.6 7-2 2.4-4.2 4.7-6.5 6.8"/>
+  </symbol>
+  <symbol id="icon-warn" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11.9 4.4c.9-.1 1.5.4 2 1.3 2 3.8 3.9 7.6 5.6 11.5.4 1-.1 1.9-1.2 2-4.2.3-8.4.3-12.6 0-1.1-.1-1.6-1-1.2-2 1.7-3.9 3.5-7.7 5.5-11.5.4-.8 1-1.3 1.9-1.3Z"/>
+    <path d="M12 9.2c0 1.7-.1 3.3-.1 4.9M12 16.8h.01"/>
+  </symbol>
+  <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.1 8.3c2.1.1 3.7 1.7 3.6 3.7-.1 2-1.8 3.6-3.8 3.5-2-.1-3.6-1.7-3.5-3.7.1-2 1.7-3.5 3.7-3.5Z"/>
+    <path d="M12 3.4c0 .7 0 1.4-.1 2.1M12 18.6c0 .7 0 1.3-.1 2M3.5 11.9c.7 0 1.4 0 2.1.1M18.5 12.1c.7 0 1.3 0 2-.1M5.9 5.8c.5.5 1 1 1.4 1.5M16.8 16.7c.5.5.9 1 1.4 1.4M18.2 5.9c-.5.5-1 .9-1.5 1.4M7.2 16.8c-.5.5-1 .9-1.4 1.4"/>
+  </symbol>
+  <!-- app glyphs -->
+  <symbol id="icon-suitcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.1 8.6c4.6-.4 9.2-.4 13.8-.1.3 3.5.3 7-.1 10.4-4.5.3-9 .3-13.5 0-.4-3.4-.4-6.9-.2-10.3Z"/>
+    <path d="M9.4 8.3c-.1-1.5.5-2.6 1.5-3 .7-.2 1.5-.2 2.2 0 1 .4 1.6 1.5 1.4 2.9"/>
+    <path d="M8.9 8.7c.1 3.3.1 6.6 0 9.9M15.2 8.6c.2 3.3.2 6.6.1 9.9"/>
+  </symbol>
+  <symbol id="icon-pagelist" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.3 4.6c3.8-.3 7.6-.3 11.4 0 .3 4.9.3 9.8 0 14.7-3.8.3-7.6.3-11.3.1-.3-5-.3-9.9-.1-14.8Z"/>
+    <path d="M9 9.2c2 0 4 0 6-.1M9 12.4c2 .1 4 .1 6 0M9 15.6c1.6.1 3.2 0 4.8-.1"/>
+  </symbol>
+  <symbol id="icon-hourglass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.6 4.7c2.9-.2 5.8-.2 8.7 0"/>
+    <path d="M7.6 19.4c2.9.2 5.8.2 8.7 0"/>
+    <path d="M8.4 5c.1 2.6 1 4.8 3.3 6.9-2.3 2-3.3 4.3-3.4 7"/>
+    <path d="M15.7 5c0 2.6-1 4.8-3.2 6.9 2.2 2 3.2 4.3 3.3 7"/>
+  </symbol>
+  <symbol id="icon-bubble" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4.8c4.4-.1 7.6 2.6 7.6 6.2 0 3.6-3.2 6.2-7.5 6.2-.9 0-1.8-.1-2.6-.3-1.2.9-2.6 1.5-4.2 1.8.5-1 .8-2 .9-3.1-1.3-1.2-2-2.7-2-4.5C4.3 7.5 7.5 4.9 12 4.8Z"/>
+    <path d="M8.9 11.1h.01M12.1 11.1h.01M15.3 11.1h.01"/>
+  </symbol>
+  <symbol id="icon-shower" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.2 8.4c-.1-2.2 1.6-3.8 3.8-3.8 2.2 0 3.9 1.5 3.9 3.7 0 .4 0 .8-.1 1.2-2.5-.5-5-.5-7.4.1-.1-.4-.2-.8-.2-1.2Z"/>
+    <path d="M8.5 11.8c-.3 1-.7 1.9-1.1 2.8M12.1 12.1c-.1 1-.3 2.1-.6 3.1M15.6 11.8c.4.9.7 1.8 1.1 2.7M9.9 16.9c-.2.8-.5 1.6-.8 2.4M14.2 17c.3.8.6 1.6.9 2.3"/>
+  </symbol>
+  <symbol id="icon-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.6 9.3c3.9-.2 7.8-.3 11.7-.1 1.4.1 2.4-.6 2.5-1.7.1-1-.7-1.9-1.9-2"/>
+    <path d="M4.6 13.2c4.6-.1 9.2-.1 13.8.1 1.3.1 2.1.9 2 2-.1 1.1-1.1 1.8-2.5 1.7"/>
+    <path d="M4.7 17.1c2.4-.1 4.8-.1 7.2 0"/>
+  </symbol>
+  <symbol id="icon-checkring" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.2 4.3c4.4.1 7.7 3.5 7.6 7.8-.1 4.3-3.6 7.6-7.9 7.6-4.3-.1-7.7-3.5-7.6-7.8.1-4.3 3.5-7.5 7.9-7.6Z"/>
+    <path d="M8.6 12.2c1 1.1 2 2.1 3 3.1 1.6-2 3.2-4 4.6-6.1"/>
+  </symbol>
+  <symbol id="icon-jar" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.1 4.9c2.6-.3 5.2-.3 7.8 0"/>
+    <path d="M7.7 7.2c-.9 1-1.4 2.2-1.3 3.6.1 2.7.2 5.4.5 8 3.4.4 6.8.4 10.2 0 .3-2.6.4-5.3.5-8 .1-1.4-.4-2.6-1.3-3.6-2.9-.3-5.7-.3-8.6 0Z"/>
+    <path d="M10.3 12.4h.01M13.6 14.3h.01M11.9 16.5h.01"/>
+  </symbol>
+  <symbol id="icon-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.2 4.3c4.4.1 7.7 3.5 7.6 7.8-.1 4.3-3.6 7.6-7.9 7.6-4.3-.1-7.7-3.5-7.6-7.8.1-4.3 3.5-7.5 7.9-7.6Z"/>
+    <path d="M12 8.1c0 1.5-.1 3-.1 4.4 1.1.7 2.2 1.4 3.3 2.2"/>
+  </symbol>
+  <symbol id="icon-coin" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4.6c4.3.1 7.6 3.4 7.5 7.6-.1 4.2-3.5 7.4-7.7 7.4-4.2-.1-7.5-3.4-7.4-7.6.1-4.2 3.4-7.3 7.6-7.4Z"/>
+    <path d="M14.6 9.4c-1.6-1-3.4-.8-4.3.4-.9 1.2-.6 2.4.9 2.9 1.4.4 2.7.6 3 1.9.3 1.3-.9 2.3-2.4 2.3-1 0-1.9-.4-2.6-1"/>
+    <path d="M12.1 7.3c0 .6 0 1.2-.1 1.8M12 15.1c0 .6 0 1.2-.1 1.8"/>
+  </symbol>
+  <symbol id="icon-linkout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13.9 5.1c1.7-.1 3.4-.1 5.1 0 .1 1.7.1 3.4 0 5.1"/>
+    <path d="M18.7 5.4c-3 2.9-6 5.9-8.8 9"/>
+    <path d="M10.2 6.3c-1.7 0-3.4.1-5.1.3-.2 4-.2 8 .1 12 4 .3 8 .3 12 .1.2-1.7.3-3.4.3-5.1"/>
+  </symbol>
+</svg>
+
+<header>
+  <div class="brand">AMS <b>Main Hub</b></div>
+  <button class="iconbtn" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg></button>
+</header>
+
+<div class="hello">
+  <div class="hi-line" id="helloLine"></div>
+  <div class="sub" id="helloSub"></div>
+</div>
+
+<main>
+  <div class="sect" style="color:#1f9e93">WEB APPS</div>
+  <div class="cards" id="webCards"></div>
+
+  <div class="sect" style="color:#5868c9">ON THE MAC</div>
+  <div class="cards" id="macCards"></div>
+
+  <div class="sect" style="color:#d96a45">YOUR LINKS</div>
+  <div class="empty-hint" id="linksHint"></div>
+  <div class="cards" id="linkCards"></div>
+
+  <footer id="foot"></footer>
+</main>
+
+<!-- ============ add / edit link sheet ============ -->
+<div class="overlay" id="ovEdit">
+  <div class="sheet">
+    <h2 id="editTitle">New link</h2>
+    <label>Name</label>
+    <input type="text" id="fName" placeholder="e.g. Finance dashboard" maxlength="40" />
+    <label>Web address</label>
+    <input type="url" id="fUrl" placeholder="https://…" autocapitalize="off" autocorrect="off" />
+    <div class="btnrow">
+      <button class="btn danger" id="fDelete" style="display:none">Delete</button>
+      <button class="btn" id="fCancel">Cancel</button>
+      <button class="btn primary" id="fSave">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ "open from its own icon" guard ============ -->
+<div class="overlay" id="ovGuard">
+  <div class="sheet">
+    <h2><svg class="hi"><use href="#icon-warn"/></svg>Open it from its own icon</h2>
+    <p><b id="guardName"></b> keeps its data in its own home-screen app. If the hub opens it here instead, you'd be looking at a <b>separate, empty copy</b> — and signing in to sync there could double things up. We've been there.</p>
+    <p class="dim">So: close this, and tap the app's own icon on your home screen (or open it in Safari).</p>
+    <div class="btnrow">
+      <button class="btn primary" id="guardOk">Got it</button>
+    </div>
+    <button class="btn full" id="guardAnyway">Open here anyway (just to look)</button>
+  </div>
+</div>
+
+<!-- ============ settings sheet ============ -->
+<div class="overlay" id="ovSettings">
+  <div class="sheet">
+    <button class="iconbtn closex" id="settingsClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
+    <h2><svg class="hi"><use href="#icon-settings"/></svg>Settings <span class="dim" style="font-size:13px; font-weight:400">· v<span id="appVer"></span></span></h2>
+
+    <details class="fold" id="foldHow">
+      <summary><svg class="hi"><use href="#icon-book"/></svg>How this works<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+      <div class="foldbody">
+        <h3>One shelf for everything</h3>
+        <p>The hub is the front door to all the AMS apps: one card per app, with its hand-drawn icon and a one-line reminder of what it does. Tap a card and the app opens.</p>
+
+        <h3>The little version chips</h3>
+        <p>The small number on each web-app card is <b>live</b> — the hub quietly asks each app which version it's running right now, every time you open the hub. So the shelf doubles as a status board: if you just published an update, the new number shows up here. If a chip is missing, the hub couldn't reach that app (offline, or the app doesn't announce a version).</p>
+
+        <h3>iPhone rule: open apps from their own icons</h3>
+        <p>Each AMS app installed on your home screen keeps its data in its <b>own private box</b>. A link tapped inside the hub app can't open that installed copy — it would open a separate, empty one instead. That's why, when the hub runs as a home-screen app, tapping a web-app card first shows a friendly reminder to use the app's own icon. On the Mac, in Safari, cards simply open in a new tab and everything shares the same data — no reminder needed.</p>
+
+        <h3>On the Mac</h3>
+        <p>Timers and the Finance Hub run only on the Mac (they live on the Mac itself, not on the internet), so their cards are marked <b>MAC ONLY</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
+
+        <h3>Where everything lives</h3>
+        <p>Every card carries a small <b>DATA</b> line saying where that app keeps its stuff — so there's never any mystery about where things live:</p>
+        <ul>
+          <li><b>On this device only</b> — the app stores everything in the browser storage of the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
+          <li><b>Synced via Dexie Cloud</b> — AMS Packing is the special one: its catalogue lives on each device <i>and</i> syncs between iPhone and Mac through a Dexie Cloud account.</li>
+          <li><b>Excel files</b> — the Finance Hub doesn't store anything itself; it watches the monthly Excel workbooks and ledgers in the AMS Finance folder in Documents.</li>
+          <li><b>The Obsidian vault</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
+          <li>The apps' <b>code</b> is public on GitHub — but none of your data ever is.</li>
+        </ul>
+
+        <h3>Your links</h3>
+        <p>The bottom section is yours: add any web address you want on the shelf — dashboards, sites, anything. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
+
+        <h3>Backups</h3>
+        <p>Under <b>Your data</b> below you can save your links as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links came back, and if anything goes wrong your current links and your backup file are left untouched.</p>
+
+        <h3>Updates</h3>
+        <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
+      </div>
+    </details>
+
+    <details class="fold" id="foldData">
+      <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+      <div class="foldbody">
+        <p class="dim" style="margin-top:8px">Your personal links live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
+        <button class="btn full" id="exportBtn">Export my links</button>
+        <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
+        <button class="btn full" id="importBtn">Import / restore…</button>
+        <input type="file" id="importFile" accept=".json,application/json" style="display:none" />
+        <div class="backup-meta" id="backupMeta"></div>
+      </div>
+    </details>
+
+    <details class="fold" id="foldVlog">
+      <summary><svg class="hi"><use href="#icon-history"/></svg>Version history<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+      <div class="foldbody vlog" id="vlog"></div>
+    </details>
+
+    <button class="btn full" id="updateBtn">Check for app update</button>
+  </div>
+</div>
+
+<!-- update toast -->
+<div id="toast" hidden><span id="toastMsg"></span><button id="toastAct" hidden></button></div>
+
+<script>
+(() => {
+'use strict';
+
+/* ============ version log — newest first; [0].v is THE app version ============ */
+const VERSIONLOG = [
+  { v:'1.0', when:'31 Aug 2026',
+    what:'First release. One shelf for every AMS app: a card per web app with its hand-drawn icon, a one-line description, a DATA line saying exactly where that app keeps its stuff (on the device, synced via Dexie Cloud, Excel files, the Obsidian vault), and a live version chip fetched straight from the app itself — so the hub doubles as a status board. A MAC ONLY section for Timers and the Finance Hub, and a Your links section where personal dashboards can be added, stored only on this device (never in the hub’s public code) with export / copy / restore backups that report exactly what came back. When the hub runs as a home-screen app, tapping a web-app card shows a friendly reminder to open that app from its own icon — inside the hub it would run in a separate, empty data box. The hub updates itself: it checks for a new version when opened and shows an Update bar when one is live. Hand-drawn icons throughout. Works offline as a home-screen app.' },
+];
+
+/* ============ the shelf ============ */
+const GH = 'https://marsch124.github.io/';
+const WEB_APPS = [
+  { id:'packing',  name:'AMS Packing',      sub:'Packing lists for every trip',          icon:'suitcase',  dot:'#1f9e93', tint:'#d7f2ef', url:GH+'AMS-Packing/',
+    store:'On each device, synced iPhone↔Mac via Dexie Cloud · Excel export',
+    probe:{ path:'AMS-Packing/service-worker.js', rx:/ams-packing-list-v(\d+)/, pre:'v' } },
+  { id:'instr',    name:'AMS Instructions', sub:'Every manual, three digits away',       icon:'pagelist',  dot:'#d84f86', tint:'#fbdeeb', url:GH+'AMS-Instructions/',
+    store:'On this device only · backup files',
+    probe:{ path:'AMS-Instructions/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' } },
+  { id:'count',    name:'AMS CountDown',    sub:'Big numbers for big days',              icon:'hourglass', dot:'#c8952b', tint:'#faeecb', url:GH+'AMS-CountDown/',
+    store:'On this device only · backup files',
+    probe:{ path:'AMS-CountDown/version.json', json:true, pre:'v' } },
+  { id:'tracking', name:'AMS Tracking',     sub:'Habits, tracked and kept',              icon:'checkring', dot:'#33a065', tint:'#d9f2e2', url:GH+'AMS-Tracking/',
+    store:'On this device only · backup files',
+    probe:{ path:'AMS-Tracking/version.json', json:true, pre:'v' } },
+  { id:'lingo',    name:'AMS TechLingo',    sub:'Your personal tech dictionary',         icon:'bubble',    dot:'#e0762e', tint:'#fde4cd', url:GH+'AMS-TechLingo/',
+    store:'On this device only (incl. photos) · backup files',
+    probe:{ path:'AMS-TechLingo/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' } },
+  { id:'shower',   name:'AMS ColdShower',   sub:'Cold showers, timed in colour',         icon:'shower',    dot:'#3487d6', tint:'#dcebfb', url:GH+'AMS-ColdShower/',
+    store:'On this device only',
+    probe:{ path:'AMS-ColdShower/index.html', rxMax:/v1\.(\d+)/g, pre:'v1.' } },
+  { id:'breath',   name:'AMS Breathing',    sub:'Guided breathing and breath-holds',     icon:'wind',      dot:'#3fa2c7', tint:'#d9eff7', url:GH+'AMS-Breathing/',
+    store:'On this device only' },
+  { id:'ferment',  name:'AMS FermentLog',   sub:'Fermentation batches, logged',          icon:'jar',       dot:'#8fa032', tint:'#eef2cf', url:GH+'AMS-FermentLog/',
+    store:'On this device only · backup files',
+    probe:{ path:'AMS-FermentLog/service-worker.js', rx:/fermentlog-v(\d+)/, pre:'v' } },
+];
+const MAC_APPS = [
+  { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
+    store:'On the Mac, inside the app’s own folder' },
+  { id:'finance', name:'AMS Finance Hub',  sub:'The monthly finance system',    icon:'coin',  dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
+    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance' },
+  { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork',  icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
+    store:'Notes and memory in the Obsidian vault' },
+];
+
+/* ============ storage (personal links only) ============ */
+const KEY = 'amshub.v1';
+const META_KEY = 'amshub.lastBackup';
+let state = { links: [] };
+try{
+  const raw = localStorage.getItem(KEY);
+  if(raw){
+    const parsed = JSON.parse(raw);
+    if(parsed && Array.isArray(parsed.links)) state = parsed;
+  }
+}catch(e){ /* fall through to empty */ }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e){} }
+
+const $ = (id) => document.getElementById(id);
+const IS_STANDALONE = (navigator.standalone === true) ||
+  (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
+
+/* ============ greeting ============ */
+const SUBS = [
+  'Everything’s where you left it. ☺',
+  'A tidy shelf for every app.',
+  'All present and accounted for.',
+  'Your little empire, one tap away.',
+  'Fresh version numbers, just fetched.',
+  'Nothing to install. Everything to open.',
+  'The apps say hi back.',
+  'What a fine day to open an app.',
+  'Handmade, every single one.',
+];
+function greet(){
+  const h = new Date().getHours();
+  const line = h < 5 ? 'Up late, Martin?' : h < 11 ? 'Good morning, Martin.' : h < 18 ? 'Good afternoon, Martin.' : 'Good evening, Martin.';
+  $('helloLine').innerHTML = `<svg class="hi"><use href="#icon-sun"/></svg><span>${line}</span>`;
+  const day = Math.floor(Date.now() / 86400000);
+  $('helloSub').textContent = SUBS[day % SUBS.length];
+}
+
+/* ============ cards ============ */
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+function appRow(a, right){
+  const mid = `
+    <span class="badge" style="color:${a.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
+    <span class="cmid"><span class="cname">${esc(a.name)}</span><span class="csub" style="display:block">${esc(a.sub)}</span>${
+      a.store ? `<span class="cstore" style="display:block"><b>DATA</b> · ${esc(a.store)}</span>` : ''
+    }</span>
+    <span class="cright">${right}</span>`;
+  if(!a.url) return `<div class="cardrow" data-app="${a.id}" style="background:${a.tint}; cursor:default">${mid}</div>`;
+  return `<a class="cardrow" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
+            style="background:${a.tint}">${mid}</a>`;
+}
+
+function renderShelf(){
+  $('webCards').innerHTML = WEB_APPS.map(a =>
+    appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${a.dot}"></span>`)).join('');
+  $('macCards').innerHTML = MAC_APPS.map(a =>
+    appRow(a, `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`)).join('');
+
+  /* home-screen guard: inside the hub app, another AMS app would open in a
+     separate storage box with none of the real data — warn instead of navigating */
+  if(IS_STANDALONE){
+    document.querySelectorAll('#webCards .cardrow').forEach(el => {
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        const app = WEB_APPS.find(a => a.id === el.dataset.app);
+        $('guardName').textContent = app ? app.name : 'This app';
+        $('ovGuard').classList.add('show');
+        $('guardAnyway').onclick = () => { $('ovGuard').classList.remove('show'); window.open(el.href, '_blank'); };
+      });
+    });
+  }
+}
+
+function renderLinks(){
+  const L = state.links;
+  $('linksHint').textContent = L.length ? '' :
+    'Your own corner of the shelf — dashboards, sites, anything. Links are stored only on this device, so private addresses stay private.';
+  $('linkCards').innerHTML = L.map(l => `
+    <div class="cardrow" data-id="${esc(l.id)}" style="background:#fff">
+      <span class="badge" style="color:var(--accent)"><svg class="hi"><use href="#icon-linkout"/></svg></span>
+      <span class="cmid"><span class="cname">${esc(l.name)}</span><span class="csub" style="display:block">${esc(l.url)}</span></span>
+      <span class="cright"><button class="rowbtn" data-edit="${esc(l.id)}" aria-label="Edit"><svg class="hi"><use href="#icon-pencil"/></svg></button></span>
+    </div>`).join('') +
+    `<button class="addrow" id="addLink"><svg class="hi"><use href="#icon-plus"/></svg>Add a link</button>`;
+
+  document.querySelectorAll('#linkCards .cardrow').forEach(el => {
+    el.addEventListener('click', (e) => {
+      if(e.target.closest('[data-edit]')) return;
+      const l = state.links.find(x => x.id === el.dataset.id);
+      if(l) window.open(l.url, '_blank');
+    });
+  });
+  document.querySelectorAll('#linkCards [data-edit]').forEach(btn => {
+    btn.addEventListener('click', () => openEdit(btn.dataset.edit));
+  });
+  $('addLink').addEventListener('click', () => openEdit(null));
+  $('foot').textContent = 'AMS Main Hub · handmade, like the rest of them';
+}
+
+/* ============ add / edit personal link ============ */
+let editingId = null;
+function openEdit(id){
+  editingId = id;
+  const l = id ? state.links.find(x => x.id === id) : null;
+  $('editTitle').textContent = l ? 'Edit link' : 'New link';
+  $('fName').value = l ? l.name : '';
+  $('fUrl').value = l ? l.url : '';
+  $('fDelete').style.display = l ? '' : 'none';
+  $('ovEdit').classList.add('show');
+}
+$('fCancel').addEventListener('click', () => $('ovEdit').classList.remove('show'));
+$('fSave').addEventListener('click', () => {
+  const name = $('fName').value.trim();
+  let url = $('fUrl').value.trim();
+  if(!name){ alert('Give the link a name.'); return; }
+  if(!url){ alert('Fill in the web address.'); return; }
+  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if(editingId){
+    const l = state.links.find(x => x.id === editingId);
+    if(l){ l.name = name; l.url = url; }
+  }else{
+    state.links.push({ id:'l' + Date.now().toString(36), name, url });
+  }
+  save(); renderLinks();
+  $('ovEdit').classList.remove('show');
+});
+$('fDelete').addEventListener('click', () => {
+  const l = state.links.find(x => x.id === editingId);
+  if(!l) return;
+  if(!confirm(`Delete “${l.name}”?`)) return;
+  state.links = state.links.filter(x => x.id !== editingId);
+  save(); renderLinks();
+  $('ovEdit').classList.remove('show');
+});
+
+/* ============ live version chips ============ */
+async function probeAll(){
+  for(const a of WEB_APPS){
+    if(!a.probe) continue;
+    probeOne(a).catch(() => {});
+  }
+}
+async function probeOne(a){
+  /* ?vercheck makes the hub's service worker pass these straight to the
+     network (and never cache another app's files) */
+  const res = await fetch(GH + a.probe.path + '?vercheck=' + Date.now(), { cache:'no-store' });
+  if(!res.ok) return;
+  let ver = null;
+  if(a.probe.json){
+    const data = await res.json();
+    if(data && data.version) ver = a.probe.pre + data.version;
+  }else if(a.probe.rxMax){
+    const text = await res.text();
+    let best = -1, m;
+    while((m = a.probe.rxMax.exec(text)) !== null){ best = Math.max(best, parseInt(m[1], 10)); }
+    if(best >= 0) ver = a.probe.pre + best;
+  }else{
+    const text = await res.text();
+    const m = text.match(a.probe.rx);
+    if(m) ver = a.probe.pre + m[1];
+  }
+  if(ver){
+    const chip = $('ver-' + a.id);
+    if(chip){ chip.textContent = ver; chip.classList.add('on'); }
+  }
+}
+
+/* ============ settings ============ */
+$('settingsBtn').addEventListener('click', () => $('ovSettings').classList.add('show'));
+$('settingsClose').addEventListener('click', () => $('ovSettings').classList.remove('show'));
+$('appVer').textContent = VERSIONLOG[0].v;
+$('vlog').innerHTML = VERSIONLOG.map(e =>
+  `<div class="v">v${e.v} · ${e.when}</div><p>${e.what}</p>`).join('');
+
+/* ============ backups (links only — the shelf itself is built in) ============ */
+function backupBlob(){
+  return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(), links: state.links }, null, 2);
+}
+function stampBackup(){
+  try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
+  showMeta();
+}
+function showMeta(){
+  let when = null;
+  try{ when = localStorage.getItem(META_KEY); }catch(e){}
+  $('backupMeta').textContent = when ? 'Last backup: ' + new Date(when).toLocaleString() : 'No backup saved yet.';
+}
+showMeta();
+$('exportBtn').addEventListener('click', () => {
+  const blob = new Blob([backupBlob()], { type:'application/json' });
+  const aEl = document.createElement('a');
+  aEl.href = URL.createObjectURL(blob);
+  aEl.download = 'ams-mainhub-links-' + new Date().toISOString().slice(0,10) + '.json';
+  document.body.appendChild(aEl); aEl.click(); aEl.remove();
+  stampBackup();
+});
+$('copyBtn').addEventListener('click', async () => {
+  try{
+    await navigator.clipboard.writeText(backupBlob());
+    stampBackup();
+    showToast('Backup copied to the clipboard ✅');
+  }catch(e){ alert('Copying failed — try Export instead.'); }
+});
+$('importBtn').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', () => {
+  const file = $('importFile').files[0];
+  $('importFile').value = '';
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    let data;
+    try{ data = JSON.parse(reader.result); }
+    catch(e){ alert('That file isn’t a valid backup — nothing was changed.'); return; }
+    const links = data && Array.isArray(data.links) ? data.links.filter(l => l && l.name && l.url) : null;
+    if(!links){ alert('That file isn’t an AMS Main Hub backup — nothing was changed.'); return; }
+    state.links = links.map((l, i) => ({ id: l.id || 'l' + Date.now().toString(36) + i, name:String(l.name), url:String(l.url) }));
+    save(); renderLinks();
+    $('ovSettings').classList.remove('show');
+    alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.`);
+  };
+  reader.readAsText(file);
+});
+
+/* ============ self-update check (same pattern as AMS Tracking) ============ */
+let toastTimer = null;
+function showToast(msg, actionFn, actionLabel, duration){
+  const t = $('toast');
+  $('toastMsg').textContent = msg;
+  const btn = $('toastAct');
+  btn.hidden = !actionFn;
+  btn.textContent = actionLabel || '';
+  btn.onclick = actionFn || null;
+  t.hidden = false;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => { t.hidden = true; }, duration || 5000);
+}
+
+let lastUpdateCheck = 0;
+async function checkForUpdate(manual){
+  const nowMs = Date.now();
+  if(!manual && nowMs - lastUpdateCheck < 5 * 60000) return;
+  lastUpdateCheck = nowMs;
+  try{
+    const res = await fetch('version.json?vercheck=' + nowMs, { cache: 'no-store' });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data.version && data.version !== VERSIONLOG[0].v){
+      showToast(`Version ${data.version} is ready`, applyUpdate, 'Update', 12000);
+    }else if(manual){
+      showToast(`You're on the latest version (v${VERSIONLOG[0].v})`);
+    }
+  }catch(e){
+    if(manual) showToast('Update check failed — are you online?');
+  }
+}
+function applyUpdate(){
+  const reload = () => location.reload();
+  if(navigator.serviceWorker && navigator.serviceWorker.getRegistration){
+    navigator.serviceWorker.getRegistration()
+      .then(r => r && r.update())
+      .then(reload, reload);
+  }else{
+    reload();
+  }
+}
+$('updateBtn').addEventListener('click', () => checkForUpdate(true));
+$('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show'));
+
+/* close overlays by tapping the dimmed backdrop */
+['ovEdit','ovSettings','ovGuard'].forEach(id => {
+  const ov = $(id);
+  ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('show'); });
+});
+
+/* ============ go ============ */
+greet();
+renderShelf();
+renderLinks();
+probeAll();
+document.addEventListener('visibilitychange', () => { if(!document.hidden){ greet(); probeAll(); checkForUpdate(false); } });
+setTimeout(() => checkForUpdate(false), 2500);
+
+/* Stamp the SW registration with the version so the phone can't keep
+   re-checking against a stale cached copy of the worker. */
+if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js?v=' + VERSIONLOG[0].v).catch(()=>{});
+})();
+</script>
+</body>
+</html>
