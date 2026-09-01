@@ -88,6 +88,8 @@
   }
   .verchip.on{opacity:1;}
   .maclbl{font-size:10.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.12em;}
+  .verglance{text-align:right; font-size:9px; font-weight:700; letter-spacing:.06em;
+             color:var(--ink-dim); padding:1px 10px 0; opacity:.85;}
   .rowbtn{
     width:34px; height:34px; border-radius:12px; border:none; background:rgba(255,255,255,.6);
     display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); padding:0;
@@ -305,6 +307,7 @@
     <button class="iconbtn" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg></button>
   </div>
 </header>
+<div class="verglance" id="verGlance"></div>
 
 <div class="hello">
   <div class="hi-line" id="helloLine"></div>
@@ -435,6 +438,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.3', when:'1 Sep 2026',
+    what:'A quick glance and a live Finance version. The hub\u2019s own version number now sits in tiny print right under the header buttons \u2014 no more opening Settings to check. And the AMS Finance Hub card got a live version chip: when the Finance engine is running on this Mac, the hub asks it directly which version it is (the engine announces itself to the hub alone). If the chip is missing, the engine is off or the browser would not allow the ask \u2014 the card still works.' },
   { v:'1.2', when:'31 Aug 2026',
     what:'Bigger drawings. The hand-drawn glyph inside every app badge got noticeably larger — same badge, more picture — so the shelf is easier to read at a glance in both list and grid view.' },
   { v:'1.1', when:'31 Aug 2026',
@@ -474,6 +479,7 @@ const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
     store:'On the Mac, inside the app’s own folder' },
   { id:'finance', name:'AMS Finance Hub',  sub:'The monthly finance system',    icon:'coin',  dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
+    probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
     store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance' },
   { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork',  icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
     store:'Notes and memory in the Obsidian vault' },
@@ -535,7 +541,8 @@ function renderShelf(){
   $('webCards').innerHTML = WEB_APPS.map(a =>
     appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${a.dot}"></span>`)).join('');
   $('macCards').innerHTML = MAC_APPS.map(a =>
-    appRow(a, `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`)).join('');
+    appRow(a, (a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${a.dot}"></span> ` : '') +
+              `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`)).join('');
 
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
@@ -616,7 +623,7 @@ $('fDelete').addEventListener('click', () => {
 
 /* ============ live version chips ============ */
 async function probeAll(){
-  for(const a of WEB_APPS){
+  for(const a of [...WEB_APPS, ...MAC_APPS]){
     if(!a.probe) continue;
     probeOne(a).catch(() => {});
   }
@@ -624,7 +631,8 @@ async function probeAll(){
 async function probeOne(a){
   /* ?vercheck makes the hub's service worker pass these straight to the
      network (and never cache another app's files) */
-  const res = await fetch(GH + a.probe.path + '?vercheck=' + Date.now(), { cache:'no-store' });
+  const base = a.probe.url ? a.probe.url : GH + a.probe.path;
+  const res = await fetch(base + '?vercheck=' + Date.now(), { cache:'no-store' });
   if(!res.ok) return;
   let ver = null;
   if(a.probe.json){
@@ -779,6 +787,7 @@ greet();
 renderShelf();
 renderLinks();
 probeAll();
+$('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => { if(!document.hidden){ greet(); probeAll(); checkForUpdate(false); } });
 setTimeout(() => checkForUpdate(false), 2500);
 
