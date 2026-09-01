@@ -72,7 +72,7 @@
     border:none; background:currentColor;
     display:flex; align-items:center; justify-content:center;
   }
-  .badge .hi{width:27px; height:27px; color:#fff;}
+  .badge .hi{width:34px; height:34px; color:#fff;}
   .cardrow:nth-child(odd) .badge{transform:rotate(-3deg);}
   .cardrow:nth-child(even) .badge{transform:rotate(2.5deg);}
   .cmid{flex:1; min-width:0;}
@@ -108,7 +108,7 @@
   body.gridview .csub{white-space:normal;}
   body.gridview .cright{position:absolute; top:14px; right:14px;}
   body.gridview .badge{width:56px; height:56px; border-radius:19px;}
-  body.gridview .badge .hi{width:29px; height:29px;}
+  body.gridview .badge .hi{width:37px; height:37px;}
   body.gridview .addrow{grid-column:1 / -1;}
   footer{padding:14px 4px 2px; font-size:12px; color:var(--ink-dim); text-align:center; font-weight:500;}
 
@@ -435,6 +435,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.2', when:'31 Aug 2026',
+    what:'Bigger drawings. The hand-drawn glyph inside every app badge got noticeably larger — same badge, more picture — so the shelf is easier to read at a glance in both list and grid view.' },
   { v:'1.1', when:'31 Aug 2026',
     what:'List or grid — your choice. A new button in the header (next to Settings) switches the shelf between the phone-friendly list and a grid of tiles that makes much better use of a Mac screen. The hub picks a sensible default — grid on wide screens, list on the iPhone — and remembers your choice per device. The three sections (WEB APPS · ON THE MAC · YOUR LINKS) now each sit in their own soft panel with a colour-matched border, so the shelf reads as three tidy shelves instead of one long wall.' },
   { v:'1.0', when:'31 Aug 2026',
