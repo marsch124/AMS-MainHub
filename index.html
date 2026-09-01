@@ -78,8 +78,8 @@
   .cmid{flex:1; min-width:0;}
   .cname{font-size:18px; font-weight:800; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
   .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .cstore{font-size:11px; color:var(--ink-dim); margin-top:3px; font-weight:600; opacity:.85; line-height:1.45;}
-  .cstore b{font-weight:800; letter-spacing:.06em;}
+  .cwhere{display:inline-flex; align-items:center; gap:7px; margin-top:6px; color:var(--ink-dim); opacity:.85; cursor:help;}
+  .cwhere .hi{width:16px; height:16px;}
   .cright{flex:0 0 auto; text-align:right; display:flex; align-items:center; gap:10px;}
   .verchip{
     font-size:12px; font-weight:700; font-variant-numeric:tabular-nums;
@@ -95,6 +95,46 @@
     display:flex; align-items:center; justify-content:center; cursor:pointer; color:var(--ink); padding:0;
   }
   .rowbtn .hi{width:17px; height:17px;}
+
+  /* ---------- arrange mode (▲▼ + palette on every card) ---------- */
+  .cluster{display:none; gap:6px;}
+  body.custom .cluster{display:flex;}
+  body.custom .verchip, body.custom .maclbl{display:none;}
+  body.custom [data-edit]{display:none;}
+
+  /* ---------- mini panel ---------- */
+  .minihead{display:flex; align-items:center; justify-content:space-between;}
+  .minihead .sect{padding-bottom:8px;}
+  .minictl{display:flex; gap:6px; padding:0 4px 6px 0;}
+  .minibody{padding:2px 8px 8px;}
+  .mp-big{font-size:38px; font-weight:800; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums;}
+  .mp-sub{font-size:12.5px; color:var(--ink-dim); font-weight:600; margin-top:5px; line-height:1.5;}
+  .mp-spark{width:100%; height:72px; margin-top:10px; display:block;}
+  .mp-bar{height:12px; border-radius:8px; background:rgba(42,36,32,.08); overflow:hidden; margin-top:12px;}
+  .mp-bar > div{height:100%; border-radius:8px; background:#c8952b;}
+  .mp-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
+  .mp-chip{font-size:12px; font-weight:700; padding:6px 11px; border-radius:10px; background:rgba(42,36,32,.06); color:var(--ink-dim);}
+  .mp-chip.done{background:#d9f2e2; color:#1e7a4a;}
+  .mp-vers{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:7px 16px; font-size:12.5px; font-weight:700;}
+  .mp-vers .v{color:var(--ink-dim); font-variant-numeric:tabular-nums; margin-left:6px; font-weight:600;}
+  .mp-empty{font-size:13.5px; color:var(--ink-dim); line-height:1.55; padding:2px 0;}
+
+  /* wealth editor rows */
+  .wrow{display:flex; align-items:center; gap:10px; margin-top:9px;}
+  .wrow .wm{flex:0 0 88px; font-size:13.5px; font-weight:700; color:var(--ink-dim);}
+  .wrow input{flex:1; min-height:42px; padding:8px 12px;}
+  .wrow .weng{flex:1; font-size:14.5px; font-weight:600; font-variant-numeric:tabular-nums;}
+  .wrow .wtag{font-size:10px; font-weight:800; letter-spacing:.08em; color:#5868c9; background:#e2e6fa; padding:3px 7px; border-radius:7px;}
+
+  /* colour swatches */
+  .swgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;}
+  .sw{
+    aspect-ratio:1; border-radius:15px; border:2px solid rgba(28,32,40,.08);
+    cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0;
+  }
+  .sw:active{transform:scale(.92);}
+  .sw.cur{border-color:var(--ink);}
+  .swdot{width:16px; height:16px; border-radius:50%; display:block;}
   .addrow{
     display:flex; align-items:center; justify-content:center; gap:10px;
     border:1.5px dashed rgba(28,32,40,.22); border-radius:24px; padding:15px;
@@ -246,6 +286,39 @@
     <path d="M12.1 8.3c2.1.1 3.7 1.7 3.6 3.7-.1 2-1.8 3.6-3.8 3.5-2-.1-3.6-1.7-3.5-3.7.1-2 1.7-3.5 3.7-3.5Z"/>
     <path d="M12 3.4c0 .7 0 1.4-.1 2.1M12 18.6c0 .7 0 1.3-.1 2M3.5 11.9c.7 0 1.4 0 2.1.1M18.5 12.1c.7 0 1.3 0 2-.1M5.9 5.8c.5.5 1 1 1.4 1.5M16.8 16.7c.5.5.9 1 1.4 1.4M18.2 5.9c-.5.5-1 .9-1.5 1.4M7.2 16.8c-.5.5-1 .9-1.4 1.4"/>
   </symbol>
+  <symbol id="icon-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.4 14.9c2.2-2.4 4.4-4.7 6.8-6.8 2.3 2.1 4.5 4.3 6.6 6.6"/>
+  </symbol>
+  <symbol id="icon-down" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.3 9.3c2.2 2.3 4.4 4.6 6.7 6.8 2.3-2.2 4.5-4.4 6.6-6.6"/>
+  </symbol>
+  <symbol id="icon-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.2 12.7c1.8 1.7 3.5 3.4 5.1 5.2 2.7-3.6 5.5-7.1 8.5-10.4"/>
+  </symbol>
+  <symbol id="icon-palette" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.2 4.5c4.6-.2 8 2.8 7.9 6.6-.1 2.6-1.8 3.6-3.9 3.3-1.6-.2-2.9.2-3 1.7-.1 1.2.8 2.1.2 3-.5.8-1.7 1-3 .7-3.5-.8-6-3.8-5.9-7.4.1-4.3 3.4-7.7 7.7-7.9Z"/>
+    <path d="M8.3 9.6h.01M12.2 7.8h.01M16 9.8h.01"/>
+  </symbol>
+  <!-- where-the-data-lives glyphs -->
+  <symbol id="icon-dev-iphone" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.6 4.6c2.2-.2 4.4-.2 6.6 0 .3 4.9.3 9.8 0 14.7-2.2.2-4.4.2-6.5 0-.3-4.9-.3-9.8-.1-14.7Z"/>
+    <path d="M10.9 16.9c.7 0 1.4 0 2.1-.1"/>
+  </symbol>
+  <symbol id="icon-dev-mac" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.9 5.6c4.7-.3 9.4-.3 14.1 0 .3 3.1.3 6.2 0 9.3-4.7.3-9.4.3-14.1 0-.3-3.1-.3-6.2 0-9.3Z"/>
+    <path d="M12 15.3c0 1 0 2-.1 3M8.7 18.7c2.2-.2 4.4-.2 6.6-.1"/>
+  </symbol>
+  <symbol id="icon-dev-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7.3 17.4c-2.2-.1-3.7-1.5-3.7-3.4 0-1.8 1.2-3 3-3.3.3-2.9 2.4-4.9 5.3-4.9 2.6 0 4.7 1.7 5.2 4.2 1.9.2 3.3 1.6 3.3 3.5 0 2.1-1.6 3.7-3.8 3.8-3.1.2-6.2.2-9.3.1Z"/>
+  </symbol>
+  <symbol id="icon-dev-excel" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.4 4.8c4.4-.3 8.8-.3 13.2 0 .3 4.8.3 9.6 0 14.4-4.4.3-8.8.3-13.2 0-.3-4.8-.3-9.6 0-14.4Z"/>
+    <path d="M5.6 10.1c4.3-.2 8.5-.2 12.8-.1M5.6 14.9c4.3-.2 8.6-.2 12.8 0M10.1 5c.1 4.7.1 9.4 0 14.1"/>
+  </symbol>
+  <symbol id="icon-dev-vault" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.2 4.9c2.5-.3 5-.3 7.5 0 1.4 1.5 2.7 3.1 3.8 4.8-2.3 3.6-4.8 7-7.6 10.2-2.7-3.2-5.2-6.6-7.4-10.3 1.1-1.7 2.3-3.2 3.7-4.7Z"/>
+    <path d="M4.7 9.6c4.9-.3 9.8-.3 14.7 0M12 5.1c-1 1.5-1.9 3-2.7 4.6.8 3.4 1.7 6.8 2.7 10.1 1-3.4 1.9-6.8 2.6-10.2-.8-1.6-1.7-3-2.6-4.5"/>
+  </symbol>
   <!-- app glyphs -->
   <symbol id="icon-suitcase" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M5.1 8.6c4.6-.4 9.2-.4 13.8-.1.3 3.5.3 7-.1 10.4-4.5.3-9 .3-13.5 0-.4-3.4-.4-6.9-.2-10.3Z"/>
@@ -303,6 +376,7 @@
 <header>
   <div class="brand">AMS <b>Main Hub</b></div>
   <div style="display:flex; gap:10px">
+    <button class="iconbtn" id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-pencil"/></svg></button>
     <button class="iconbtn" id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg></button>
     <button class="iconbtn" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg></button>
   </div>
@@ -315,6 +389,18 @@
 </div>
 
 <main>
+  <section class="panel" style="border-color:rgba(200,149,43,.28)">
+    <div class="minihead">
+      <div class="sect" id="miniTitle" style="color:#c8952b">MINI PANEL</div>
+      <div class="minictl">
+        <button class="rowbtn" id="miniEdit" style="display:none" aria-label="Edit the numbers"><svg class="hi"><use href="#icon-pencil"/></svg></button>
+        <button class="rowbtn" id="miniPrev" aria-label="Previous mini panel"><svg class="hi" style="transform:scaleX(-1)"><use href="#icon-chevron"/></svg></button>
+        <button class="rowbtn" id="miniNext" aria-label="Next mini panel"><svg class="hi"><use href="#icon-chevron"/></svg></button>
+      </div>
+    </div>
+    <div class="minibody" id="miniBody"></div>
+  </section>
+
   <section class="panel" style="border-color:rgba(31,158,147,.28)">
     <div class="sect" style="color:#1f9e93">WEB APPS</div>
     <div class="cards" id="webCards"></div>
@@ -350,6 +436,31 @@
   </div>
 </div>
 
+<!-- ============ card colour picker ============ -->
+<div class="overlay" id="ovPaint">
+  <div class="sheet">
+    <h2 id="paintTitle"><svg class="hi"><use href="#icon-palette"/></svg><span id="paintName">Colour</span></h2>
+    <p class="dim" style="font-size:13.5px; margin:0">Pick a shade for this card — calm ones only, promise.</p>
+    <div class="swgrid" id="swGrid"></div>
+    <button class="btn full" id="paintReset">Back to its own colour</button>
+    <div class="btnrow"><button class="btn" id="paintCancel">Cancel</button></div>
+  </div>
+</div>
+
+<!-- ============ wealth numbers editor ============ -->
+<div class="overlay" id="ovWealth">
+  <div class="sheet">
+    <button class="iconbtn closex" id="wealthClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
+    <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth numbers</h2>
+    <p class="dim" style="font-size:13.5px; margin:0">One total per month, in kronor (e.g. 7799000). Months marked ENGINE come straight from the budget workbook on the Mac and are not edited here. Everything stays on this device.</p>
+    <div id="wRows"></div>
+    <div class="btnrow">
+      <button class="btn" id="wCancel">Cancel</button>
+      <button class="btn primary" id="wSave">Save</button>
+    </div>
+  </div>
+</div>
+
 <!-- ============ "open from its own icon" guard ============ -->
 <div class="overlay" id="ovGuard">
   <div class="sheet">
@@ -378,6 +489,9 @@
         <h3>List or grid</h3>
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
 
+        <h3>Make the shelf yours</h3>
+        <p>The <b>pencil</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap the ✓ when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
+
         <h3>The little version chips</h3>
         <p>The small number on each web-app card is <b>live</b> — the hub quietly asks each app which version it's running right now, every time you open the hub. So the shelf doubles as a status board: if you just published an update, the new number shows up here. If a chip is missing, the hub couldn't reach that app (offline, or the app doesn't announce a version).</p>
 
@@ -387,13 +501,24 @@
         <h3>On the Mac</h3>
         <p>Timers and the Finance Hub run only on the Mac (they live on the Mac itself, not on the internet), so their cards are marked <b>MAC ONLY</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
 
-        <h3>Where everything lives</h3>
-        <p>Every card carries a small <b>DATA</b> line saying where that app keeps its stuff — so there's never any mystery about where things live:</p>
+        <h3>The mini panel</h3>
+        <p>Above the shelves sits one small panel you flip through with the <b>‹ ›</b> arrows — the hub remembers which one you left showing. Five to choose from:</p>
         <ul>
-          <li><b>On this device only</b> — the app stores everything in the browser storage of the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
-          <li><b>Synced via Dexie Cloud</b> — AMS Packing is the special one: its catalogue lives on each device <i>and</i> syncs between iPhone and Mac through a Dexie Cloud account.</li>
-          <li><b>Excel files</b> — the Finance Hub doesn't store anything itself; it watches the monthly Excel workbooks and ledgers in the AMS Finance folder in Documents.</li>
-          <li><b>The Obsidian vault</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
+          <li><b>Wealth</b> — a little graph of your monthly net worth. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the pencil on the panel and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
+          <li><b>Retirement</b> — the days left until 1 July 2028.</li>
+          <li><b>The year</b> — how far through the year you are.</li>
+          <li><b>Finance month</b> — whether last month's Report / Ledger / Workbook / Dashboard are done, asked live from the Finance engine. Mac only, engine running.</li>
+          <li><b>App versions</b> — every app's live version number gathered in one place.</li>
+        </ul>
+
+        <h3>Where everything lives</h3>
+        <p>Every card carries a row of tiny <b>hand-drawn icons</b> showing where that app keeps its stuff. Point at them with the mouse on the Mac — or tap them on the iPhone — and the full story appears in words. The icons:</p>
+        <ul>
+          <li><b>A phone</b> — the app stores everything on the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
+          <li><b>Phone + Mac + cloud together</b> — AMS Packing is the special one: its catalogue lives on each device <i>and</i> syncs between iPhone and Mac through a Dexie Cloud account.</li>
+          <li><b>A Mac screen</b> — the app and its data live on the Mac itself.</li>
+          <li><b>A grid sheet</b> — the Finance Hub doesn't store anything itself; it watches the monthly Excel workbooks and ledgers in the AMS Finance folder in Documents.</li>
+          <li><b>A gem</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
           <li>The apps' <b>code</b> is public on GitHub — but none of your data ever is.</li>
         </ul>
 
@@ -401,7 +526,7 @@
         <p>The bottom section is yours: add any web address you want on the shelf — dashboards, sites, anything. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
 
         <h3>Backups</h3>
-        <p>Under <b>Your data</b> below you can save your links as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links came back, and if anything goes wrong your current links and your backup file are left untouched.</p>
+        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, and any wealth numbers you've typed in — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links and numbers came back, and if anything goes wrong your current data and your backup file are left untouched.</p>
 
         <h3>Updates</h3>
         <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
@@ -411,7 +536,7 @@
     <details class="fold" id="foldData">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your personal links live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
+        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, and any typed wealth numbers live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
         <button class="btn full" id="exportBtn">Export my links</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn">Import / restore…</button>
@@ -438,6 +563,10 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.5', when:'1 Sep 2026',
+    what:'Mini panels. A small flip-through panel now sits above the shelves — the ‹ › arrows change what it shows, and the hub remembers your choice. Five to pick from: WEALTH, a little graph of your monthly net worth (on the Mac the numbers come straight from the budget workbook — the Finance engine hands them to this hub alone, and they never appear in the hub’s public code; on the iPhone, tap the pencil and type the month’s total); RETIREMENT, the days left until 1 July 2028; THE YEAR, how far through the year you are; FINANCE MONTH, whether last month’s Report / Ledger / Workbook / Dashboard are done, asked live from the engine (Mac only); and APP VERSIONS, every app’s live version in one place. Typed wealth numbers stay on this device and ride along in your backups.' },
+  { v:'1.4', when:'1 Sep 2026',
+    what:'Your shelf, your way. A new pencil button in the header opens arrange mode: move any card up or down its shelf with the ▲ ▼ buttons, and use the little palette to give any card a colour of your own choosing — a set of calm, matching shades, with a one-tap way back to the card’s original colour. Tap the ✓ when you’re happy; your order and colours are remembered on this device and ride along in your backups. And the DATA line on every card has become a row of tiny hand-drawn icons — a phone, a Mac, a cloud, an Excel sheet, an Obsidian gem — showing at a glance where each app keeps its stuff. Point at the icons with the mouse (or tap them) to read the full story in words.' },
   { v:'1.3', when:'1 Sep 2026',
     what:'A quick glance and a live Finance version. The hub\u2019s own version number now sits in tiny print right under the header buttons \u2014 no more opening Settings to check. And the AMS Finance Hub card got a live version chip: when the Finance engine is running on this Mac, the hub asks it directly which version it is (the engine announces itself to the hub alone). If the chip is missing, the engine is off or the browser would not allow the ask \u2014 the card still works.' },
   { v:'1.2', when:'31 Aug 2026',
@@ -452,38 +581,86 @@ const VERSIONLOG = [
 const GH = 'https://marsch124.github.io/';
 const WEB_APPS = [
   { id:'packing',  name:'AMS Packing',      sub:'Packing lists for every trip',          icon:'suitcase',  dot:'#1f9e93', tint:'#d7f2ef', url:GH+'AMS-Packing/',
-    store:'On each device, synced iPhone↔Mac via Dexie Cloud · Excel export',
+    store:'On each device, synced iPhone↔Mac via Dexie Cloud · Excel export', where:['iphone','mac','cloud'],
     probe:{ path:'AMS-Packing/service-worker.js', rx:/ams-packing-list-v(\d+)/, pre:'v' } },
   { id:'instr',    name:'AMS Instructions', sub:'Every manual, three digits away',       icon:'pagelist',  dot:'#d84f86', tint:'#fbdeeb', url:GH+'AMS-Instructions/',
-    store:'On this device only · backup files',
+    store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-Instructions/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' } },
   { id:'count',    name:'AMS CountDown',    sub:'Big numbers for big days',              icon:'hourglass', dot:'#c8952b', tint:'#faeecb', url:GH+'AMS-CountDown/',
-    store:'On this device only · backup files',
+    store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-CountDown/version.json', json:true, pre:'v' } },
   { id:'tracking', name:'AMS Tracking',     sub:'Habits, tracked and kept',              icon:'checkring', dot:'#33a065', tint:'#d9f2e2', url:GH+'AMS-Tracking/',
-    store:'On this device only · backup files',
+    store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-Tracking/version.json', json:true, pre:'v' } },
   { id:'lingo',    name:'AMS TechLingo',    sub:'Your personal tech dictionary',         icon:'bubble',    dot:'#e0762e', tint:'#fde4cd', url:GH+'AMS-TechLingo/',
-    store:'On this device only (incl. photos) · backup files',
+    store:'On this device only (incl. photos) · backup files', where:['iphone'],
     probe:{ path:'AMS-TechLingo/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' } },
   { id:'shower',   name:'AMS ColdShower',   sub:'Cold showers, timed in colour',         icon:'shower',    dot:'#3487d6', tint:'#dcebfb', url:GH+'AMS-ColdShower/',
-    store:'On this device only',
+    store:'On this device only', where:['iphone'],
     probe:{ path:'AMS-ColdShower/index.html', rxMax:/v1\.(\d+)/g, pre:'v1.' } },
   { id:'breath',   name:'AMS Breathing',    sub:'Guided breathing and breath-holds',     icon:'wind',      dot:'#3fa2c7', tint:'#d9eff7', url:GH+'AMS-Breathing/',
-    store:'On this device only' },
+    store:'On this device only', where:['iphone'] },
   { id:'ferment',  name:'AMS FermentLog',   sub:'Fermentation batches, logged',          icon:'jar',       dot:'#8fa032', tint:'#eef2cf', url:GH+'AMS-FermentLog/',
-    store:'On this device only · backup files',
+    store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-FermentLog/service-worker.js', rx:/fermentlog-v(\d+)/, pre:'v' } },
 ];
 const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
-    store:'On the Mac, inside the app’s own folder' },
+    store:'On the Mac, inside the app’s own folder', where:['mac'] },
   { id:'finance', name:'AMS Finance Hub',  sub:'The monthly finance system',    icon:'coin',  dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
     probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
-    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance' },
+    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
   { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork',  icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
-    store:'Notes and memory in the Obsidian vault' },
+    store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
 ];
+
+/* ============ your look — card order & colours (this device only) ============ */
+const LOOK_KEY = 'amshub.look';
+const COLORWAYS = [
+  { n:'Teal',    dot:'#1f9e93', tint:'#d7f2ef' },
+  { n:'Aqua',    dot:'#3fa2c7', tint:'#d9eff7' },
+  { n:'Sky',     dot:'#3487d6', tint:'#dcebfb' },
+  { n:'Indigo',  dot:'#5868c9', tint:'#e2e6fa' },
+  { n:'Lilac',   dot:'#7a5fc0', tint:'#e9e2f8' },
+  { n:'Plum',    dot:'#9a5fc9', tint:'#f0e3fa' },
+  { n:'Pink',    dot:'#d84f86', tint:'#fbdeeb' },
+  { n:'Rose',    dot:'#c95555', tint:'#fbe1de' },
+  { n:'Coral',   dot:'#d96a45', tint:'#fdeadd' },
+  { n:'Apricot', dot:'#e0762e', tint:'#fde4cd' },
+  { n:'Honey',   dot:'#c8952b', tint:'#faeecb' },
+  { n:'Olive',   dot:'#8fa032', tint:'#eef2cf' },
+  { n:'Green',   dot:'#33a065', tint:'#d9f2e2' },
+  { n:'Slate',   dot:'#64748c', tint:'#e7ebf1' },
+  { n:'Paper',   dot:'#8a7f72', tint:'#ffffff' },
+];
+let look = { order:{ web:[], mac:[] }, colors:{} };
+try{
+  const rawLook = localStorage.getItem(LOOK_KEY);
+  if(rawLook){
+    const p = JSON.parse(rawLook);
+    if(p && typeof p === 'object'){
+      if(p.order && typeof p.order === 'object'){
+        if(Array.isArray(p.order.web)) look.order.web = p.order.web.map(String);
+        if(Array.isArray(p.order.mac)) look.order.mac = p.order.mac.map(String);
+      }
+      if(p.colors && typeof p.colors === 'object' && !Array.isArray(p.colors)) look.colors = p.colors;
+    }
+  }
+}catch(e){ /* default look */ }
+function saveLook(){ try{ localStorage.setItem(LOOK_KEY, JSON.stringify(look)); }catch(e){} }
+function colorway(name){ return name ? COLORWAYS.find(c => c.n === name) : null; }
+function lookFor(a){
+  const cw = colorway(look.colors[a.id]);
+  return cw ? { dot:cw.dot, tint:cw.tint } : { dot:a.dot, tint:a.tint };
+}
+/* saved order first (ignoring ids that no longer exist), then any new apps */
+function ordered(list, key){
+  const byId = new Map(list.map(a => [a.id, a]));
+  const out = [];
+  (look.order[key] || []).forEach(id => { if(byId.has(id)){ out.push(byId.get(id)); byId.delete(id); } });
+  list.forEach(a => { if(byId.has(a.id)) out.push(a); });
+  return out;
+}
 
 /* ============ storage (personal links only) ============ */
 const KEY = 'amshub.v1';
@@ -525,24 +702,41 @@ function greet(){
 /* ============ cards ============ */
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-function appRow(a, right){
+const WHERE_ICON = { iphone:'dev-iphone', mac:'dev-mac', cloud:'dev-cloud', excel:'dev-excel', vault:'dev-vault' };
+
+function clusterHTML(sect, id){
+  return `<span class="cluster">
+    <button class="rowbtn" data-move="-1" data-sect="${sect}" data-id="${esc(id)}" aria-label="Move up"><svg class="hi"><use href="#icon-up"/></svg></button>
+    <button class="rowbtn" data-move="1" data-sect="${sect}" data-id="${esc(id)}" aria-label="Move down"><svg class="hi"><use href="#icon-down"/></svg></button>
+    <button class="rowbtn" data-paint data-sect="${sect}" data-id="${esc(id)}" aria-label="Colour"><svg class="hi"><use href="#icon-palette"/></svg></button>
+  </span>`;
+}
+
+function whereHTML(a){
+  if(!a.store) return '';
+  const icons = (a.where || []).map(w =>
+    `<svg class="hi"><use href="#icon-${WHERE_ICON[w]}"/></svg>`).join('');
+  return `<span class="cwhere" data-store="${esc(a.store)}" title="${esc(a.store)}">${icons}</span>`;
+}
+
+function appRow(a, right, sect){
+  const eff = lookFor(a);
   const mid = `
-    <span class="badge" style="color:${a.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
-    <span class="cmid"><span class="cname">${esc(a.name)}</span><span class="csub" style="display:block">${esc(a.sub)}</span>${
-      a.store ? `<span class="cstore" style="display:block"><b>DATA</b> · ${esc(a.store)}</span>` : ''
-    }</span>
-    <span class="cright">${right}</span>`;
-  if(!a.url) return `<div class="cardrow" data-app="${a.id}" style="background:${a.tint}; cursor:default">${mid}</div>`;
+    <span class="badge" style="color:${eff.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
+    <span class="cmid"><span class="cname">${esc(a.name)}</span><span class="csub" style="display:block">${esc(a.sub)}</span>${whereHTML(a)}</span>
+    <span class="cright">${right}${clusterHTML(sect, a.id)}</span>`;
+  if(!a.url) return `<div class="cardrow" data-app="${a.id}" style="background:${eff.tint}; cursor:default">${mid}</div>`;
   return `<a class="cardrow" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
-            style="background:${a.tint}">${mid}</a>`;
+            style="background:${eff.tint}">${mid}</a>`;
 }
 
 function renderShelf(){
-  $('webCards').innerHTML = WEB_APPS.map(a =>
-    appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${a.dot}"></span>`)).join('');
-  $('macCards').innerHTML = MAC_APPS.map(a =>
-    appRow(a, (a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${a.dot}"></span> ` : '') +
-              `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`)).join('');
+  $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
+    appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
+  $('macCards').innerHTML = ordered(MAC_APPS, 'mac').map(a =>
+    appRow(a, (a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : '') +
+              `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`, 'mac')).join('');
+  fillChips();
 
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
@@ -563,16 +757,21 @@ function renderLinks(){
   const L = state.links;
   $('linksHint').textContent = L.length ? '' :
     'Your own corner of the shelf — dashboards, sites, anything. Links are stored only on this device, so private addresses stay private.';
-  $('linkCards').innerHTML = L.map(l => `
-    <div class="cardrow" data-id="${esc(l.id)}" style="background:#fff">
-      <span class="badge" style="color:var(--accent)"><svg class="hi"><use href="#icon-linkout"/></svg></span>
+  $('linkCards').innerHTML = L.map(l => {
+    const cw = colorway(l.color);
+    const dot = cw ? cw.dot : '#d96a45', bg = cw ? cw.tint : '#fff';
+    return `
+    <div class="cardrow" data-id="${esc(l.id)}" style="background:${bg}">
+      <span class="badge" style="color:${dot}"><svg class="hi"><use href="#icon-linkout"/></svg></span>
       <span class="cmid"><span class="cname">${esc(l.name)}</span><span class="csub" style="display:block">${esc(l.url)}</span></span>
-      <span class="cright"><button class="rowbtn" data-edit="${esc(l.id)}" aria-label="Edit"><svg class="hi"><use href="#icon-pencil"/></svg></button></span>
-    </div>`).join('') +
+      <span class="cright"><button class="rowbtn" data-edit="${esc(l.id)}" aria-label="Edit"><svg class="hi"><use href="#icon-pencil"/></svg></button>${clusterHTML('links', l.id)}</span>
+    </div>`;
+  }).join('') +
     `<button class="addrow" id="addLink"><svg class="hi"><use href="#icon-plus"/></svg>Add a link</button>`;
 
   document.querySelectorAll('#linkCards .cardrow').forEach(el => {
     el.addEventListener('click', (e) => {
+      if(document.body.classList.contains('custom')) return;
       if(e.target.closest('[data-edit]')) return;
       const l = state.links.find(x => x.id === el.dataset.id);
       if(l) window.open(l.url, '_blank');
@@ -649,10 +848,310 @@ async function probeOne(a){
     if(m) ver = a.probe.pre + m[1];
   }
   if(ver){
+    verCache[a.id] = ver;
     const chip = $('ver-' + a.id);
     if(chip){ chip.textContent = ver; chip.classList.add('on'); }
+    if(currentPanel().id === 'versions') renderMini();
   }
 }
+/* chips survive a re-render (arrange mode, recolouring) via this cache */
+const verCache = {};
+function fillChips(){
+  for(const id in verCache){
+    const chip = $('ver-' + id);
+    if(chip){ chip.textContent = verCache[id]; chip.classList.add('on'); }
+  }
+}
+
+/* ============ arrange mode: move cards, pick colours ============ */
+function moveApp(key, list, id, dir){
+  const arr = ordered(list, key).map(a => a.id);
+  const i = arr.indexOf(id), j = i + dir;
+  if(i < 0 || j < 0 || j >= arr.length) return;
+  [arr[i], arr[j]] = [arr[j], arr[i]];
+  look.order[key] = arr; saveLook(); renderShelf();
+}
+function moveLink(id, dir){
+  const i = state.links.findIndex(l => l.id === id), j = i + dir;
+  if(i < 0 || j < 0 || j >= state.links.length) return;
+  [state.links[i], state.links[j]] = [state.links[j], state.links[i]];
+  save(); renderLinks();
+}
+
+/* the ▲▼/palette buttons live inside <a> cards — capture phase wins over navigation */
+document.addEventListener('click', (e) => {
+  const mv = e.target.closest('[data-move]');
+  if(mv){
+    e.preventDefault(); e.stopPropagation();
+    const dir = parseInt(mv.dataset.move, 10);
+    if(mv.dataset.sect === 'web') moveApp('web', WEB_APPS, mv.dataset.id, dir);
+    else if(mv.dataset.sect === 'mac') moveApp('mac', MAC_APPS, mv.dataset.id, dir);
+    else moveLink(mv.dataset.id, dir);
+    return;
+  }
+  const pt = e.target.closest('[data-paint]');
+  if(pt){
+    e.preventDefault(); e.stopPropagation();
+    openPaint(pt.dataset.sect === 'links' ? 'link' : 'app', pt.dataset.id);
+  }
+}, true);
+
+/* tapping the little where-icons reads the story aloud (hover shows it on the Mac) */
+document.addEventListener('click', (e) => {
+  const w = e.target.closest('.cwhere');
+  if(w){ e.preventDefault(); e.stopPropagation(); showToast(w.dataset.store, null, null, 6000); }
+}, true);
+
+/* while arranging, cards don't open — only their buttons do things */
+document.addEventListener('click', (e) => {
+  if(!document.body.classList.contains('custom')) return;
+  const row = e.target.closest('.cardrow');
+  if(row && !e.target.closest('.cluster') && !e.target.closest('[data-edit]')){
+    e.preventDefault(); e.stopPropagation();
+  }
+}, true);
+
+$('custBtn').addEventListener('click', () => {
+  const on = document.body.classList.toggle('custom');
+  $('custIconUse').setAttribute('href', on ? '#icon-check' : '#icon-pencil');
+  if(on) showToast('Arrange mode — move cards with ▲▼, recolour with the palette. Tap ✓ when done.', null, null, 6000);
+});
+
+/* colour picker */
+let paint = { kind:null, id:null };
+function openPaint(kind, id){
+  paint = { kind, id };
+  const item = kind === 'link'
+    ? state.links.find(l => l.id === id)
+    : [...WEB_APPS, ...MAC_APPS].find(a => a.id === id);
+  if(!item) return;
+  $('paintName').textContent = 'Colour for ' + item.name;
+  const cur = kind === 'link' ? item.color : look.colors[id];
+  $('swGrid').innerHTML = COLORWAYS.map(c =>
+    `<button class="sw${c.n === cur ? ' cur' : ''}" data-cw="${c.n}" style="background:${c.tint}" aria-label="${c.n}">
+       <span class="swdot" style="background:${c.dot}"></span>
+     </button>`).join('');
+  $('ovPaint').classList.add('show');
+}
+function setColor(cwName){
+  if(paint.kind === 'link'){
+    const l = state.links.find(x => x.id === paint.id);
+    if(l){ if(cwName) l.color = cwName; else delete l.color; save(); renderLinks(); }
+  }else{
+    if(cwName) look.colors[paint.id] = cwName; else delete look.colors[paint.id];
+    saveLook(); renderShelf();
+  }
+  $('ovPaint').classList.remove('show');
+}
+$('swGrid').addEventListener('click', (e) => {
+  const b = e.target.closest('[data-cw]');
+  if(b) setColor(b.dataset.cw);
+});
+$('paintReset').addEventListener('click', () => setColor(null));
+$('paintCancel').addEventListener('click', () => $('ovPaint').classList.remove('show'));
+
+/* ============ mini panels ============ */
+const MINI_KEY = 'amshub.mini';
+const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engine */
+const W_MANUAL_KEY = 'amshub.wealth.manual';   /* typed in by hand */
+const ENGINE = 'http://localhost:7780';
+const RETIREMENT = new Date(2028, 6, 1);       /* 1 July 2028 */
+
+function loadJSON(key, fallback){
+  try{ const v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; }
+  catch(e){ return fallback; }
+}
+function storeJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+function monthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
+function monthLabel(m){
+  const [y, mo] = m.split('-').map(Number);
+  return new Date(y, mo - 1, 1).toLocaleDateString('en-GB', { month:'short', year:'numeric' });
+}
+function fmtM(v){
+  if(v >= 1000000) return (v / 1000000).toFixed(2).replace(/\.00$/, '') + 'M kr';
+  if(v >= 1000) return Math.round(v / 1000) + 'k kr';
+  return v + ' kr';
+}
+
+const PANELS = [
+  { id:'wealth',   label:'WEALTH' },
+  { id:'retire',   label:'RETIREMENT' },
+  { id:'year',     label:'THE YEAR' },
+  { id:'finmonth', label:'FINANCE MONTH' },
+  { id:'versions', label:'APP VERSIONS' },
+];
+let miniIdx = (() => {
+  let v = null; try{ v = localStorage.getItem(MINI_KEY); }catch(e){}
+  const i = PANELS.findIndex(p => p.id === v);
+  return i < 0 ? 0 : i;
+})();
+function currentPanel(){ return PANELS[miniIdx]; }
+
+/* engine value wins for a month it has; typed numbers fill the gaps */
+function wealthData(){
+  const engine = loadJSON(W_ENGINE_KEY, null);
+  const manual = loadJSON(W_MANUAL_KEY, {});
+  const map = new Map();
+  if(engine && Array.isArray(engine.series)){
+    engine.series.forEach(p => { if(p && /^\d{4}-\d{2}$/.test(p.month)) map.set(p.month, typeof p.value === 'number' ? p.value : null); });
+  }
+  Object.keys(manual).forEach(m => {
+    if(/^\d{4}-\d{2}$/.test(m) && typeof manual[m] === 'number' && map.get(m) == null) map.set(m, manual[m]);
+  });
+  const cur = monthKey(new Date());
+  const months = [...map.keys()].filter(m => m <= cur).sort().slice(-12);
+  return months.map(m => ({ month:m, value: map.get(m) == null ? null : map.get(m) }));
+}
+
+function renderWealth(){
+  const S = wealthData();
+  const known = S.filter(p => p.value != null);
+  if(!known.length){
+    return `<div class="mp-empty">No numbers here yet. On the Mac this fills itself in from the budget workbook (while the Finance engine is running). Anywhere else, tap the pencil above and type your latest total.</div>`;
+  }
+  const last = known[known.length - 1], prev = known[known.length - 2];
+  const deltaTxt = prev
+    ? ` · ${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month)}`
+    : '';
+  const w = 300, h = 64, padX = 7, padY = 9;
+  const vals = known.map(p => p.value);
+  let vMin = Math.min.apply(null, vals), vMax = Math.max.apply(null, vals);
+  const vPad = (vMax - vMin) * 0.2 || vMax * 0.02;
+  vMin -= vPad; vMax += vPad;
+  const x = i => padX + (w - 2 * padX) * (S.length === 1 ? 0.5 : i / (S.length - 1));
+  const y = v => padY + (h - 2 * padY) * (1 - (v - vMin) / (vMax - vMin));
+  const linePts = [];
+  const dots = S.map((p, i) => {
+    if(p.value == null) return '';
+    linePts.push(x(i).toFixed(1) + ',' + y(p.value).toFixed(1));
+    return `<circle cx="${x(i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="${p.month === last.month ? 4 : 2.6}" fill="#c8952b"/>`;
+  }).join('');
+  return `
+    <div class="mp-big">${fmtM(last.value)}</div>
+    <div class="mp-sub">Net worth · ${monthLabel(last.month)}${deltaTxt}</div>
+    <svg class="mp-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
+      <path d="M ${linePts.join(' L ')}" fill="none" stroke="#c8952b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      ${dots}
+    </svg>
+    <div class="mp-sub" style="margin-top:4px">${monthLabel(S[0].month)} → ${monthLabel(S[S.length-1].month)} · stays on this device</div>`;
+}
+
+function renderRetire(){
+  const now = new Date();
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const days = Math.max(0, Math.round((RETIREMENT - today) / 86400000));
+  return `<div class="mp-big">${days.toLocaleString('en-GB')} days</div>
+    <div class="mp-sub">until retirement · 1 July 2028 · about ${Math.floor(days / 7)} weeks (${Math.round(days / 30.44)} months)</div>`;
+}
+
+function renderYear(){
+  const now = new Date();
+  const start = new Date(now.getFullYear(), 0, 1), end = new Date(now.getFullYear() + 1, 0, 1);
+  const total = Math.round((end - start) / 86400000);
+  const doy = Math.floor((now - start) / 86400000) + 1;
+  const pct = Math.round(doy / total * 100);
+  return `<div class="mp-big">${pct}%</div>
+    <div class="mp-sub">of ${now.getFullYear()} gone · day ${doy} of ${total} · week ${Math.min(52, Math.ceil(doy / 7))} · ${total - doy} days left</div>
+    <div class="mp-bar"><div style="width:${pct}%"></div></div>`;
+}
+
+let finCache = null;
+function renderFinMonth(){
+  if(!finCache || !finCache.ok || !(finCache.previous || finCache.current)){
+    return `<div class="mp-empty">The Finance engine isn't answering — this panel works on the Mac while the engine is running.</div>`;
+  }
+  const m = finCache.previous || finCache.current;
+  const parts = [['Report', m.report], ['Ledger', m.ledger], ['Workbook', m.workbook], ['Dashboard', m.dashboard]];
+  const done = parts.filter(p => p[1]).length;
+  const chips = parts.map(([n, d]) => `<span class="mp-chip${d ? ' done' : ''}">${d ? '✓ ' : ''}${n}</span>`).join('');
+  return `<div class="mp-big" style="font-size:26px">${monthLabel(m.month)}</div>
+    <div class="mp-sub">${done === 4 ? 'All done' : done + ' of 4 done'} · the month being reported</div>
+    <div class="mp-chips">${chips}</div>`;
+}
+
+function renderVersions(){
+  const apps = [...WEB_APPS, ...MAC_APPS].filter(a => a.probe);
+  const rows = apps.map(a =>
+    `<div>${esc(a.name.replace(/^AMS /, ''))}<span class="v">${verCache[a.id] || '—'}</span></div>`).join('');
+  return `<div class="mp-vers">${rows}</div>
+    <div class="mp-sub" style="margin-top:12px">Fetched live from each app when the hub opens.</div>`;
+}
+
+const MINI_RENDER = { wealth:renderWealth, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
+
+function renderMini(){
+  const p = currentPanel();
+  $('miniTitle').textContent = p.label;
+  $('miniEdit').style.display = p.id === 'wealth' ? '' : 'none';
+  $('miniBody').innerHTML = MINI_RENDER[p.id]();
+}
+function stepMini(d){
+  miniIdx = (miniIdx + d + PANELS.length) % PANELS.length;
+  try{ localStorage.setItem(MINI_KEY, PANELS[miniIdx].id); }catch(e){}
+  renderMini();
+}
+$('miniPrev').addEventListener('click', () => stepMini(-1));
+$('miniNext').addEventListener('click', () => stepMini(1));
+
+/* asking the engine (Mac only; elsewhere these quietly fail and the
+   panels fall back to typed numbers / a friendly note) */
+async function fetchWealth(){
+  try{
+    const res = await fetch(ENGINE + '/wealth?vercheck=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.ok && Array.isArray(data.series)){
+      storeJSON(W_ENGINE_KEY, { fetchedAt: new Date().toISOString(), series: data.series });
+      if(currentPanel().id === 'wealth') renderMini();
+    }
+  }catch(e){ /* engine off or unreachable */ }
+}
+async function fetchFin(){
+  try{
+    const res = await fetch(ENGINE + '/hubstatus?vercheck=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) return;
+    finCache = await res.json();
+    if(currentPanel().id === 'finmonth') renderMini();
+  }catch(e){ /* engine off or unreachable */ }
+}
+
+/* wealth editor: engine months shown locked, the rest typed by hand */
+function openWealthEditor(){
+  const engine = loadJSON(W_ENGINE_KEY, null);
+  const engineMap = new Map();
+  if(engine && Array.isArray(engine.series)){
+    engine.series.forEach(p => { if(p && typeof p.value === 'number') engineMap.set(p.month, p.value); });
+  }
+  const manual = loadJSON(W_MANUAL_KEY, {});
+  const now = new Date(), rows = [];
+  for(let i = 0; i < 14; i++){
+    const m = monthKey(new Date(now.getFullYear(), now.getMonth() - i, 1));
+    if(engineMap.has(m)){
+      rows.push(`<div class="wrow"><span class="wm">${monthLabel(m)}</span><span class="weng">${engineMap.get(m).toLocaleString('en-GB')} kr</span><span class="wtag">ENGINE</span></div>`);
+    }else{
+      const v = typeof manual[m] === 'number' ? manual[m] : '';
+      rows.push(`<div class="wrow"><span class="wm">${monthLabel(m)}</span><input type="text" inputmode="numeric" data-wm="${m}" value="${v}" placeholder="—" /></div>`);
+    }
+  }
+  $('wRows').innerHTML = rows.join('');
+  $('ovWealth').classList.add('show');
+}
+$('miniEdit').addEventListener('click', openWealthEditor);
+$('wealthClose').addEventListener('click', () => $('ovWealth').classList.remove('show'));
+$('wCancel').addEventListener('click', () => $('ovWealth').classList.remove('show'));
+$('wSave').addEventListener('click', () => {
+  const manual = loadJSON(W_MANUAL_KEY, {});
+  document.querySelectorAll('#wRows [data-wm]').forEach(inp => {
+    const m = inp.dataset.wm;
+    const raw = inp.value.replace(/[\s.,']/g, '');   /* 7 799 000 / 7.799.000 / 7,799,000 all fine */
+    if(raw === ''){ delete manual[m]; return; }
+    const n = parseInt(raw, 10);
+    if(Number.isFinite(n) && n > 0) manual[m] = n; else delete manual[m];
+  });
+  storeJSON(W_MANUAL_KEY, manual);
+  $('ovWealth').classList.remove('show');
+  renderMini();
+});
 
 /* ============ list ⇄ grid view ============ */
 const VIEW_KEY = 'amshub.view';
@@ -684,7 +1183,8 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 
 /* ============ backups (links only — the shelf itself is built in) ============ */
 function backupBlob(){
-  return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(), links: state.links }, null, 2);
+  return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
+    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}), miniPanel: PANELS[miniIdx].id }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -723,10 +1223,39 @@ $('importFile').addEventListener('change', () => {
     catch(e){ alert('That file isn’t a valid backup — nothing was changed.'); return; }
     const links = data && Array.isArray(data.links) ? data.links.filter(l => l && l.name && l.url) : null;
     if(!links){ alert('That file isn’t an AMS Main Hub backup — nothing was changed.'); return; }
-    state.links = links.map((l, i) => ({ id: l.id || 'l' + Date.now().toString(36) + i, name:String(l.name), url:String(l.url) }));
+    state.links = links.map((l, i) => ({ id: l.id || 'l' + Date.now().toString(36) + i, name:String(l.name), url:String(l.url),
+      ...(l.color ? { color:String(l.color) } : {}) }));
     save(); renderLinks();
+    let layoutBack = false;
+    if(data.layout && typeof data.layout === 'object'){
+      const lo = data.layout;
+      look = {
+        order:{
+          web: Array.isArray(lo.order && lo.order.web) ? lo.order.web.map(String) : [],
+          mac: Array.isArray(lo.order && lo.order.mac) ? lo.order.mac.map(String) : [],
+        },
+        colors: (lo.colors && typeof lo.colors === 'object' && !Array.isArray(lo.colors)) ? lo.colors : {},
+      };
+      saveLook(); renderShelf();
+      layoutBack = true;
+    }
+    let wealthBack = 0;
+    if(data.wealth && typeof data.wealth === 'object' && !Array.isArray(data.wealth)){
+      const wClean = {};
+      Object.keys(data.wealth).forEach(m => {
+        if(/^\d{4}-\d{2}$/.test(m) && typeof data.wealth[m] === 'number'){ wClean[m] = data.wealth[m]; wealthBack++; }
+      });
+      storeJSON(W_MANUAL_KEY, wClean);
+    }
+    if(typeof data.miniPanel === 'string'){
+      const i = PANELS.findIndex(p => p.id === data.miniPanel);
+      if(i >= 0){ miniIdx = i; try{ localStorage.setItem(MINI_KEY, data.miniPanel); }catch(e){} }
+    }
+    renderMini();
     $('ovSettings').classList.remove('show');
-    alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.`);
+    alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
+      (layoutBack ? '\nCard order and colours restored too.' : '') +
+      (wealthBack ? `\n${wealthBack} typed wealth number${wealthBack===1?'':'s'} restored.` : ''));
   };
   reader.readAsText(file);
 });
@@ -777,7 +1306,7 @@ $('updateBtn').addEventListener('click', () => checkForUpdate(true));
 $('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show'));
 
 /* close overlays by tapping the dimmed backdrop */
-['ovEdit','ovSettings','ovGuard'].forEach(id => {
+['ovEdit','ovSettings','ovGuard','ovPaint','ovWealth'].forEach(id => {
   const ov = $(id);
   ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('show'); });
 });
@@ -786,9 +1315,14 @@ $('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show
 greet();
 renderShelf();
 renderLinks();
+renderMini();
 probeAll();
+fetchWealth();
+fetchFin();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
-document.addEventListener('visibilitychange', () => { if(!document.hidden){ greet(); probeAll(); checkForUpdate(false); } });
+document.addEventListener('visibilitychange', () => {
+  if(!document.hidden){ greet(); renderMini(); probeAll(); fetchWealth(); fetchFin(); checkForUpdate(false); }
+});
 setTimeout(() => checkForUpdate(false), 2500);
 
 /* Stamp the SW registration with the version so the phone can't keep
