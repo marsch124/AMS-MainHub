@@ -53,14 +53,8 @@
     color:var(--ink-dim); white-space:nowrap;
   }
 
-  /* ---------- greeting ---------- */
-  .hello{padding:8px 4px 16px;}
-  .hello .hi-line{font-size:26px; font-weight:800; letter-spacing:-.01em; display:flex; align-items:center; gap:10px;}
-  .hello .hi-line .hi{width:26px; height:26px; color:#c8952b; flex:0 0 auto;}
-  .hello .sub{font-size:14px; color:var(--ink-dim); margin-top:4px; font-weight:500;}
-
   /* ---------- sections & cards ---------- */
-  main{flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch;}
+  main{flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:8px;}
   .panel{
     background:rgba(255,255,255,.55); border:1.5px solid var(--line);
     border-radius:28px; padding:14px 14px 16px; margin-bottom:16px;
@@ -300,10 +294,6 @@
     <path d="M11.9 4.4c.9-.1 1.5.4 2 1.3 2 3.8 3.9 7.6 5.6 11.5.4 1-.1 1.9-1.2 2-4.2.3-8.4.3-12.6 0-1.1-.1-1.6-1-1.2-2 1.7-3.9 3.5-7.7 5.5-11.5.4-.8 1-1.3 1.9-1.3Z"/>
     <path d="M12 9.2c0 1.7-.1 3.3-.1 4.9M12 16.8h.01"/>
   </symbol>
-  <symbol id="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
-    <path d="M12.1 8.3c2.1.1 3.7 1.7 3.6 3.7-.1 2-1.8 3.6-3.8 3.5-2-.1-3.6-1.7-3.5-3.7.1-2 1.7-3.5 3.7-3.5Z"/>
-    <path d="M12 3.4c0 .7 0 1.4-.1 2.1M12 18.6c0 .7 0 1.3-.1 2M3.5 11.9c.7 0 1.4 0 2.1.1M18.5 12.1c.7 0 1.3 0 2-.1M5.9 5.8c.5.5 1 1 1.4 1.5M16.8 16.7c.5.5.9 1 1.4 1.4M18.2 5.9c-.5.5-1 .9-1.5 1.4M7.2 16.8c-.5.5-1 .9-1.4 1.4"/>
-  </symbol>
   <symbol id="icon-up" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M5.4 14.9c2.2-2.4 4.4-4.7 6.8-6.8 2.3 2.1 4.5 4.3 6.6 6.6"/>
   </symbol>
@@ -406,11 +396,6 @@
   </div>
 </header>
 <div class="verglance" id="verGlance"></div>
-
-<div class="hello">
-  <div class="hi-line" id="helloLine"></div>
-  <div class="sub" id="helloSub"></div>
-</div>
 
 <main>
   <div class="mrow" id="miniRow"></div>
@@ -577,6 +562,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.10', when:'2 Sep 2026',
+    what:'More room for the things that matter. The greeting line and its little daily saying have gone \u2014 they were pleasant, but they pushed everything else down the screen, and you already know who you are. The shelf and the mini tiles now start straight under the header, giving back about seventy pixels of height: on the iPhone that is most of another row of cards visible without scrolling.' },
   { v:'1.9', when:'2 Sep 2026',
     what:'The three header buttons say what they do. A pencil on its own can mean write a note, edit something, add something — so each button now carries a small word under its drawing: Arrange, View and Settings. While you are arranging, the pencil turns into a tick and the word changes to Done, so it is obvious how to finish. The buttons are exactly the same size as before.' },
   { v:'1.8', when:'2 Sep 2026',
@@ -703,26 +690,6 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(state)); }catch(e
 const $ = (id) => document.getElementById(id);
 const IS_STANDALONE = (navigator.standalone === true) ||
   (window.matchMedia && matchMedia('(display-mode: standalone)').matches);
-
-/* ============ greeting ============ */
-const SUBS = [
-  'Everything’s where you left it. ☺',
-  'A tidy shelf for every app.',
-  'All present and accounted for.',
-  'Your little empire, one tap away.',
-  'Fresh version numbers, just fetched.',
-  'Nothing to install. Everything to open.',
-  'The apps say hi back.',
-  'What a fine day to open an app.',
-  'Handmade, every single one.',
-];
-function greet(){
-  const h = new Date().getHours();
-  const line = h < 5 ? 'Up late, Martin?' : h < 11 ? 'Good morning, Martin.' : h < 18 ? 'Good afternoon, Martin.' : 'Good evening, Martin.';
-  $('helloLine').innerHTML = `<svg class="hi"><use href="#icon-sun"/></svg><span>${line}</span>`;
-  const day = Math.floor(Date.now() / 86400000);
-  $('helloSub').textContent = SUBS[day % SUBS.length];
-}
 
 /* ============ cards ============ */
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
@@ -1322,7 +1289,6 @@ $('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show
 });
 
 /* ============ go ============ */
-greet();
 renderShelf();
 renderLinks();
 renderMini();
@@ -1331,7 +1297,7 @@ fetchWealth();
 fetchFin();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ greet(); renderMini(); probeAll(); fetchWealth(); fetchFin(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 
