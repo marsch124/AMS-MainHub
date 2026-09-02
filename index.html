@@ -102,22 +102,33 @@
   body.custom .verchip, body.custom .maclbl{display:none;}
   body.custom [data-edit]{display:none;}
 
-  /* ---------- mini panel ---------- */
-  .minihead{display:flex; align-items:center; justify-content:space-between;}
-  .minihead .sect{padding-bottom:8px;}
-  .minictl{display:flex; gap:6px; padding:0 4px 6px 0;}
-  .minibody{padding:2px 8px 8px;}
-  .mp-big{font-size:38px; font-weight:800; letter-spacing:-.02em; line-height:1.1; font-variant-numeric:tabular-nums;}
-  .mp-sub{font-size:12.5px; color:var(--ink-dim); font-weight:600; margin-top:5px; line-height:1.5;}
-  .mp-spark{width:100%; height:72px; margin-top:10px; display:block;}
-  .mp-bar{height:12px; border-radius:8px; background:rgba(42,36,32,.08); overflow:hidden; margin-top:12px;}
-  .mp-bar > div{height:100%; border-radius:8px; background:#c8952b;}
-  .mp-chips{display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;}
-  .mp-chip{font-size:12px; font-weight:700; padding:6px 11px; border-radius:10px; background:rgba(42,36,32,.06); color:var(--ink-dim);}
-  .mp-chip.done{background:#d9f2e2; color:#1e7a4a;}
-  .mp-vers{display:grid; grid-template-columns:repeat(auto-fill, minmax(150px, 1fr)); gap:7px 16px; font-size:12.5px; font-weight:700;}
-  .mp-vers .v{color:var(--ink-dim); font-variant-numeric:tabular-nums; margin-left:6px; font-weight:600;}
-  .mp-empty{font-size:13.5px; color:var(--ink-dim); line-height:1.55; padding:2px 0;}
+  /* ---------- mini tiles (all five side by side) ---------- */
+  .mrow{display:grid; grid-template-columns:repeat(auto-fit, minmax(148px, 1fr)); gap:10px; margin-bottom:16px;}
+  .mtile{
+    border-radius:20px; padding:11px 13px 13px; min-height:116px;
+    display:flex; flex-direction:column;
+  }
+  .mlab{
+    font-size:9.5px; font-weight:800; letter-spacing:.12em; min-height:22px;
+    display:flex; align-items:center; justify-content:space-between; gap:6px;
+  }
+  /* top-aligned so every tile's big number sits on the same line across a row —
+     any graphic hangs underneath rather than shoving the number about */
+  .mbody{margin-top:1px;}
+  .mbig{font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1.12; font-variant-numeric:tabular-nums;}
+  .msub{font-size:10.5px; color:var(--ink-dim); font-weight:600; margin-top:3px; line-height:1.35;}
+  .mspark{width:100%; height:22px; display:block; margin-top:7px;}
+  .mbar{height:7px; border-radius:5px; background:rgba(42,36,32,.11); overflow:hidden; margin-top:8px;}
+  .mbar > div{height:100%; border-radius:5px;}
+  .mdots{display:flex; gap:5px; margin-top:9px;}
+  .mdot{width:9px; height:9px; border-radius:50%; background:rgba(42,36,32,.15);}
+  .mpen{
+    flex:0 0 auto; width:23px; height:23px; border-radius:8px; border:none;
+    background:rgba(255,255,255,.7); color:var(--ink);
+    display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
+  }
+  .mpen .hi{width:12px; height:12px;}
+  .mpen:active{transform:scale(.92);}
 
   /* wealth editor rows */
   .wrow{display:flex; align-items:center; gap:10px; margin-top:9px;}
@@ -395,17 +406,7 @@
 </div>
 
 <main>
-  <section class="panel" style="border-color:rgba(200,149,43,.28)">
-    <div class="minihead">
-      <div class="sect" id="miniTitle" style="color:#c8952b">MINI PANEL</div>
-      <div class="minictl">
-        <button class="rowbtn" id="miniEdit" style="display:none" aria-label="Edit the numbers"><svg class="hi"><use href="#icon-pencil"/></svg></button>
-        <button class="rowbtn" id="miniPrev" aria-label="Previous mini panel"><svg class="hi" style="transform:scaleX(-1)"><use href="#icon-chevron"/></svg></button>
-        <button class="rowbtn" id="miniNext" aria-label="Next mini panel"><svg class="hi"><use href="#icon-chevron"/></svg></button>
-      </div>
-    </div>
-    <div class="minibody" id="miniBody"></div>
-  </section>
+  <div class="mrow" id="miniRow"></div>
 
   <section class="panel" style="border-color:rgba(31,158,147,.28)">
     <div class="sect" style="color:#1f9e93">WEB APPS</div>
@@ -507,14 +508,14 @@
         <h3>On the Mac</h3>
         <p>Timers and the Finance Hub run only on the Mac (they live on the Mac itself, not on the internet), so their cards are marked <b>MAC ONLY</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
 
-        <h3>The mini panel</h3>
-        <p>Above the shelves sits one small panel you flip through with the <b>‹ ›</b> arrows — the hub remembers which one you left showing. Five to choose from:</p>
+        <h3>The mini tiles</h3>
+        <p>Across the top sit five small tiles, all visible at once — no arrows to press, nothing to choose. Each shows one number, in its own colour. On a wide screen they sit in a single row; on the iPhone they lay themselves out two across.</p>
         <ul>
-          <li><b>Wealth</b> — a little graph of your monthly net worth. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the pencil on the panel and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
+          <li><b>Wealth</b> — your latest net-worth total, how it moved since the month before, and a small line showing its shape over the past year. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the <b>pencil</b> on this tile and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
-          <li><b>The year</b> — how far through the year you are.</li>
-          <li><b>Finance month</b> — whether last month's Report / Ledger / Workbook / Dashboard are done, asked live from the Finance engine. Mac only, engine running.</li>
-          <li><b>App versions</b> — every app's live version number gathered in one place.</li>
+          <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
+          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running.</li>
+          <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
 
         <h3>Where everything lives</h3>
@@ -569,6 +570,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.8', when:'2 Sep 2026',
+    what:'All five mini panels at once. Instead of one big panel you flipped through, the five now sit side by side as small colour-coded tiles across the top — Wealth, Retirement, The Year, Finance and Apps all readable in a single glance, with no arrows to press. Each keeps only its headline: the wealth total with a small line showing its shape, the days to retirement, the percentage of the year gone, the reported month with a dot per step, and how many apps are answering. On the iPhone they lay themselves out two across. The pencil for typing wealth numbers now sits on the Wealth tile itself.' },
   { v:'1.7', when:'2 Sep 2026',
     what:'A lighter touch on PackTrack. Now that PackTrack announces its own version properly, the hub asks it that small question instead of downloading the app’s whole page just to read the number off it — about 130 kB less fetched every time the hub opens. Same chip, same number, far less work.' },
   { v:'1.6', when:'1 Sep 2026',
@@ -864,7 +867,7 @@ async function probeOne(a){
     verCache[a.id] = ver;
     const chip = $('ver-' + a.id);
     if(chip){ chip.textContent = ver; chip.classList.add('on'); }
-    if(currentPanel().id === 'versions') renderMini();
+    renderTile('versions');
   }
 }
 /* chips survive a re-render (arrange mode, recolouring) via this cache */
@@ -964,7 +967,6 @@ $('paintReset').addEventListener('click', () => setColor(null));
 $('paintCancel').addEventListener('click', () => $('ovPaint').classList.remove('show'));
 
 /* ============ mini panels ============ */
-const MINI_KEY = 'amshub.mini';
 const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engine */
 const W_MANUAL_KEY = 'amshub.wealth.manual';   /* typed in by hand */
 const ENGINE = 'http://localhost:7780';
@@ -986,19 +988,14 @@ function fmtM(v){
   return v + ' kr';
 }
 
+/* all five live side by side at the top — small enough to read in one glance */
 const PANELS = [
-  { id:'wealth',   label:'WEALTH' },
-  { id:'retire',   label:'RETIREMENT' },
-  { id:'year',     label:'THE YEAR' },
-  { id:'finmonth', label:'FINANCE MONTH' },
-  { id:'versions', label:'APP VERSIONS' },
+  { id:'wealth',   label:'WEALTH',     dot:'#c8952b', tint:'#faeecb' },
+  { id:'retire',   label:'RETIREMENT', dot:'#1f9e93', tint:'#d7f2ef' },
+  { id:'year',     label:'THE YEAR',   dot:'#3487d6', tint:'#dcebfb' },
+  { id:'finmonth', label:'FINANCE',    dot:'#5868c9', tint:'#e2e6fa' },
+  { id:'versions', label:'APPS',       dot:'#33a065', tint:'#d9f2e2' },
 ];
-let miniIdx = (() => {
-  let v = null; try{ v = localStorage.getItem(MINI_KEY); }catch(e){}
-  const i = PANELS.findIndex(p => p.id === v);
-  return i < 0 ? 0 : i;
-})();
-function currentPanel(){ return PANELS[miniIdx]; }
 
 /* engine value wins for a month it has; typed numbers fill the gaps */
 function wealthData(){
@@ -1016,95 +1013,89 @@ function wealthData(){
   return months.map(m => ({ month:m, value: map.get(m) == null ? null : map.get(m) }));
 }
 
-function renderWealth(){
+function renderWealth(p){
   const S = wealthData();
-  const known = S.filter(p => p.value != null);
-  if(!known.length){
-    return `<div class="mp-empty">No numbers here yet. On the Mac this fills itself in from the budget workbook (while the Finance engine is running). Anywhere else, tap the pencil above and type your latest total.</div>`;
-  }
+  const known = S.filter(x => x.value != null);
+  if(!known.length) return `<div class="mbig">—</div><div class="msub">no numbers yet</div>`;
   const last = known[known.length - 1], prev = known[known.length - 2];
-  const deltaTxt = prev
-    ? ` · ${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month)}`
-    : '';
-  const w = 300, h = 64, padX = 7, padY = 9;
-  const vals = known.map(p => p.value);
+  const sub = prev
+    ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
+    : monthLabel(last.month);
+  const w = 150, h = 22, padX = 3, padY = 3;
+  const vals = known.map(x => x.value);
   let vMin = Math.min.apply(null, vals), vMax = Math.max.apply(null, vals);
   const vPad = (vMax - vMin) * 0.2 || vMax * 0.02;
   vMin -= vPad; vMax += vPad;
   const x = i => padX + (w - 2 * padX) * (S.length === 1 ? 0.5 : i / (S.length - 1));
   const y = v => padY + (h - 2 * padY) * (1 - (v - vMin) / (vMax - vMin));
-  const linePts = [];
-  const dots = S.map((p, i) => {
-    if(p.value == null) return '';
-    linePts.push(x(i).toFixed(1) + ',' + y(p.value).toFixed(1));
-    return `<circle cx="${x(i).toFixed(1)}" cy="${y(p.value).toFixed(1)}" r="${p.month === last.month ? 4 : 2.6}" fill="#c8952b"/>`;
-  }).join('');
-  return `
-    <div class="mp-big">${fmtM(last.value)}</div>
-    <div class="mp-sub">Net worth · ${monthLabel(last.month)}${deltaTxt}</div>
-    <svg class="mp-spark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
-      <path d="M ${linePts.join(' L ')}" fill="none" stroke="#c8952b" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      ${dots}
-    </svg>
-    <div class="mp-sub" style="margin-top:4px">${monthLabel(S[0].month)} → ${monthLabel(S[S.length-1].month)} · stays on this device</div>`;
+  const pts = [];
+  S.forEach((q, i) => { if(q.value != null) pts.push(x(i).toFixed(1) + ',' + y(q.value).toFixed(1)); });
+  const lastPt = `<circle cx="${x(S.findIndex(q => q.month === last.month)).toFixed(1)}" cy="${y(last.value).toFixed(1)}" r="2.6" fill="${p.dot}"/>`;
+  return `<div class="mbig">${fmtM(last.value)}</div>
+    <div class="msub">${sub}</div>
+    <svg class="mspark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
+      <path d="M ${pts.join(' L ')}" fill="none" stroke="${p.dot}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>${lastPt}
+    </svg>`;
 }
 
 function renderRetire(){
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const days = Math.max(0, Math.round((RETIREMENT - today) / 86400000));
-  return `<div class="mp-big">${days.toLocaleString('en-GB')} days</div>
-    <div class="mp-sub">until retirement · 1 July 2028 · about ${Math.floor(days / 7)} weeks (${Math.round(days / 30.44)} months)</div>`;
+  return `<div class="mbig">${days.toLocaleString('en-GB')}</div>
+    <div class="msub">days · 1 Jul 2028</div>`;
 }
 
-function renderYear(){
+function renderYear(p){
   const now = new Date();
   const start = new Date(now.getFullYear(), 0, 1), end = new Date(now.getFullYear() + 1, 0, 1);
   const total = Math.round((end - start) / 86400000);
   const doy = Math.floor((now - start) / 86400000) + 1;
   const pct = Math.round(doy / total * 100);
-  return `<div class="mp-big">${pct}%</div>
-    <div class="mp-sub">of ${now.getFullYear()} gone · day ${doy} of ${total} · week ${Math.min(52, Math.ceil(doy / 7))} · ${total - doy} days left</div>
-    <div class="mp-bar"><div style="width:${pct}%"></div></div>`;
+  return `<div class="mbig">${pct}%</div>
+    <div class="msub">${total - doy} days left</div>
+    <div class="mbar"><div style="width:${pct}%; background:${p.dot}"></div></div>`;
 }
 
 let finCache = null;
-function renderFinMonth(){
+function renderFinMonth(p){
   if(!finCache || !finCache.ok || !(finCache.previous || finCache.current)){
-    return `<div class="mp-empty">The Finance engine isn't answering — this panel works on the Mac while the engine is running.</div>`;
+    return `<div class="mbig">—</div><div class="msub">engine not answering</div>`;
   }
   const m = finCache.previous || finCache.current;
-  const parts = [['Report', m.report], ['Ledger', m.ledger], ['Workbook', m.workbook], ['Dashboard', m.dashboard]];
-  const done = parts.filter(p => p[1]).length;
-  const chips = parts.map(([n, d]) => `<span class="mp-chip${d ? ' done' : ''}">${d ? '✓ ' : ''}${n}</span>`).join('');
-  return `<div class="mp-big" style="font-size:26px">${monthLabel(m.month)}</div>
-    <div class="mp-sub">${done === 4 ? 'All done' : done + ' of 4 done'} · the month being reported</div>
-    <div class="mp-chips">${chips}</div>`;
+  const parts = [m.report, m.ledger, m.workbook, m.dashboard];
+  const done = parts.filter(Boolean).length;
+  const dots = parts.map(d =>
+    `<span class="mdot"${d ? ` style="background:${p.dot}"` : ''}></span>`).join('');
+  return `<div class="mbig" style="font-size:20px">${monthLabel(m.month)}</div>
+    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'}</div>
+    <div class="mdots">${dots}</div>`;
 }
 
 function renderVersions(){
   const apps = [...WEB_APPS, ...MAC_APPS].filter(a => a.probe);
-  const rows = apps.map(a =>
-    `<div>${esc(a.name.replace(/^AMS /, ''))}<span class="v">${verCache[a.id] || '—'}</span></div>`).join('');
-  return `<div class="mp-vers">${rows}</div>
-    <div class="mp-sub" style="margin-top:12px">Fetched live from each app when the hub opens.</div>`;
+  const on = apps.filter(a => verCache[a.id]).length;
+  return `<div class="mbig">${on}/${apps.length}</div>
+    <div class="msub">apps answering</div>`;
 }
 
 const MINI_RENDER = { wealth:renderWealth, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
 
 function renderMini(){
-  const p = currentPanel();
-  $('miniTitle').textContent = p.label;
-  $('miniEdit').style.display = p.id === 'wealth' ? '' : 'none';
-  $('miniBody').innerHTML = MINI_RENDER[p.id]();
+  $('miniRow').innerHTML = PANELS.map(p => `
+    <div class="mtile" style="background:${p.tint}">
+      <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
+        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" aria-label="Edit the wealth numbers"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
+      }</div>
+      <div class="mbody" id="mt-${p.id}">${MINI_RENDER[p.id](p)}</div>
+    </div>`).join('');
+  $('miniEdit').addEventListener('click', openWealthEditor);
 }
-function stepMini(d){
-  miniIdx = (miniIdx + d + PANELS.length) % PANELS.length;
-  try{ localStorage.setItem(MINI_KEY, PANELS[miniIdx].id); }catch(e){}
-  renderMini();
+/* refresh one tile only, so an arriving answer can't flicker the others */
+function renderTile(id){
+  const p = PANELS.find(x => x.id === id), el = $('mt-' + id);
+  if(p && el) el.innerHTML = MINI_RENDER[id](p);
 }
-$('miniPrev').addEventListener('click', () => stepMini(-1));
-$('miniNext').addEventListener('click', () => stepMini(1));
 
 /* asking the engine (Mac only; elsewhere these quietly fail and the
    panels fall back to typed numbers / a friendly note) */
@@ -1115,7 +1106,7 @@ async function fetchWealth(){
     const data = await res.json();
     if(data && data.ok && Array.isArray(data.series)){
       storeJSON(W_ENGINE_KEY, { fetchedAt: new Date().toISOString(), series: data.series });
-      if(currentPanel().id === 'wealth') renderMini();
+      renderTile('wealth');
     }
   }catch(e){ /* engine off or unreachable */ }
 }
@@ -1124,7 +1115,7 @@ async function fetchFin(){
     const res = await fetch(ENGINE + '/hubstatus?vercheck=' + Date.now(), { cache:'no-store' });
     if(!res.ok) return;
     finCache = await res.json();
-    if(currentPanel().id === 'finmonth') renderMini();
+    renderTile('finmonth');
   }catch(e){ /* engine off or unreachable */ }
 }
 
@@ -1149,7 +1140,7 @@ function openWealthEditor(){
   $('wRows').innerHTML = rows.join('');
   $('ovWealth').classList.add('show');
 }
-$('miniEdit').addEventListener('click', openWealthEditor);
+/* the pencil lives inside the Wealth tile now, so renderMini() binds it */
 $('wealthClose').addEventListener('click', () => $('ovWealth').classList.remove('show'));
 $('wCancel').addEventListener('click', () => $('ovWealth').classList.remove('show'));
 $('wSave').addEventListener('click', () => {
@@ -1163,7 +1154,7 @@ $('wSave').addEventListener('click', () => {
   });
   storeJSON(W_MANUAL_KEY, manual);
   $('ovWealth').classList.remove('show');
-  renderMini();
+  renderTile('wealth');
 });
 
 /* ============ list ⇄ grid view ============ */
@@ -1197,7 +1188,7 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 /* ============ backups (links only — the shelf itself is built in) ============ */
 function backupBlob(){
   return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
-    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}), miniPanel: PANELS[miniIdx].id }, null, 2);
+    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}) }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -1260,11 +1251,7 @@ $('importFile').addEventListener('change', () => {
       });
       storeJSON(W_MANUAL_KEY, wClean);
     }
-    if(typeof data.miniPanel === 'string'){
-      const i = PANELS.findIndex(p => p.id === data.miniPanel);
-      if(i >= 0){ miniIdx = i; try{ localStorage.setItem(MINI_KEY, data.miniPanel); }catch(e){} }
-    }
-    renderMini();
+    renderMini();   /* older backups may carry a `miniPanel` choice — harmless, ignored */
     $('ovSettings').classList.remove('show');
     alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
       (layoutBack ? '\nCard order and colours restored too.' : '') +
