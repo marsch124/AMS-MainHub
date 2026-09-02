@@ -45,6 +45,13 @@
     padding:0; box-shadow:0 1px 3px rgba(28,32,40,.08);
   }
   .iconbtn:active{transform:scale(.94);}
+  /* a word under the glyph — a pencil alone can mean note, edit, add… */
+  .iconbtn.labelled{flex-direction:column; gap:1px;}
+  .iconbtn.labelled .hi{width:17px; height:17px;}
+  .btnlbl{
+    font-size:8px; font-weight:800; letter-spacing:.02em; line-height:1;
+    color:var(--ink-dim); white-space:nowrap;
+  }
 
   /* ---------- greeting ---------- */
   .hello{padding:8px 4px 16px;}
@@ -393,9 +400,9 @@
 <header>
   <div class="brand">AMS <b>Main Hub</b></div>
   <div style="display:flex; gap:10px">
-    <button class="iconbtn" id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-pencil"/></svg></button>
-    <button class="iconbtn" id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg></button>
-    <button class="iconbtn" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg></button>
+    <button class="iconbtn labelled" id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-pencil"/></svg><span class="btnlbl" id="custLbl">Arrange</span></button>
+    <button class="iconbtn labelled" id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg><span class="btnlbl">View</span></button>
+    <button class="iconbtn labelled" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg><span class="btnlbl">Settings</span></button>
   </div>
 </header>
 <div class="verglance" id="verGlance"></div>
@@ -497,7 +504,7 @@
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
 
         <h3>Make the shelf yours</h3>
-        <p>The <b>pencil</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap the ✓ when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
+        <p>The <b>Arrange</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap the ✓ when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
 
         <h3>The little version chips</h3>
         <p>The small number on each web-app card is <b>live</b> — the hub quietly asks each app which version it's running right now, every time you open the hub. So the shelf doubles as a status board: if you just published an update, the new number shows up here. If a chip is missing, the hub couldn't reach that app (offline, or the app doesn't announce a version).</p>
@@ -570,6 +577,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.9', when:'2 Sep 2026',
+    what:'The three header buttons say what they do. A pencil on its own can mean write a note, edit something, add something — so each button now carries a small word under its drawing: Arrange, View and Settings. While you are arranging, the pencil turns into a tick and the word changes to Done, so it is obvious how to finish. The buttons are exactly the same size as before.' },
   { v:'1.8', when:'2 Sep 2026',
     what:'All five mini panels at once. Instead of one big panel you flipped through, the five now sit side by side as small colour-coded tiles across the top — Wealth, Retirement, The Year, Finance and Apps all readable in a single glance, with no arrows to press. Each keeps only its headline: the wealth total with a small line showing its shape, the days to retirement, the percentage of the year gone, the reported month with a dot per step, and how many apps are answering. On the iPhone they lay themselves out two across. The pencil for typing wealth numbers now sits on the Wealth tile itself.' },
   { v:'1.7', when:'2 Sep 2026',
@@ -930,6 +939,7 @@ document.addEventListener('click', (e) => {
 $('custBtn').addEventListener('click', () => {
   const on = document.body.classList.toggle('custom');
   $('custIconUse').setAttribute('href', on ? '#icon-check' : '#icon-pencil');
+  $('custLbl').textContent = on ? 'Done' : 'Arrange';
   if(on) showToast('Arrange mode — move cards with ▲▼, recolour with the palette. Tap ✓ when done.', null, null, 6000);
 });
 
