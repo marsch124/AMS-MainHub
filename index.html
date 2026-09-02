@@ -130,6 +130,17 @@
   }
   .mpen .hi{width:12px; height:12px;}
   .mpen:active{transform:scale(.92);}
+  /* choosing which tiles to show — the toggles only exist in arrange mode */
+  .mtog{
+    flex:0 0 auto; width:19px; height:19px; border-radius:50%; padding:0; cursor:pointer;
+    border:2px solid currentColor; background:transparent; display:none;
+  }
+  .mtog::after{content:""; display:block; width:100%; height:100%; border-radius:50%;}
+  .mtog.on::after{background:currentColor;}
+  body.custom .mtog{display:block;}
+  body.custom .mpen{display:none;}
+  .mtile.off{display:none;}
+  body.custom .mtile.off{display:flex; opacity:.45;}
 
   /* wealth editor rows */
   .wrow{display:flex; align-items:center; gap:10px; margin-top:9px;}
@@ -501,8 +512,10 @@
         <p>Timers and the Finance Hub run only on the Mac (they live on the Mac itself, not on the internet), so their cards are marked <b>MAC ONLY</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
 
         <h3>The mini tiles</h3>
-        <p>Across the top sit five small tiles, all visible at once — no arrows to press, nothing to choose. Each shows one number, in its own colour. On a wide screen they sit in a single row; on the iPhone they lay themselves out two across.</p>
+        <p>Across the top sit small tiles, all visible at once — no arrows to press. Each shows one number, in its own colour. On a wide screen they sit in a single row; on the iPhone they lay themselves out two across.</p>
+        <p><b>You choose which ones appear.</b> Tap <b>Arrange</b> and every tile grows a small circle in its corner — filled means shown, empty means hidden. Tiles you switch off stay on screen while you are arranging, greyed out, so you can always bring one back. Tap the tick when you are done; your choice is remembered on this device.</p>
         <ul>
+          <li><b>Wealth · 0</b> — the very same money, drawn from zero instead. Honest about scale: the filled block shows how much there is, and a year of movement is only a slight tilt along the top. Keep it beside the other one, or keep just the one you prefer.</li>
           <li><b>Wealth</b> — your latest net-worth total, how it moved since the month before, and a small line showing its shape over the past year. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the <b>pencil</b> on this tile and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
           <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
@@ -562,6 +575,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.11', when:'2 Sep 2026',
+    what:'A second way of seeing your wealth, and the tiles are now yours to choose. WEALTH \u00b7 0 is the same money drawn honestly from zero \u2014 a filled block rather than a climbing line, answering "how much is there" instead of "which way is it moving". The original auto-scaled tile stays, because from zero the year\u2019s movement is only a slight tilt at the top. Keep either, both, or neither: tap Arrange and every tile grows a small circle in its corner \u2014 filled means shown. Tiles you switch off stay visible while arranging, greyed, so you can always bring them back. Your choice is remembered on this device.' },
   { v:'1.10', when:'2 Sep 2026',
     what:'More room for the things that matter. The greeting line and its little daily saying have gone \u2014 they were pleasant, but they pushed everything else down the screen, and you already know who you are. The shelf and the mini tiles now start straight under the header, giving back about seventy pixels of height: on the iPhone that is most of another row of cards visible without scrolling.' },
   { v:'1.9', when:'2 Sep 2026',
@@ -968,11 +983,25 @@ function fmtM(v){
 /* all five live side by side at the top — small enough to read in one glance */
 const PANELS = [
   { id:'wealth',   label:'WEALTH',     dot:'#c8952b', tint:'#faeecb' },
+  { id:'wealth0',  label:'WEALTH · 0', dot:'#b8873f', tint:'#f7ecd8' },
   { id:'retire',   label:'RETIREMENT', dot:'#1f9e93', tint:'#d7f2ef' },
   { id:'year',     label:'THE YEAR',   dot:'#3487d6', tint:'#dcebfb' },
   { id:'finmonth', label:'FINANCE',    dot:'#5868c9', tint:'#e2e6fa' },
   { id:'versions', label:'APPS',       dot:'#33a065', tint:'#d9f2e2' },
 ];
+
+/* which tiles he wants on the shelf; no saved choice = show them all */
+function tileOn(id){
+  return Array.isArray(look.tiles) ? look.tiles.includes(id) : true;
+}
+function toggleTile(id){
+  const on = PANELS.filter(x => tileOn(x.id)).map(x => x.id);
+  const i = on.indexOf(id);
+  if(i >= 0) on.splice(i, 1); else on.push(id);
+  look.tiles = PANELS.filter(x => on.includes(x.id)).map(x => x.id);   // keep PANELS order
+  saveLook();
+  renderMini();
+}
 
 /* engine value wins for a month it has; typed numbers fill the gaps */
 function wealthData(){
@@ -990,7 +1019,35 @@ function wealthData(){
   return months.map(m => ({ month:m, value: map.get(m) == null ? null : map.get(m) }));
 }
 
-function renderWealth(p){
+/* zeroBased: measure from 0 and fill the area, so the tile answers
+   "how big is it" rather than "how did it wobble" */
+function wealthSpark(S, known, p, zeroBased){
+  const w = 150, h = 22, padX = 3, padY = 3;
+  const vals = known.map(x => x.value);
+  let vMin, vMax = Math.max.apply(null, vals);
+  if(zeroBased){
+    vMin = 0; vMax = vMax * 1.06;
+  }else{
+    vMin = Math.min.apply(null, vals);
+    const vPad = (vMax - vMin) * 0.2 || vMax * 0.02;
+    vMin -= vPad; vMax += vPad;
+  }
+  const x = i => padX + (w - 2 * padX) * (S.length === 1 ? 0.5 : i / (S.length - 1));
+  const y = v => padY + (h - 2 * padY) * (1 - (v - vMin) / (vMax - vMin));
+  const pts = [], xs = [];
+  S.forEach((q, i) => { if(q.value != null){ pts.push(x(i).toFixed(1) + ',' + y(q.value).toFixed(1)); xs.push(x(i)); } });
+  const line = `<path d="M ${pts.join(' L ')}" fill="none" stroke="${p.dot}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
+  const area = zeroBased
+    ? `<path d="M ${xs[0].toFixed(1)},${h} L ${pts.join(' L ')} L ${xs[xs.length-1].toFixed(1)},${h} Z" fill="${p.dot}" opacity=".22"/>`
+    : '';
+  const last = known[known.length - 1];
+  const lastX = x(S.findIndex(q => q.month === last.month));
+  return `<svg class="mspark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
+      ${area}${line}<circle cx="${lastX.toFixed(1)}" cy="${y(last.value).toFixed(1)}" r="2.6" fill="${p.dot}"/>
+    </svg>`;
+}
+
+function renderWealth(p, zeroBased){
   const S = wealthData();
   const known = S.filter(x => x.value != null);
   if(!known.length) return `<div class="mbig">—</div><div class="msub">no numbers yet</div>`;
@@ -998,22 +1055,11 @@ function renderWealth(p){
   const sub = prev
     ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
     : monthLabel(last.month);
-  const w = 150, h = 22, padX = 3, padY = 3;
-  const vals = known.map(x => x.value);
-  let vMin = Math.min.apply(null, vals), vMax = Math.max.apply(null, vals);
-  const vPad = (vMax - vMin) * 0.2 || vMax * 0.02;
-  vMin -= vPad; vMax += vPad;
-  const x = i => padX + (w - 2 * padX) * (S.length === 1 ? 0.5 : i / (S.length - 1));
-  const y = v => padY + (h - 2 * padY) * (1 - (v - vMin) / (vMax - vMin));
-  const pts = [];
-  S.forEach((q, i) => { if(q.value != null) pts.push(x(i).toFixed(1) + ',' + y(q.value).toFixed(1)); });
-  const lastPt = `<circle cx="${x(S.findIndex(q => q.month === last.month)).toFixed(1)}" cy="${y(last.value).toFixed(1)}" r="2.6" fill="${p.dot}"/>`;
   return `<div class="mbig">${fmtM(last.value)}</div>
-    <div class="msub">${sub}</div>
-    <svg class="mspark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
-      <path d="M ${pts.join(' L ')}" fill="none" stroke="${p.dot}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>${lastPt}
-    </svg>`;
+    <div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>
+    ${wealthSpark(S, known, p, zeroBased)}`;
 }
+function renderWealth0(p){ return renderWealth(p, true); }
 
 function renderRetire(){
   const now = new Date();
@@ -1056,17 +1102,19 @@ function renderVersions(){
     <div class="msub">apps answering</div>`;
 }
 
-const MINI_RENDER = { wealth:renderWealth, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
+const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
-    <div class="mtile" style="background:${p.tint}">
+    <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${p.tint}">
       <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
         p.id === 'wealth' ? `<button class="mpen" id="miniEdit" aria-label="Edit the wealth numbers"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
-      }</div>
+      }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
       <div class="mbody" id="mt-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
   $('miniEdit').addEventListener('click', openWealthEditor);
+  document.querySelectorAll('[data-tile]').forEach(b =>
+    b.addEventListener('click', () => toggleTile(b.dataset.tile)));
 }
 /* refresh one tile only, so an arriving answer can't flicker the others */
 function renderTile(id){
