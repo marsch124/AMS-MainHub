@@ -569,6 +569,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.7', when:'2 Sep 2026',
+    what:'A lighter touch on PackTrack. Now that PackTrack announces its own version properly, the hub asks it that small question instead of downloading the app’s whole page just to read the number off it — about 130 kB less fetched every time the hub opens. Same chip, same number, far less work.' },
   { v:'1.6', when:'1 Sep 2026',
     what:'AMS PackTrack joins the shelf — the new app that reads a delivery confirmation mail and keeps track of what is on its way. Its card sits at the end of the web apps with a hand-drawn parcel, and it carries a live version chip like the others. The chip and the card only come alive once PackTrack itself is published.' },
   { v:'1.5', when:'1 Sep 2026',
@@ -613,7 +615,7 @@ const WEB_APPS = [
     probe:{ path:'AMS-FermentLog/service-worker.js', rx:/fermentlog-v(\d+)/, pre:'v' } },
   { id:'packtrack', name:'AMS PackTrack',   sub:'Deliveries, tracked from the mail',     icon:'parcel',    dot:'#a9713f', tint:'#f7e7d6', url:GH+'AMS-PackTrack/',
     store:'On this device only · backup files', where:['iphone'],
-    probe:{ path:'AMS-PackTrack/index.html', rx:/VERSIONLOG\s*=\s*\[\s*\{\s*v:'([\d.]+)'/, pre:'v' } },
+    probe:{ path:'AMS-PackTrack/version.json', json:true, pre:'v' } },
 ];
 const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
