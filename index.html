@@ -190,7 +190,7 @@
   }
   .overlay.show{display:flex;}
   .sheet{
-    margin:auto; width:min(92vw,460px); max-height:88dvh; overflow-y:auto;
+    margin:auto; width:min(92vw,600px); max-height:88dvh; overflow-y:auto;
     background:var(--card);
     border-radius:24px; padding:22px;
     -webkit-overflow-scrolling:touch;
@@ -252,6 +252,18 @@
   details.fold > summary .chev{margin-left:auto; color:var(--ink-dim); transition:transform .2s ease;}
   details.fold[open] > summary .chev{transform:rotate(90deg);}
   details.fold > .foldbody{padding:2px 16px 16px;}
+  /* chapters inside a long section fold too — a short list of titles, open one at a time */
+  details.sub{border-top:1px solid var(--line);}
+  details.sub:first-of-type{border-top:0;}
+  details.sub > summary{
+    list-style:none; display:flex; align-items:center; gap:10px;
+    padding:12px 2px; font-size:15px; font-weight:700; color:var(--accent); cursor:pointer;
+  }
+  details.sub > summary::-webkit-details-marker{display:none;}
+  details.sub > summary .chev{margin-left:auto; color:var(--ink-dim); flex:0 0 auto; transition:transform .2s ease;}
+  details.sub[open] > summary .chev{transform:rotate(90deg);}
+  details.sub > .subbody{padding:0 2px 14px;}
+  details.sub > .subbody > :first-child{margin-top:0;}
 
   /* update toast */
   #toast{
@@ -545,13 +557,20 @@
     <details class="fold" id="foldHow">
       <summary><svg class="hi"><use href="#icon-book"/></svg>How this works<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <h3>Start here</h3>
+
+        <details class="sub">
+          <summary>Start here<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the tiles, tap the card you need.</b> If the Finance tile shows a missing dot, the Finance shelf is where the work is.</p>
         <p><b>On the Mac</b>, the hub is what <b>AMS Finance.app</b> in the Dock opens: <b>localhost:7780</b>, served by the Finance engine, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
 
         <p>The full story — how the system is built, the daily habit, and the monthly money process as a worked example — sits in the next section, <b>The system, end to end</b>.</p>
+          </div>
+        </details>
 
-        <h3>Four shelves</h3>
+        <details class="sub">
+          <summary>Four shelves<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
         <ul>
           <li><b>FINANCE</b> — the whole monthly money system in one place: the <b>Finance Hub</b> (where the process stands — Mac only), the <b>Spend Dashboard</b> and the <b>Finance Dashboard</b> (the two published chart pages), the <b>latest report</b> in Obsidian (Mac only), and <b>Sam</b>, who runs the month.</li>
@@ -560,26 +579,54 @@
           <li><b>YOUR LINKS</b> — anything else you want a card for.</li>
         </ul>
         <p>Four words, used strictly, so the names tell you what a thing is: a <b>Hub</b> is a front door, a <b>Dashboard</b> is a page you read, an <b>App</b> is a tool you type into, a <b>Report</b> is the monthly note in Obsidian.</p>
+          </div>
+        </details>
 
-        <h3>The two dashboards</h3>
+        <details class="sub">
+          <summary>The two dashboards<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The dashboards live on claude.ai, at private addresses. On the Mac (from localhost:7780) the Finance engine hands the hub those addresses itself, and each card admits how many months it lags behind the newest data — the same badge the Finance Hub shows. Anywhere else, tap the <b>pencil</b> on the card once and paste the address; it is stored only on that device and rides along in your backups.</p>
+          </div>
+        </details>
 
-        <h3>List or grid</h3>
+        <details class="sub">
+          <summary>List or grid<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
+          </div>
+        </details>
 
-        <h3>Make the shelf yours</h3>
+        <details class="sub">
+          <summary>Make the shelf yours<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The <b>Arrange</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap the ✓ when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
+          </div>
+        </details>
 
-        <h3>The little version chips</h3>
+        <details class="sub">
+          <summary>The little version chips<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The small number on each web-app card is <b>live</b> — the hub quietly asks each app which version it's running right now, every time you open the hub. So the shelf doubles as a status board: if you just published an update, the new number shows up here. If a chip is missing, the hub couldn't reach that app (offline, or the app doesn't announce a version).</p>
+          </div>
+        </details>
 
-        <h3>iPhone rule: open apps from their own icons</h3>
+        <details class="sub">
+          <summary>iPhone rule: open apps from their own icons<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Each AMS app installed on your home screen keeps its data in its <b>own private box</b>. A link tapped inside the hub app can't open that installed copy — it would open a separate, empty one instead. That's why, when the hub runs as a home-screen app, tapping a web-app card first shows a friendly reminder to use the app's own icon. On the Mac, in Safari, cards simply open in a new tab and everything shares the same data — no reminder needed.</p>
+          </div>
+        </details>
 
-        <h3>Mac only</h3>
+        <details class="sub">
+          <summary>Mac only<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Timers, the Finance Hub and the latest report live on the Mac itself, not on the internet, so their cards are marked <b>MAC ONLY</b> or <b>OBSIDIAN</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
+          </div>
+        </details>
 
-        <h3>The mini tiles</h3>
+        <details class="sub">
+          <summary>The mini tiles<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Across the top sit small tiles, all visible at once — no arrows to press. Each shows one number, in its own colour. On a wide screen they sit in a single row; on the iPhone they lay themselves out two across.</p>
         <p><b>You choose which ones appear.</b> Tap <b>Arrange</b> and every tile grows a small circle in its corner — filled means shown, empty means hidden. Tiles you switch off stay on screen while you are arranging, greyed out, so you can always bring one back. Tap the tick when you are done; your choice is remembered on this device.</p>
         <ul>
@@ -590,8 +637,12 @@
           <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
+          </div>
+        </details>
 
-        <h3>Where everything lives</h3>
+        <details class="sub">
+          <summary>Where everything lives<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Every card carries a row of tiny <b>hand-drawn icons</b> showing where that app keeps its stuff. Point at them with the mouse on the Mac — or tap them on the iPhone — and the full story appears in words. The icons:</p>
         <ul>
           <li><b>A phone</b> — the app stores everything on the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
@@ -613,15 +664,29 @@
           <tr><td><b>Timers</b></td><td>Mac tool</td><td>Mac, port 7777</td><td>Its own folder</td></tr>
           <tr><td><b>The everyday apps</b></td><td>Apps</td><td>iPhone (and Safari on the Mac)</td><td>On the device; Packing also syncs via Dexie Cloud</td></tr>
         </table></div>
+          </div>
+        </details>
 
-        <h3>Your links</h3>
+        <details class="sub">
+          <summary>Your links<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The bottom shelf is yours: add any web address you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
+          </div>
+        </details>
 
-        <h3>Backups</h3>
+        <details class="sub">
+          <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, the dashboard addresses and any wealth numbers you've typed in — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links and numbers came back, and if anything goes wrong your current data and your backup file are left untouched.</p>
+          </div>
+        </details>
 
-        <h3>Updates</h3>
+        <details class="sub">
+          <summary>Updates<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
+          </div>
+        </details>
       </div>
     </details>
 
@@ -630,7 +695,9 @@
       <div class="foldbody">
         <p>Read this the day you come back after weeks away, or when something feels out of place. It says what the system is, how it is built, what you do every day and every month, and how to notice when it needs improving.</p>
 
-        <h3>1 · What the system is</h3>
+        <details class="sub">
+          <summary>1 · What the system is<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>AMS is the household’s set of small apps, one for each thing worth keeping track of. One of them, the money system, is a real process with a monthly rhythm. The rest are everyday tools. All of it opens from one front door: <b>AMS Main Hub</b>.</p>
         <p>Four words, used strictly, so the name of a thing tells you what it is:</p>
         <ul>
@@ -639,8 +706,12 @@
           <li><b>App</b> — a tool you type into. Packing, Instructions, Tracking, and the rest.</li>
           <li><b>Report</b> — the monthly finance note in Obsidian that Sam writes.</li>
         </ul>
+          </div>
+        </details>
 
-        <h3>2 · How it is built</h3>
+        <details class="sub">
+          <summary>2 · How it is built<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Three layers. You always enter at the top and go down; nothing skips a layer.</p>
         <div class="layers">
           <div class="layer" style="background:#fdeadd"><b style="color:#d96a45">LAYER 1 · THE FRONT DOOR</b>AMS Main Hub. The tiles say how things stand; the four shelves take you onward. On the Mac it is what the Dock icon opens (served by the Finance engine at localhost:7780). On the iPhone it is the home-screen icon.</div>
@@ -651,8 +722,12 @@
         </div>
         <p>Behind the scenes, a small helper program on the Mac — the <b>engine</b> — reads the files in layer 3 and shows layers 1 and 2. It starts by itself when the Mac starts; you never see it. If it is off, the tiles say “engine not answering”.</p>
         <p>The one-page map of every part, where it runs and where its data lives, is in <b>How this works › Where everything lives</b>.</p>
+          </div>
+        </details>
 
-        <h3>3 · The daily habit</h3>
+        <details class="sub">
+          <summary>3 · The daily habit<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>One habit, same on every device: <b>open AMS Main Hub, read the tiles, tap the card you need.</b></p>
         <ul>
           <li><b>Wealth</b> — the latest net-worth total and its shape over the past year. Read from the budget workbook on the Mac.</li>
@@ -661,8 +736,12 @@
         </ul>
         <p>Keep only the tiles you actually glance at: <b>Arrange</b>, then the small circle on each tile. Fewer tiles, faster glance.</p>
         <p>On the iPhone the tiles that need the Mac stay quiet, and the dashboard cards show a pencil. That is expected. Tap the pencil once and paste a dashboard’s address if you want it on the phone too; otherwise read the dashboards on the Mac.</p>
+          </div>
+        </details>
 
-        <h3>4 · The monthly process</h3>
+        <details class="sub">
+          <summary>4 · The monthly process<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The money process closes one month at a time, in the month after it. The Finance Hub carries it: a <b>status board</b> with four checks per month, and a <b>checklist</b> of seven steps that resets on the 1st. Four of the steps tick themselves (⚡) when the hub sees the work is done; three you tick by hand because they need your judgment.</p>
         <p>The four checks on the status board, in order:</p>
         <ol>
@@ -691,8 +770,12 @@
           <li><b>Done until October.</b> A month is closed when its row says Complete and the Finance tile shows four dots. On 1 October the checklist resets and September waits for the 8th.</li>
         </ol>
         <p>The whole run takes one sitting once the export is in. If you get interrupted, the board and the checklist remember exactly where you stopped — that is the point of them.</p>
+          </div>
+        </details>
 
-        <h3>5 · When something looks wrong</h3>
+        <details class="sub">
+          <summary>5 · When something looks wrong<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <ul>
           <li><b>Tiles say “engine not answering”, dashboard cards show pencils on the Mac.</b> You are looking at the web copy of the hub, or the engine is off. Open the hub from the Dock icon (it must open localhost:7780). If that page won’t load, double-click <b>AMS Finance.app</b> in Documents › 01 Leisure › 30 App Development › AMS Finance — that starts the engine and opens the hub.</li>
           <li><b>A dashboard card says “N months behind”.</b> Not an error: the workbook or the report is newer than the dashboard. Ask Sam to refresh that dashboard; the badge clears on the next reload.</li>
@@ -701,8 +784,12 @@
           <li><b>An “Update” bar appears.</b> A newer hub is live. Tap Update. On the Mac the hub is read straight from its folder, so there the newest version is always what you see after a pull in GitHub Desktop.</li>
           <li><b>Something else.</b> Open Sam or Claude and describe what you see — a screenshot says more than a paragraph.</li>
         </ul>
+          </div>
+        </details>
 
-        <h3>6 · Keeping it tidy</h3>
+        <details class="sub">
+          <summary>6 · Keeping it tidy<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>The disorder crept in because things were added one at a time without a place to put them. These rules give every new thing its place:</p>
         <ul>
           <li><b>One front door.</b> Nothing gets its own Dock icon. New things become a card on AMS Main Hub.</li>
@@ -712,8 +799,12 @@
           <li><b>Every release writes one line in its app’s version log.</b> That log is the memory of the system — it is what you read after weeks away.</li>
           <li><b>Files stay where the map says.</b> The budget workbook, ledger and reports keep their folders; the Finance Hub’s tiles point at them, so a moved file shows up as a red check.</li>
         </ul>
+          </div>
+        </details>
 
-        <h3>7 · The quarterly review</h3>
+        <details class="sub">
+          <summary>7 · The quarterly review<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
         <p>Once a quarter — a good moment is right after a month closes — open AMS Main Hub and answer these honestly. Each “no” or “never” is an improvement waiting to be made; tell Sam or Claude and it becomes a change.</p>
         <ol>
           <li>Which tiles did I actually glance at this quarter? Hide the rest with Arrange.</li>
@@ -725,6 +816,8 @@
           <li>Did a dashboard answer a question I stopped asking? Retire it rather than keep refreshing it.</li>
         </ol>
         <p>Write the answers in the Obsidian vault, or simply tell Claude. Small, regular corrections are what keep a home-grown system feeling like home.</p>
+          </div>
+        </details>
       </div>
     </details>
 
@@ -758,6 +851,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.14', when:'3 Sep 2026',
+    what:'Shorter guides. Every chapter in How this works and in The system, end to end is now its own fold: open a section and you see a short list of chapter titles, tap one to read it. The Settings sheet is a little wider on the Mac so lines read comfortably; on the iPhone it stays as it was.' },
   { v:'1.13', when:'3 Sep 2026',
     what:'The handbook. A new section under Settings, The system, end to end, written for the day you come back after weeks away: what the system is and the four words it uses, the three layers it is built from, the daily habit, the monthly money process step by step with closing August 2026 as a worked example (what you do, what Sam does, which checks turn green and which checklist items tick themselves), what to do when something looks wrong, six rules that give every new thing its place, and a seven-question quarterly review for finding the next improvement.' },
   { v:'1.12', when:'3 Sep 2026',
