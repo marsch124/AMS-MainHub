@@ -207,6 +207,23 @@
   table.map th, table.map td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.4;}
   table.map th{color:var(--ink-dim); font-size:10.5px; letter-spacing:.08em; font-weight:800;}
   table.map td b{white-space:nowrap;}
+  /* the handbook */
+  .hb ol{padding-left:22px; margin:8px 0;}
+  .hb ol li{margin:7px 0; padding-left:4px;}
+  .hb ul{margin:8px 0;}
+  .hbnote{
+    background:var(--card); border:1.5px solid var(--line); border-radius:14px;
+    padding:11px 13px; margin:12px 0; font-size:13.5px; line-height:1.5;
+  }
+  .hbnote b:first-child{color:var(--accent);}
+  .layers{display:flex; flex-direction:column; gap:6px; margin:10px 0 4px;}
+  .layer{
+    border-radius:14px; padding:10px 13px; font-size:13.5px; line-height:1.5;
+  }
+  .layer b{display:block; font-size:10.5px; letter-spacing:.12em; margin-bottom:2px;}
+  .larrow{text-align:center; color:var(--ink-dim); font-size:14px; line-height:1;}
+  .hbstate{font-size:12.5px; color:var(--ink-dim); margin:4px 0 0; padding-left:2px;}
+  .hbstate b{color:var(--ink);}
   label{display:block; font-size:13px; color:var(--ink-dim); margin:14px 0 6px; letter-spacing:.03em; font-weight:600;}
   input[type=text], input[type=url]{
     width:100%; padding:13px 14px; border-radius:13px; border:1px solid var(--line);
@@ -532,6 +549,8 @@
         <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the tiles, tap the card you need.</b> If the Finance tile shows a missing dot, the Finance shelf is where the work is.</p>
         <p><b>On the Mac</b>, the hub is what <b>AMS Finance.app</b> in the Dock opens: <b>localhost:7780</b>, served by the Finance engine, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
 
+        <p>The full story — how the system is built, the daily habit, and the monthly money process as a worked example — sits in the next section, <b>The system, end to end</b>.</p>
+
         <h3>Four shelves</h3>
         <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
         <ul>
@@ -606,6 +625,109 @@
       </div>
     </details>
 
+    <details class="fold hb" id="foldHandbook">
+      <summary><svg class="hi"><use href="#icon-document"/></svg>The system, end to end<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+      <div class="foldbody">
+        <p>Read this the day you come back after weeks away, or when something feels out of place. It says what the system is, how it is built, what you do every day and every month, and how to notice when it needs improving.</p>
+
+        <h3>1 · What the system is</h3>
+        <p>AMS is the household’s set of small apps, one for each thing worth keeping track of. One of them, the money system, is a real process with a monthly rhythm. The rest are everyday tools. All of it opens from one front door: <b>AMS Main Hub</b>.</p>
+        <p>Four words, used strictly, so the name of a thing tells you what it is:</p>
+        <ul>
+          <li><b>Hub</b> — a front door. You start there; it shows status and takes you onward. AMS Main Hub is the front door to everything; AMS Finance Hub is the front door to the money process.</li>
+          <li><b>Dashboard</b> — a page you read. Charts, no typing. The Spend Dashboard and the Finance Dashboard.</li>
+          <li><b>App</b> — a tool you type into. Packing, Instructions, Tracking, and the rest.</li>
+          <li><b>Report</b> — the monthly finance note in Obsidian that Sam writes.</li>
+        </ul>
+
+        <h3>2 · How it is built</h3>
+        <p>Three layers. You always enter at the top and go down; nothing skips a layer.</p>
+        <div class="layers">
+          <div class="layer" style="background:#fdeadd"><b style="color:#d96a45">LAYER 1 · THE FRONT DOOR</b>AMS Main Hub. The tiles say how things stand; the four shelves take you onward. On the Mac it is what the Dock icon opens (served by the Finance engine at localhost:7780). On the iPhone it is the home-screen icon.</div>
+          <div class="larrow">▼</div>
+          <div class="layer" style="background:#e2e6fa"><b style="color:#5868c9">LAYER 2 · THE WORKPLACE</b>AMS Finance Hub (localhost:7780/finance, Mac only). The monthly status board, the KPI cards, the checklist, and one-click tiles for every file and note the process touches. This is where the monthly work happens.</div>
+          <div class="larrow">▼</div>
+          <div class="layer" style="background:#d7f2ef"><b style="color:#1f9e93">LAYER 3 · SOURCES AND OUTPUTS</b>The budget workbook (Excel), the monthly ledger, the Obsidian vault (reports, expenses log, wealth log), Sam who does the monthly run in Cowork, and the two dashboards on claude.ai that Sam refreshes from those files.</div>
+        </div>
+        <p>Behind the scenes, a small helper program on the Mac — the <b>engine</b> — reads the files in layer 3 and shows layers 1 and 2. It starts by itself when the Mac starts; you never see it. If it is off, the tiles say “engine not answering”.</p>
+        <p>The one-page map of every part, where it runs and where its data lives, is in <b>How this works › Where everything lives</b>.</p>
+
+        <h3>3 · The daily habit</h3>
+        <p>One habit, same on every device: <b>open AMS Main Hub, read the tiles, tap the card you need.</b></p>
+        <ul>
+          <li><b>Wealth</b> — the latest net-worth total and its shape over the past year. Read from the budget workbook on the Mac.</li>
+          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps. All four filled means nothing is waiting. A missing dot means the Finance shelf is where the work is.</li>
+          <li><b>Retirement</b> and <b>The year</b> — the calendar, at a glance.</li>
+        </ul>
+        <p>Keep only the tiles you actually glance at: <b>Arrange</b>, then the small circle on each tile. Fewer tiles, faster glance.</p>
+        <p>On the iPhone the tiles that need the Mac stay quiet, and the dashboard cards show a pencil. That is expected. Tap the pencil once and paste a dashboard’s address if you want it on the phone too; otherwise read the dashboards on the Mac.</p>
+
+        <h3>4 · The monthly process</h3>
+        <p>The money process closes one month at a time, in the month after it. The Finance Hub carries it: a <b>status board</b> with four checks per month, and a <b>checklist</b> of seven steps that resets on the 1st. Four of the steps tick themselves (⚡) when the hub sees the work is done; three you tick by hand because they need your judgment.</p>
+        <p>The four checks on the status board, in order:</p>
+        <ol>
+          <li><b>Report</b> — the month’s report exists in Obsidian.</li>
+          <li><b>Ledger</b> — the month has its row in the monthly ledger.</li>
+          <li><b>Workbook</b> — the month’s actuals are really written into the budget workbook.</li>
+          <li><b>Dashboard</b> — the month is included in the Spend Dashboard.</li>
+        </ol>
+        <p>A finished month is not due straight away: bank statements need a week to settle, so it becomes <b>due on the 8th</b> of the following month (you can change that day in the Finance Hub). Until then the row shows a calm grey “bank statements settling”. From the 8th it turns amber: <i>Due — run this month</i>.</p>
+
+        <div class="hbnote"><b>Worked example: closing August 2026.</b> Everything below is what you see and do, in order, in September.</div>
+        <ol>
+          <li><b>1 September.</b> The checklist resets — all seven ticks cleared. The status board shows August as “Due 8 Sept · bank statements settling”. The Finance tile on AMS Main Hub reads <i>Aug 2026 · 0 of 4 done</i>, four empty dots. Nothing to do yet.</li>
+          <li><b>8 September or later.</b> August turns amber on the board. Open AMS Main Hub from the Dock, see the empty dots, click <b>AMS Finance Hub</b> on the FINANCE shelf.</li>
+          <li><b>Export bank transactions (Swedbank).</b> Download August’s transactions from the bank and save the file in the Imports folder (the Folders tiles at the bottom of the Finance Hub open it). Tick item 1 by hand.
+            <div class="hbstate">Board: unchanged. You did the fetching; the hub can’t see the bank.</div></li>
+          <li><b>Log any manual cash expenses.</b> Open the <b>Expenses log</b> tile (Obsidian) and add anything paid in cash or outside the bank export. Tick item 2 by hand.</li>
+          <li><b>Run the monthly report with Sam.</b> Open <b>Sam</b> (the Cowork card on the FINANCE shelf) and ask for the August report. Sam reads the export, sorts every row into the categories, asks you about anything unclear, writes the report into Obsidian, and adds August’s row to the ledger.
+            <div class="hbstate">Board: <b>Report ✓ Ledger ✓</b>. Item 3 ticks itself ⚡. The KPI cards switch to August’s income, expenses, net and savings rate. The Finance tile shows two dots.</div></li>
+          <li><b>Resolve flagged merchants and name ticket buys.</b> During the run Sam flags merchants it could not place and asks which multi-year “ticket” a big purchase belongs to (a holiday, a bike). Decide them. Tick item 4 by hand — that judgment is yours, not a file the hub can check.</li>
+          <li><b>Write actuals to the budget workbook.</b> Ask Sam to write August’s actuals into the workbook’s August column.
+            <div class="hbstate">Board: <b>Workbook ✓</b>. Item 5 ticks itself ⚡. The Finance Dashboard card now says <i>1 month behind</i> — it hasn’t caught up with the new column yet. Three dots.</div></li>
+          <li><b>Refresh the Spend Dashboard, then the Finance Dashboard.</b> Ask Sam to refresh both. Same links as before; only the numbers change.
+            <div class="hbstate">Board: <b>Dashboard ✓</b>, August flips to teal <b>Complete</b>. Items 6 and 7 tick themselves ⚡. Both dashboard cards say <i>UP TO DATE</i>. The Finance tile reads <i>Aug 2026 · all done</i>, four dots filled.</div></li>
+          <li><b>Read.</b> Open the <b>Spend Dashboard</b> from the FINANCE shelf: which categories ran hot, the biggest merchants, Sam’s observations. Then the <b>Finance Dashboard</b>: net worth, budget vs. actual by month, the runway to 2038. If a figure surprises you, the report in Obsidian (the <b>Latest report</b> card) has the row-level story.</li>
+          <li><b>Done until October.</b> A month is closed when its row says Complete and the Finance tile shows four dots. On 1 October the checklist resets and September waits for the 8th.</li>
+        </ol>
+        <p>The whole run takes one sitting once the export is in. If you get interrupted, the board and the checklist remember exactly where you stopped — that is the point of them.</p>
+
+        <h3>5 · When something looks wrong</h3>
+        <ul>
+          <li><b>Tiles say “engine not answering”, dashboard cards show pencils on the Mac.</b> You are looking at the web copy of the hub, or the engine is off. Open the hub from the Dock icon (it must open localhost:7780). If that page won’t load, double-click <b>AMS Finance.app</b> in Documents › 01 Leisure › 30 App Development › AMS Finance — that starts the engine and opens the hub.</li>
+          <li><b>A dashboard card says “N months behind”.</b> Not an error: the workbook or the report is newer than the dashboard. Ask Sam to refresh that dashboard; the badge clears on the next reload.</li>
+          <li><b>A ⚡ item didn’t tick.</b> Reload the Finance Hub (↻ Refresh). Items tick when the hub sees the matching check go green; if the check is still red, the work isn’t finished as far as the files show.</li>
+          <li><b>A version chip is missing on a card.</b> The hub couldn’t reach that app just now — offline, or the app is being published. Harmless.</li>
+          <li><b>An “Update” bar appears.</b> A newer hub is live. Tap Update. On the Mac the hub is read straight from its folder, so there the newest version is always what you see after a pull in GitHub Desktop.</li>
+          <li><b>Something else.</b> Open Sam or Claude and describe what you see — a screenshot says more than a paragraph.</li>
+        </ul>
+
+        <h3>6 · Keeping it tidy</h3>
+        <p>The disorder crept in because things were added one at a time without a place to put them. These rules give every new thing its place:</p>
+        <ul>
+          <li><b>One front door.</b> Nothing gets its own Dock icon. New things become a card on AMS Main Hub.</li>
+          <li><b>Every card goes on the shelf that says what it is for.</b> Money things on FINANCE, tools on EVERYDAY APPS, Mac-only helpers on MAC TOOLS, everything else in YOUR LINKS.</li>
+          <li><b>Name things with the four words.</b> A new chart page is a Dashboard; a new tool is an App. Never a second name for the same thing.</li>
+          <li><b>One dashboard per question.</b> Before asking for a new chart page, ask whether an existing one could carry the answer.</li>
+          <li><b>Every release writes one line in its app’s version log.</b> That log is the memory of the system — it is what you read after weeks away.</li>
+          <li><b>Files stay where the map says.</b> The budget workbook, ledger and reports keep their folders; the Finance Hub’s tiles point at them, so a moved file shows up as a red check.</li>
+        </ul>
+
+        <h3>7 · The quarterly review</h3>
+        <p>Once a quarter — a good moment is right after a month closes — open AMS Main Hub and answer these honestly. Each “no” or “never” is an improvement waiting to be made; tell Sam or Claude and it becomes a change.</p>
+        <ol>
+          <li>Which tiles did I actually glance at this quarter? Hide the rest with Arrange.</li>
+          <li>Which cards did I never click? Move them down their shelf, or ask whether the app has earned its place.</li>
+          <li>Did any checklist item stay unticked for a reason other than forgetting? Then the step is unclear or too big — split it, or reword it in the Finance Hub.</li>
+          <li>Which step of the monthly run took the longest? Could Sam do more of it, or could the hub check it instead of me?</li>
+          <li>Did I look for something and not find it on the shelf? Give it a card, on the right shelf.</li>
+          <li>Does every name still mean what the four words say? Rename anything that drifted.</li>
+          <li>Did a dashboard answer a question I stopped asking? Retire it rather than keep refreshing it.</li>
+        </ol>
+        <p>Write the answers in the Obsidian vault, or simply tell Claude. Small, regular corrections are what keep a home-grown system feeling like home.</p>
+      </div>
+    </details>
+
     <details class="fold" id="foldData">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
@@ -636,6 +758,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.13', when:'3 Sep 2026',
+    what:'The handbook. A new section under Settings, The system, end to end, written for the day you come back after weeks away: what the system is and the four words it uses, the three layers it is built from, the daily habit, the monthly money process step by step with closing August 2026 as a worked example (what you do, what Sam does, which checks turn green and which checklist items tick themselves), what to do when something looks wrong, six rules that give every new thing its place, and a seven-question quarterly review for finding the next improvement.' },
   { v:'1.12', when:'3 Sep 2026',
     what:'Four shelves, sorted by purpose. The shelf used to be grouped by where the code runs (web apps, on the Mac, your links), which scattered the money system over three places. Now FINANCE comes first and holds all of it: the Finance Hub, the Spend Dashboard and the Finance Dashboard as cards of their own, the latest monthly report, and Sam. Then EVERYDAY APPS, MAC TOOLS and YOUR LINKS. On the Mac, where the Dock app now lands on this hub at localhost:7780, the engine hands the hub the two dashboard addresses and the newest report by itself, and each dashboard card admits how many months it is behind. Elsewhere, tap the pencil on a dashboard card once and paste its address — stored on that device only, and carried in backups. The Finance tile now links straight to the Finance Hub, and the guide opens with Start here and a one-page map of everything.' },
   { v:'1.11', when:'2 Sep 2026',
