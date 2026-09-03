@@ -1,5 +1,5 @@
 /* AMS Main Hub — offline service worker */
-const CACHE = 'ams-mainhub-v13';
+const CACHE = 'ams-mainhub-v14';
 const ASSETS = [
   './',
   './index.html',
