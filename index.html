@@ -471,6 +471,10 @@
     <path d="M13.8 4.8c0 1.4 0 2.8.1 4.2 1.4.1 2.8.1 4.1.1"/>
     <path d="M9.1 12.3c2 0 4 0 5.9-.1M9.1 15.5c1.7.1 3.4 0 5.1-.1"/>
   </symbol>
+  <symbol id="icon-folder" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3.9 7.2c1.9-.3 3.8-.4 5.6-.2.7.6 1.3 1.3 1.9 2 2.9-.1 5.8 0 8.7.2.2 3.2.2 6.4-.1 9.6-5.4.3-10.7.3-16.1 0-.3-3.9-.3-7.7 0-11.6Z"/>
+    <path d="M4.2 11.1c5.2-.2 10.5-.2 15.7 0"/>
+  </symbol>
   <symbol id="icon-linkout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M13.9 5.1c1.7-.1 3.4-.1 5.1 0 .1 1.7.1 3.4 0 5.1"/>
     <path d="M18.7 5.4c-3 2.9-6 5.9-8.8 9"/>
@@ -525,8 +529,9 @@
     <p class="dim" id="editHint" style="font-size:13.5px; margin:0" hidden></p>
     <label>Name</label>
     <input type="text" id="fName" placeholder="e.g. Anna’s recipe site" maxlength="40" />
-    <label>Web address</label>
-    <input type="url" id="fUrl" placeholder="https://…" autocapitalize="off" autocorrect="off" />
+    <label id="fUrlLabel">Web address or Mac path</label>
+    <input type="text" id="fUrl" inputmode="url" placeholder="https://…  or  /Users/…/file.xlsx" autocapitalize="off" autocorrect="off" spellcheck="false" />
+    <p class="dim" id="pathHint" style="font-size:12.5px; margin:-4px 0 0">A web address opens in the browser. A path to a file or folder on the Mac (Finder: right-click → hold ⌥ → Copy as Pathname) opens it on the Mac when the hub is opened from AMS Finance in the Dock.</p>
     <div class="btnrow">
       <button class="btn danger" id="fDelete" style="display:none">Delete</button>
       <button class="btn" id="fCancel">Cancel</button>
@@ -709,6 +714,7 @@
           <summary>Your links<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>The bottom shelf is yours: add any web address you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
+        <p><b>Files and folders on the Mac.</b> The same field also takes a path — for example <code>/Users/you/Library/CloudStorage/Dropbox/Triathlon/Training plan.xlsx</code>. In the Finder, right-click the file, hold ⌥ and choose <b>Copy as Pathname</b>, then paste it here. The card gets a document or folder icon, and a tap opens the file in its own app (or the folder in the Finder). This works from the hub on the Mac — the one AMS Finance in the Dock opens at localhost:7780 — because that copy can ask the Finance engine to open things for it. The engine only opens what exists inside your home folder or on an attached disk. On the iPhone, or in the published copy on the web, tapping such a card simply copies the path.</p>
           </div>
         </details>
 
@@ -889,6 +895,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.16', when:'3 Sep 2026',
+    what:'Your links now take files and folders on the Mac, not only web addresses. Paste a path (Finder: right-click → hold ⌥ → Copy as Pathname) into the same field: the card shows a document or folder icon and a short form of the path, and a tap opens the file in its app or the folder in the Finder. This works from the hub on the Mac, the one AMS Finance in the Dock opens — the Finance engine (v1.14) does the opening, and only for things inside your home folder or on an attached disk. On the iPhone or in the web copy, tapping the card copies the path instead. Quotes and escaped spaces from a Terminal drag are tidied away on save.' },
   { v:'1.15', when:'3 Sep 2026',
     what:'The wealth pencil now takes your accounts, not a single total. Tap it and you get three pages: New entry, with the date and one row per account — type each balance, tap the little arrow to open that bank in Safari and come back, and the total adds itself up (an empty row carries its last balance and says so); Accounts, where you add, rename, link, reorder and delete the accounts — the list starts empty, so the names are yours and never in the public code; and History, every entry with its total, a pencil to correct one, and a daily safety copy that keeps the fullest version it has seen. The Wealth tiles show the newest total, how it moved since the previous entry, and the last entry of each month as the line. On the Mac the workbook figure now sits under your total as a small grey check rather than replacing it. The old one-total-per-month editor is gone; anything typed into it was moved into an account called Earlier totals. Backups carry accounts and entries.' },
   { v:'1.14', when:'3 Sep 2026',
@@ -1061,6 +1069,36 @@ const IS_STANDALONE = (navigator.standalone === true) ||
 
 /* ============ cards ============ */
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+/* ---- Mac paths in Your links ---- */
+function isPath(u){ return /^(\/|~\/)/.test(String(u || '')); }
+/* what Finder, Terminal or a file:// link hand over → a plain absolute path */
+function cleanPath(raw){
+  let p = String(raw || '').trim();
+  if(/^file:\/\//i.test(p)){ try{ p = decodeURIComponent(p.replace(/^file:\/\/(localhost)?/i, '')); }catch(e){ p = p.replace(/^file:\/\/(localhost)?/i, ''); } }
+  p = p.replace(/^['"‘’“”]+|['"‘’“”]+$/g, '');       /* quotes Terminal wraps around a dragged file */
+  p = p.replace(/\\ /g, ' ');                       /* escaped spaces from a Terminal drag */
+  if(p.length > 1) p = p.replace(/\/+$/, '');        /* trailing slash on a folder */
+  return p;
+}
+function pathLooksLikeFile(p){ return /\.[A-Za-z0-9]{1,6}$/.test(p.split('/').pop() || ''); }
+function pathName(p){ return p.split('/').filter(Boolean).pop() || p; }
+function shortPath(p){ return p.replace(/^\/Users\/[^/]+/, '~'); }
+/* the hub can only ask the engine when it is served from the engine itself (localhost:7780/hub) */
+const FROM_ENGINE = /^https?:\/\/(localhost|127\.0\.0\.1):7780$/.test(location.origin);
+async function openPath(l){
+  const p = l.url;
+  try{
+    const res = await fetch(ENGINE + '/api/openpath?p=' + encodeURIComponent(p) + '&vercheck=' + Date.now(), { cache:'no-store' });
+    const data = await res.json().catch(() => null);
+    if(res.ok && data && data.ok){ showToast('Opening ' + pathName(p) + '…', null, '', 2500); return; }
+    if(data && data.error === 'missing'){ showToast('Nothing at that path on this Mac — check the spelling with the pencil.', null, '', 6000); return; }
+    if(data && data.error === 'outside'){ showToast('The hub only opens things inside your home folder or on an attached disk.', null, '', 6000); return; }
+  }catch(e){ /* not on the Mac, or the hub is the published copy — fall through */ }
+  const why = FROM_ENGINE ? 'The Finance engine is not answering — open AMS Finance from the Dock once.'
+                          : 'Mac paths open from the hub on the Mac (AMS Finance in the Dock). Copied it for you.';
+  if(!FROM_ENGINE){ try{ await navigator.clipboard.writeText(p); }catch(e){} }
+  showToast(why, null, '', 6000);
+}
 
 const WHERE_ICON = { iphone:'dev-iphone', mac:'dev-mac', cloud:'dev-cloud', excel:'dev-excel', vault:'dev-vault' };
 
@@ -1166,10 +1204,12 @@ function renderLinks(){
   $('linkCards').innerHTML = L.map(l => {
     const cw = colorway(l.color);
     const dot = cw ? cw.dot : '#d96a45', bg = cw ? cw.tint : '#fff';
+    const path = isPath(l.url);
+    const icon = !path ? 'icon-linkout' : (pathLooksLikeFile(l.url) ? 'icon-document' : 'icon-folder');
     return `
     <div class="cardrow" data-id="${esc(l.id)}" style="background:${bg}">
-      <span class="badge" style="color:${dot}"><svg class="hi"><use href="#icon-linkout"/></svg></span>
-      <span class="cmid"><span class="cname">${esc(l.name)}</span><span class="csub" style="display:block">${esc(l.url)}</span></span>
+      <span class="badge" style="color:${dot}"><svg class="hi"><use href="#${icon}"/></svg></span>
+      <span class="cmid"><span class="cname">${esc(l.name)}</span><span class="csub" style="display:block">${esc(path ? shortPath(l.url) : l.url)}</span></span>
       <span class="cright"><button class="rowbtn" data-edit="${esc(l.id)}" aria-label="Edit"><svg class="hi"><use href="#icon-pencil"/></svg></button>${clusterHTML('links', l.id)}</span>
     </div>`;
   }).join('') +
@@ -1180,7 +1220,8 @@ function renderLinks(){
       if(document.body.classList.contains('custom')) return;
       if(e.target.closest('[data-edit]')) return;
       const l = state.links.find(x => x.id === el.dataset.id);
-      if(l) window.open(l.url, '_blank');
+      if(!l) return;
+      if(isPath(l.url)) openPath(l); else window.open(l.url, '_blank');
     });
   });
   document.querySelectorAll('#linkCards [data-edit]').forEach(btn => {
@@ -1198,6 +1239,8 @@ function openEdit(id){
   const l = id ? state.links.find(x => x.id === id) : null;
   $('editTitle').textContent = l ? 'Edit link' : 'New link';
   $('editHint').hidden = true;
+  $('fUrlLabel').textContent = 'Web address or Mac path';
+  $('pathHint').hidden = false;
   $('fName').disabled = false;
   $('fName').value = l ? l.name : '';
   $('fUrl').value = l ? l.url : '';
@@ -1212,6 +1255,8 @@ function openFinEdit(slot){
   $('editTitle').textContent = a.name;
   $('editHint').textContent = 'Paste the dashboard’s address (it lives on claude.ai). It is stored only on this device. On the Mac, opened from localhost:7780, the Finance engine fills this in by itself.';
   $('editHint').hidden = false;
+  $('fUrlLabel').textContent = 'Web address';
+  $('pathHint').hidden = true;
   $('fName').value = a.name; $('fName').disabled = true;
   $('fUrl').value = finLinks[slot] || '';
   $('fDelete').style.display = finLinks[slot] ? '' : 'none';
@@ -1222,8 +1267,10 @@ $('fSave').addEventListener('click', () => {
   const name = $('fName').value.trim();
   let url = $('fUrl').value.trim();
   if(!name){ alert('Give the link a name.'); return; }
-  if(!url){ alert('Fill in the web address.'); return; }
-  if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if(!url){ alert('Fill in the web address or the path.'); return; }
+  const cleaned = cleanPath(url);
+  if(!editingFin && isPath(cleaned)) url = cleaned;
+  else if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
   if(editingFin){
     finLinks[editingFin] = url; saveFinLinks(); renderShelf();
     $('ovEdit').classList.remove('show');
