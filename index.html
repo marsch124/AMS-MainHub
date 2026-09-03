@@ -147,12 +147,37 @@
   .mtile.off{display:none;}
   body.custom .mtile.off{display:flex; opacity:.45;}
 
-  /* wealth editor rows */
-  .wrow{display:flex; align-items:center; gap:10px; margin-top:9px;}
-  .wrow .wm{flex:0 0 88px; font-size:13.5px; font-weight:700; color:var(--ink-dim);}
-  .wrow input{flex:1; min-height:42px; padding:8px 12px;}
-  .wrow .weng{flex:1; font-size:14.5px; font-weight:600; font-variant-numeric:tabular-nums;}
-  .wrow .wtag{font-size:10px; font-weight:800; letter-spacing:.08em; color:#5868c9; background:#e2e6fa; padding:3px 7px; border-radius:7px;}
+  /* wealth sheet: New entry · Accounts · History */
+  .wnav{display:flex; gap:6px; margin:-4px 0 6px;}
+  .wtab{
+    flex:1; padding:9px 6px; border-radius:12px; border:1px solid var(--line); background:var(--bg);
+    color:var(--ink-dim); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer;
+  }
+  .wtab.cur{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .wrow{display:flex; align-items:center; gap:8px; margin-top:9px;}
+  .wrow .wm{flex:0 0 84px; font-size:13.5px; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .wrow input{flex:1; min-width:0; min-height:42px; padding:8px 12px; text-align:right; font-variant-numeric:tabular-nums;}
+  .wrow .wkr{font-size:12.5px; font-weight:700; color:var(--ink-dim);}
+  .wlink{
+    flex:0 0 auto; width:34px; height:34px; border-radius:12px; background:rgba(28,32,40,.06);
+    display:flex; align-items:center; justify-content:center; color:var(--accent);
+  }
+  .wlink .hi{width:17px; height:17px;}
+  .wlink.none{background:none;}
+  .wtot{display:flex; align-items:baseline; justify-content:space-between; margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
+  .wtot span{font-size:13px; color:var(--ink-dim); font-weight:600;}
+  .wtot b{font-size:24px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
+  .wnote{font-size:13px !important; margin:6px 0 0 !important;}
+  .wnote.warn{color:#b4680f;}
+  .arow{display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line);}
+  .arow .anum{flex:0 0 18px; font-size:12px; font-weight:800; color:var(--ink-dim);}
+  .arow .amid{flex:1; min-width:0;}
+  .arow .aname{font-size:15px; font-weight:700;}
+  .arow .aurl{font-size:12px; color:var(--ink-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+  .arow .asum{font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;}
+  .arow .rowbtn{background:rgba(28,32,40,.06);}
+  .arow .rowbtn:disabled{opacity:.25;}
+  .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
 
   /* colour swatches */
   .swgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;}
@@ -225,7 +250,7 @@
   .hbstate{font-size:12.5px; color:var(--ink-dim); margin:4px 0 0; padding-left:2px;}
   .hbstate b{color:var(--ink);}
   label{display:block; font-size:13px; color:var(--ink-dim); margin:14px 0 6px; letter-spacing:.03em; font-weight:600;}
-  input[type=text], input[type=url]{
+  input[type=text], input[type=url], input[type=date]{
     width:100%; padding:13px 14px; border-radius:13px; border:1px solid var(--line);
     background:var(--bg); color:var(--ink); font-size:16px; outline:none;
     font-family:inherit; -webkit-appearance:none; min-height:48px;
@@ -521,17 +546,17 @@
   </div>
 </div>
 
-<!-- ============ wealth numbers editor ============ -->
+<!-- ============ wealth: accounts + dated entries ============ -->
 <div class="overlay" id="ovWealth">
   <div class="sheet">
     <button class="iconbtn closex" id="wealthClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
-    <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth numbers</h2>
-    <p class="dim" style="font-size:13.5px; margin:0">One total per month, in kronor (e.g. 7799000). Months marked ENGINE come straight from the budget workbook on the Mac and are not edited here. Everything stays on this device.</p>
-    <div id="wRows"></div>
-    <div class="btnrow">
-      <button class="btn" id="wCancel">Cancel</button>
-      <button class="btn primary" id="wSave">Save</button>
+    <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth</h2>
+    <div class="wnav">
+      <button class="wtab" data-wv="entry">New entry</button>
+      <button class="wtab" data-wv="accounts">Accounts</button>
+      <button class="wtab" data-wv="history">History</button>
     </div>
+    <div id="wBody"></div>
   </div>
 </div>
 
@@ -631,12 +656,25 @@
         <p><b>You choose which ones appear.</b> Tap <b>Arrange</b> and every tile grows a small circle in its corner — filled means shown, empty means hidden. Tiles you switch off stay on screen while you are arranging, greyed out, so you can always bring one back. Tap the tick when you are done; your choice is remembered on this device.</p>
         <ul>
           <li><b>Wealth · 0</b> — the very same money, drawn from zero instead. Honest about scale: the filled block shows how much there is, and a year of movement is only a slight tilt along the top. Keep it beside the other one, or keep just the one you prefer.</li>
-          <li><b>Wealth</b> — your latest net-worth total, how it moved since the month before, and a small line showing its shape over the past year. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the <b>pencil</b> on this tile and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
+          <li><b>Wealth</b> — your latest total, how it moved since your previous entry, and a small line showing its shape over the past year. The total is the sum of the account balances you type in through the <b>pencil</b> on this tile — see <b>Entering your wealth</b> below. On the Mac, if the budget workbook has a figure for the same month, it appears as a small grey <b>workbook</b> line under your total so you can spot a mismatch; your own entry is always the number that counts. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
           <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
           <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
+          </div>
+        </details>
+
+        <details class="sub">
+          <summary>Entering your wealth<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
+        <p>Tap the <b>pencil</b> on the Wealth tile. The sheet has three pages, chosen with the buttons at the top:</p>
+        <ul>
+          <li><b>New entry</b> — the date (today, unless you change it) and one row per account. Type each balance in kronor; spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it; ▲ ▼ change the order of the rows. Deleting an account keeps its old balances in past entries — it only stops appearing in new ones.</li>
+          <li><b>History</b> — every entry, newest first, with its total and what was carried. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+        </ul>
+        <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
         </details>
 
@@ -655,7 +693,7 @@
         <p>And the whole landscape on one page, for the day you come back after weeks away:</p>
         <div class="mapwrap"><table class="map">
           <tr><th>What</th><th>Kind</th><th>Runs</th><th>Its data</th></tr>
-          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780, the Dock app)</td><td>Links, order, colours and typed numbers on each device</td></tr>
+          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780, the Dock app)</td><td>Links, order, colours, wealth accounts and entries — on each device</td></tr>
           <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, localhost:7780/finance</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
           <tr><td><b>Spend Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the monthly report</td></tr>
           <tr><td><b>Finance Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the budget workbook</td></tr>
@@ -677,7 +715,7 @@
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, the dashboard addresses and any wealth numbers you've typed in — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links and numbers came back, and if anything goes wrong your current data and your backup file are left untouched.</p>
+        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, the dashboard addresses, and your wealth accounts and entries — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
           </div>
         </details>
 
@@ -730,7 +768,7 @@
           <div class="subbody">
         <p>One habit, same on every device: <b>open AMS Main Hub, read the tiles, tap the card you need.</b></p>
         <ul>
-          <li><b>Wealth</b> — the latest net-worth total and its shape over the past year. Read from the budget workbook on the Mac.</li>
+          <li><b>Wealth</b> — the total of your newest entry and its shape over the past year. Typed in through the pencil on the tile, one balance per account; on the Mac the workbook's figure sits under it as a check.</li>
           <li><b>Finance</b> — the month being reported, with a dot for each of the four steps. All four filled means nothing is waiting. A missing dot means the Finance shelf is where the work is.</li>
           <li><b>Retirement</b> and <b>The year</b> — the calendar, at a glance.</li>
         </ul>
@@ -824,7 +862,7 @@
     <details class="fold" id="foldData">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, the dashboard addresses and any typed wealth numbers live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
+        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, the dashboard addresses and your wealth accounts and entries live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
         <button class="btn full" id="exportBtn">Export my links</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn">Import / restore…</button>
@@ -851,6 +889,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.15', when:'3 Sep 2026',
+    what:'The wealth pencil now takes your accounts, not a single total. Tap it and you get three pages: New entry, with the date and one row per account — type each balance, tap the little arrow to open that bank in Safari and come back, and the total adds itself up (an empty row carries its last balance and says so); Accounts, where you add, rename, link, reorder and delete the accounts — the list starts empty, so the names are yours and never in the public code; and History, every entry with its total, a pencil to correct one, and a daily safety copy that keeps the fullest version it has seen. The Wealth tiles show the newest total, how it moved since the previous entry, and the last entry of each month as the line. On the Mac the workbook figure now sits under your total as a small grey check rather than replacing it. The old one-total-per-month editor is gone; anything typed into it was moved into an account called Earlier totals. Backups carry accounts and entries.' },
   { v:'1.14', when:'3 Sep 2026',
     what:'Shorter guides. Every chapter in How this works and in The system, end to end is now its own fold: open a section and you see a short list of chapter titles, tap one to read it. The Settings sheet is a little wider on the Mac so lines read comfortably; on the iPhone it stays as it was.' },
   { v:'1.13', when:'3 Sep 2026',
@@ -1353,8 +1393,12 @@ $('paintReset').addEventListener('click', () => setColor(null));
 $('paintCancel').addEventListener('click', () => $('ovPaint').classList.remove('show'));
 
 /* ============ mini panels ============ */
-const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engine */
-const W_MANUAL_KEY = 'amshub.wealth.manual';   /* typed in by hand */
+const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engine (Mac) */
+const W_ACC_KEY    = 'amshub.wealth.accounts'; /* [{id,name,url}] in his order */
+const W_ENT_KEY    = 'amshub.wealth.entries';  /* { 'YYYY-MM-DD': { v:{accId:kr}, c:[carried accIds] } } */
+const W_DRAFT_KEY  = 'amshub.wealth.draft';    /* what he was typing when he left for the bank app */
+const W_SNAP_KEY   = 'amshub.wealth.snaps';    /* daily safety copies, the fullest one is never dropped */
+const W_LEGACY_KEY = 'amshub.wealth.manual';   /* pre-1.15 one-total-per-month editor */
 const ENGINE = 'http://localhost:7780';
 const RETIREMENT = new Date(2028, 6, 1);       /* 1 July 2028 */
 
@@ -1397,20 +1441,84 @@ function toggleTile(id){
   renderMini();
 }
 
-/* engine value wins for a month it has; typed numbers fill the gaps */
+/* ---- wealth store: accounts + dated entries ---- */
+let wAcc = loadJSON(W_ACC_KEY, []);
+let wEnt = loadJSON(W_ENT_KEY, {});
+if(!Array.isArray(wAcc)) wAcc = [];
+if(!wEnt || typeof wEnt !== 'object' || Array.isArray(wEnt)) wEnt = {};
+function saveWealth(){ storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); snapWealth(); }
+function fmtKr(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
+function parseKr(s){ const d = String(s == null ? '' : s).replace(/[^\d]/g, ''); return d ? parseInt(d, 10) : null; }
+function entryTotal(e){ return Object.values(e.v || {}).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0); }
+function entryDates(){ return Object.keys(wEnt).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d) && wEnt[d] && wEnt[d].v).sort(); }
+/* the newest entry on or before a date — but never the one currently being corrected */
+function lastEntryBefore(date){ const ds = entryDates().filter(d => d <= date && d !== wEditDate); return ds.length ? { date: ds[ds.length - 1], e: wEnt[ds[ds.length - 1]] } : null; }
+const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+function dayLabel(d){ const [y, m, dd] = d.split('-').map(Number); return `${dd} ${MON3[m - 1]}`; }
+function todayKey(){ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
+function newAccId(){ return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
+
+/* pre-1.15 month totals (from this device or an old backup) become entries under one account */
+function importLegacyTotals(map){
+  if(!map || typeof map !== 'object' || Array.isArray(map)) return 0;
+  const months = Object.keys(map).filter(m => /^\d{4}-\d{2}$/.test(m) && typeof map[m] === 'number' && map[m] > 0);
+  if(!months.length) return 0;
+  let acc = wAcc.find(a => a.legacy);
+  if(!acc){ acc = { id:newAccId(), name:'Earlier totals', url:'', legacy:true }; wAcc.push(acc); }
+  let n = 0;
+  months.forEach(m => { const d = m + '-01'; if(!wEnt[d]){ wEnt[d] = { v:{ [acc.id]: map[m] }, c:[] }; n++; } });
+  saveWealth();
+  return n;
+}
+importLegacyTotals(loadJSON(W_LEGACY_KEY, null));
+try{ localStorage.removeItem(W_LEGACY_KEY); }catch(e){}
+
+/* daily safety copy — one per day (today's is refreshed by a save only when the new state is at
+   least as full), at most seven kept, and the fullest one is never the one dropped */
+function snapWealth(){
+  const n = entryDates().length;
+  if(!n && !wAcc.length) return;
+  const snaps = loadJSON(W_SNAP_KEY, []).filter(s => s && s.day);
+  const today = todayKey();
+  const i = snaps.findIndex(s => s.day === today);
+  if(i >= 0){
+    if(n < snaps[i].n) return;                       /* never replace a fuller copy with a thinner one */
+    snaps[i] = { day:today, n, accounts:wAcc, entries:wEnt };
+    storeJSON(W_SNAP_KEY, snaps);
+    return;
+  }
+  snaps.push({ day:today, n, accounts:wAcc, entries:wEnt });
+  while(snaps.length > 7){
+    const fullest = snaps.reduce((b, s) => (s.n > b.n ? s : b), snaps[0]);
+    const i = snaps.findIndex(s => s !== fullest);
+    snaps.splice(i, 1);
+  }
+  storeJSON(W_SNAP_KEY, snaps);
+}
+function fullestSnap(){
+  const snaps = loadJSON(W_SNAP_KEY, []).filter(s => s && s.day && s.entries);
+  return snaps.length ? snaps.reduce((b, s) => (s.n > b.n ? s : b), snaps[0]) : null;
+}
+snapWealth();
+
+/* the series the tiles draw: one point per month = the last entry of that month.
+   Your own entries always win; the engine (workbook) only fills months you have not typed. */
 function wealthData(){
   const engine = loadJSON(W_ENGINE_KEY, null);
-  const manual = loadJSON(W_MANUAL_KEY, {});
   const map = new Map();
   if(engine && Array.isArray(engine.series)){
     engine.series.forEach(p => { if(p && /^\d{4}-\d{2}$/.test(p.month)) map.set(p.month, typeof p.value === 'number' ? p.value : null); });
   }
-  Object.keys(manual).forEach(m => {
-    if(/^\d{4}-\d{2}$/.test(m) && typeof manual[m] === 'number' && map.get(m) == null) map.set(m, manual[m]);
-  });
+  entryDates().forEach(d => map.set(d.slice(0, 7), entryTotal(wEnt[d])));
   const cur = monthKey(new Date());
   const months = [...map.keys()].filter(m => m <= cur).sort().slice(-12);
   return months.map(m => ({ month:m, value: map.get(m) == null ? null : map.get(m) }));
+}
+function engineValue(month){
+  const engine = loadJSON(W_ENGINE_KEY, null);
+  if(!engine || !Array.isArray(engine.series)) return null;
+  const p = engine.series.find(q => q && q.month === month);
+  return p && typeof p.value === 'number' ? p.value : null;
 }
 
 /* zeroBased: measure from 0 and fill the area, so the tile answers
@@ -1444,13 +1552,26 @@ function wealthSpark(S, known, p, zeroBased){
 function renderWealth(p, zeroBased){
   const S = wealthData();
   const known = S.filter(x => x.value != null);
-  if(!known.length) return `<div class="mbig">—</div><div class="msub">no numbers yet</div>`;
+  if(!known.length) return `<div class="mbig">—</div><div class="msub">${wAcc.length ? 'no entries yet' : 'tap the pencil to start'}</div>`;
   const last = known[known.length - 1], prev = known[known.length - 2];
-  const sub = prev
-    ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
-    : monthLabel(last.month);
+  let sub, check = '';
+  const ds = entryDates();
+  if(ds.length && ds[ds.length - 1].slice(0, 7) === last.month){
+    /* the newest point is one of his own entries: compare with the entry before it */
+    const nd = ds[ds.length - 1], pd = ds[ds.length - 2], pe = pd ? { date: pd, e: wEnt[pd] } : null;
+    const nt = entryTotal(wEnt[nd]);
+    sub = pe
+      ? `${nt - entryTotal(pe.e) < 0 ? '−' : '+'}${fmtM(Math.abs(nt - entryTotal(pe.e)))} since ${dayLabel(pe.date)}`
+      : `entered ${dayLabel(nd)}`;
+    const ev = engineValue(last.month);
+    if(ev != null && ev !== nt && !zeroBased) check = `<div class="msub">workbook ${fmtM(ev)}</div>`;
+  }else{
+    sub = prev
+      ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
+      : monthLabel(last.month);
+  }
   return `<div class="mbig">${fmtM(last.value)}</div>
-    <div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>
+    <div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>${check}
     ${wealthSpark(S, known, p, zeroBased)}`;
 }
 function renderWealth0(p){ return renderWealth(p, true); }
@@ -1502,11 +1623,11 @@ function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
     <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${p.tint}">
       <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
-        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" aria-label="Edit the wealth numbers"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
+        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" aria-label="Enter your wealth"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
       }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
       <div class="mbody" id="mt-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
-  $('miniEdit').addEventListener('click', openWealthEditor);
+  $('miniEdit').addEventListener('click', () => openWealth('entry'));
   document.querySelectorAll('[data-tile]').forEach(b =>
     b.addEventListener('click', () => toggleTile(b.dataset.tile)));
 }
@@ -1525,7 +1646,7 @@ async function fetchWealth(){
     const data = await res.json();
     if(data && data.ok && Array.isArray(data.series)){
       storeJSON(W_ENGINE_KEY, { fetchedAt: new Date().toISOString(), series: data.series });
-      renderTile('wealth');
+      renderTile('wealth'); renderTile('wealth0');
     }
   }catch(e){ /* engine off or unreachable */ }
 }
@@ -1548,43 +1669,248 @@ async function fetchLinks(){
   }catch(e){ /* not on the Mac, or served from the web */ }
 }
 
-/* wealth editor: engine months shown locked, the rest typed by hand */
-function openWealthEditor(){
-  const engine = loadJSON(W_ENGINE_KEY, null);
-  const engineMap = new Map();
-  if(engine && Array.isArray(engine.series)){
-    engine.series.forEach(p => { if(p && typeof p.value === 'number') engineMap.set(p.month, p.value); });
-  }
-  const manual = loadJSON(W_MANUAL_KEY, {});
-  const now = new Date(), rows = [];
-  for(let i = 0; i < 14; i++){
-    const m = monthKey(new Date(now.getFullYear(), now.getMonth() - i, 1));
-    if(engineMap.has(m)){
-      rows.push(`<div class="wrow"><span class="wm">${monthLabel(m)}</span><span class="weng">${engineMap.get(m).toLocaleString('en-GB')} kr</span><span class="wtag">ENGINE</span></div>`);
-    }else{
-      const v = typeof manual[m] === 'number' ? manual[m] : '';
-      rows.push(`<div class="wrow"><span class="wm">${monthLabel(m)}</span><input type="text" inputmode="numeric" data-wm="${m}" value="${v}" placeholder="—" /></div>`);
-    }
-  }
-  $('wRows').innerHTML = rows.join('');
+/* ============ the wealth sheet: New entry · Accounts · History ============ */
+let wView = 'entry';
+let wEditDate = null;          /* the ORIGINAL date of the entry being corrected (never changes mid-edit) */
+let wTyped = {};               /* accId -> raw string, survives a date change or a page switch */
+let wDate = null;              /* the date shown in the form */
+
+function wOpenTab(v){
+  wView = v;
+  document.querySelectorAll('.wtab').forEach(b => b.classList.toggle('cur', b.dataset.wv === v));
+  const body = $('wBody');
+  body.innerHTML = v === 'entry' ? viewEntry() : v === 'accounts' ? viewAccounts() : viewHistory();
+  if(v === 'entry') bindEntry(); else if(v === 'accounts') bindAccounts(); else bindHistory();
+}
+function openWealth(v){
+  wEditDate = null; wTyped = {}; wDate = null;
+  const draft = loadJSON(W_DRAFT_KEY, null);
+  if(draft && draft.date && draft.v){ wDate = draft.date; wTyped = draft.v; }
+  wOpenTab(v || 'entry');
   $('ovWealth').classList.add('show');
 }
-/* the pencil lives inside the Wealth tile now, so renderMini() binds it */
-$('wealthClose').addEventListener('click', () => $('ovWealth').classList.remove('show'));
-$('wCancel').addEventListener('click', () => $('ovWealth').classList.remove('show'));
-$('wSave').addEventListener('click', () => {
-  const manual = loadJSON(W_MANUAL_KEY, {});
-  document.querySelectorAll('#wRows [data-wm]').forEach(inp => {
-    const m = inp.dataset.wm;
-    const raw = inp.value.replace(/[\s.,']/g, '');   /* 7 799 000 / 7.799.000 / 7,799,000 all fine */
-    if(raw === ''){ delete manual[m]; return; }
-    const n = parseInt(raw, 10);
-    if(Number.isFinite(n) && n > 0) manual[m] = n; else delete manual[m];
+function closeWealth(){ $('ovWealth').classList.remove('show'); wEditDate = null; }
+function refreshWealthTiles(){ renderTile('wealth'); renderTile('wealth0'); }
+document.querySelectorAll('.wtab').forEach(b => b.addEventListener('click', () => wOpenTab(b.dataset.wv)));
+$('wealthClose').addEventListener('click', closeWealth);
+
+/* ---- New entry ---- */
+function viewEntry(){
+  if(!wAcc.length){
+    return `<p class="dim" style="margin:6px 0 0">No accounts yet. Add each one you want to count — a bank, a broker, a fund — and it becomes a row here.</p>
+      <button class="btn full primary" data-wv="accounts">Add your accounts</button>`;
+  }
+  const date = wDate || todayKey();
+  const existing = wEnt[date];
+  const base = wEditDate ? wEnt[wEditDate] : null;
+  const prev = lastEntryBefore(date);
+  const rows = wAcc.map(a => {
+    const last = wEditDate ? null : (prev && typeof prev.e.v[a.id] === 'number' ? prev.e.v[a.id] : null);
+    const v = wTyped[a.id];
+    return `<div class="wrow">
+      <span class="wm">${esc(a.name)}</span>
+      <input type="text" inputmode="numeric" data-wa="${a.id}" value="${esc(v || '')}" placeholder="${last != null ? 'last: ' + fmtKr(last) : (base && typeof base.v[a.id] === 'number' ? 'carried: ' + fmtKr(base.v[a.id]) : '—')}" autocomplete="off" />
+      <span class="wkr">kr</span>
+      ${a.url ? `<a class="wlink" href="${esc(a.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.name)}"><svg class="hi"><use href="#icon-linkout"/></svg></a>` : '<span class="wlink none"></span>'}
+    </div>`;
+  }).join('');
+  return `<label>Date</label>
+    <input type="date" id="wDate" value="${date}" max="${todayKey()}" />
+    ${existing && date !== wEditDate ? `<p class="dim wnote warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
+    ${wEditDate ? `<p class="dim wnote">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
+    ${rows}
+    <div class="wtot"><span>Total</span><b id="wTotal">—</b></div>
+    <p class="dim wnote" id="wSince"></p>
+    <div class="btnrow">
+      <button class="btn" id="wCancel">Cancel</button>
+      <button class="btn primary" id="wSave">${wEditDate ? 'Save changes' : 'Save entry'}</button>
+    </div>`;
+}
+/* what would be saved right now: typed balances, and the last known one for every empty row.
+   When correcting an existing entry, an empty row keeps what THAT entry had (or stays out) —
+   it never borrows a balance from some other date. */
+function entryFromForm(date){
+  const prev = lastEntryBefore(date);
+  const base = wEditDate ? wEnt[wEditDate] : null;
+  const v = {}, c = [];
+  let typedAny = false;
+  wAcc.forEach(a => {
+    const n = parseKr(wTyped[a.id]);
+    if(n != null && n >= 0){ v[a.id] = n; typedAny = true; }
+    else if(base){
+      if(typeof base.v[a.id] === 'number'){ v[a.id] = base.v[a.id]; if((base.c || []).includes(a.id)) c.push(a.id); typedAny = true; }
+    }
+    else if(prev && typeof prev.e.v[a.id] === 'number'){ v[a.id] = prev.e.v[a.id]; c.push(a.id); }
   });
-  storeJSON(W_MANUAL_KEY, manual);
-  $('ovWealth').classList.remove('show');
-  renderTile('wealth');
-});
+  return { v, c, typedAny, prev, base };
+}
+function updateTotalLine(){
+  const date = $('wDate').value || todayKey();
+  const f = entryFromForm(date);
+  const tot = entryTotal(f);
+  $('wTotal').textContent = Object.keys(f.v).length ? fmtKr(tot) + ' kr' : '—';
+  const bits = [];
+  if(f.prev && Object.keys(f.v).length){
+    const d = tot - entryTotal(f.prev.e);
+    bits.push(`${d < 0 ? '−' : '+'}${fmtKr(Math.abs(d))} kr since ${dayLabel(f.prev.date)}`);
+  }else if(Object.keys(f.v).length){ bits.push('first entry'); }
+  if(f.c.length) bits.push(`${f.c.map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean).join(', ')} carried${f.prev && !f.base ? ' from ' + dayLabel(f.prev.date) : ''}`);
+  if(f.prev && f.prev.date === date && !f.base) bits.push('replaces the entry already saved for this date');
+  $('wSince').textContent = bits.join(' · ');
+}
+function bindEntry(){
+  const goAcc = document.querySelector('#wBody [data-wv]');
+  if(goAcc){ goAcc.addEventListener('click', () => wOpenTab('accounts')); return; }
+  const saveDraft = () => { if(!wEditDate) storeJSON(W_DRAFT_KEY, { date: $('wDate').value || todayKey(), v: wTyped }); };
+  document.querySelectorAll('#wBody [data-wa]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      const raw = inp.value;
+      if(raw.trim() === '') delete wTyped[inp.dataset.wa]; else wTyped[inp.dataset.wa] = raw;
+      updateTotalLine(); saveDraft();
+    });
+    inp.addEventListener('blur', () => { const n = parseKr(inp.value); if(n != null){ inp.value = fmtKr(n); wTyped[inp.dataset.wa] = inp.value; } });
+  });
+  $('wDate').addEventListener('change', () => {
+    const d = $('wDate').value;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
+    wDate = d;
+    saveDraft();
+    wOpenTab('entry');
+  });
+  $('wCancel').addEventListener('click', () => {
+    try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
+    closeWealth();
+  });
+  $('wSave').addEventListener('click', () => {
+    const date = $('wDate').value;
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ alert('Pick a date first.'); return; }
+    if(date > todayKey()){ alert('That date is in the future.'); return; }
+    const f = entryFromForm(date);
+    if(!f.typedAny){ alert('Type at least one balance.'); return; }
+    if(wEditDate && wEditDate !== date && wEnt[date] && !confirm(`There is already an entry for ${dayLabel(date)}. Replace it?`)) return;
+    if(wEditDate && wEditDate !== date) delete wEnt[wEditDate];
+    wEnt[date] = { v:f.v, c:f.c, at:new Date().toISOString() };
+    saveWealth();
+    try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
+    wTyped = {}; wDate = null; wEditDate = null;
+    refreshWealthTiles();
+    closeWealth();
+    showToast(`Saved — ${fmtKr(entryTotal(f))} kr on ${dayLabel(date)}${f.c.length ? ` (${f.c.length} carried)` : ''}`);
+  });
+  updateTotalLine();
+}
+
+/* ---- Accounts ---- */
+let wAccForm = null;   /* null = list; 'new' = adding; an id = editing that one */
+function viewAccounts(){
+  if(wAccForm){
+    const a = wAccForm === 'new' ? { name:'', url:'' } : (wAcc.find(x => x.id === wAccForm) || { name:'', url:'' });
+    return `<label>Name</label>
+      <input type="text" id="waName" value="${esc(a.name)}" placeholder="e.g. ISK" maxlength="30" />
+      <label>Web address of the bank or broker (optional)</label>
+      <input type="url" id="waUrl" value="${esc(a.url || '')}" placeholder="https://…" autocapitalize="off" autocorrect="off" />
+      <div class="btnrow">
+        ${wAccForm !== 'new' ? '<button class="btn danger" id="waDelete">Delete</button>' : ''}
+        <button class="btn" id="waCancel">Cancel</button>
+        <button class="btn primary" id="waSave">Save</button>
+      </div>`;
+  }
+  const latest = entryDates().length ? wEnt[entryDates()[entryDates().length - 1]] : null;
+  const rows = wAcc.map((a, i) => `<div class="arow">
+      <span class="anum">${i + 1}</span>
+      <div class="amid"><div class="aname">${esc(a.name)}</div><div class="aurl">${a.url ? esc(a.url.replace(/^https?:\/\//i, '')) : 'no link'}</div></div>
+      ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
+      <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
+      <button class="rowbtn" data-wup="${a.id}" aria-label="Move up" ${i === 0 ? 'disabled' : ''}><svg class="hi"><use href="#icon-up"/></svg></button>
+      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move down" ${i === wAcc.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
+    </div>`).join('');
+  return `${rows || '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
+    <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
+    <p class="dim wnote">Deleting an account keeps its balances in past entries — it only stops appearing in new ones.</p>`;
+}
+function bindAccounts(){
+  if(wAccForm){
+    $('waCancel').addEventListener('click', () => { wAccForm = null; wOpenTab('accounts'); });
+    $('waSave').addEventListener('click', () => {
+      const name = $('waName').value.trim();
+      let url = $('waUrl').value.trim();
+      if(!name){ alert('Give the account a name.'); return; }
+      if(url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
+      if(wAccForm === 'new') wAcc.push({ id:newAccId(), name, url });
+      else { const a = wAcc.find(x => x.id === wAccForm); if(a){ a.name = name; a.url = url; } }
+      saveWealth(); wAccForm = null; wOpenTab('accounts'); refreshWealthTiles();
+    });
+    const del = $('waDelete');
+    if(del) del.addEventListener('click', () => {
+      const a = wAcc.find(x => x.id === wAccForm);
+      if(a && confirm(`Delete ${a.name}? Its past balances stay in History.`)){
+        wAcc = wAcc.filter(x => x.id !== wAccForm);
+        delete wTyped[wAccForm];
+        saveWealth(); wAccForm = null; wOpenTab('accounts'); refreshWealthTiles();
+      }
+    });
+    setTimeout(() => $('waName').focus(), 50);
+    return;
+  }
+  $('waAdd').addEventListener('click', () => { wAccForm = 'new'; wOpenTab('accounts'); });
+  document.querySelectorAll('[data-wedit]').forEach(b => b.addEventListener('click', () => { wAccForm = b.dataset.wedit; wOpenTab('accounts'); }));
+  const move = (id, dir) => {
+    const i = wAcc.findIndex(a => a.id === id), j = i + dir;
+    if(i < 0 || j < 0 || j >= wAcc.length) return;
+    [wAcc[i], wAcc[j]] = [wAcc[j], wAcc[i]];
+    saveWealth(); wOpenTab('accounts');
+  };
+  document.querySelectorAll('[data-wup]').forEach(b => b.addEventListener('click', () => move(b.dataset.wup, -1)));
+  document.querySelectorAll('[data-wdown]').forEach(b => b.addEventListener('click', () => move(b.dataset.wdown, 1)));
+}
+
+/* ---- History ---- */
+function viewHistory(){
+  const ds = entryDates().slice().reverse();
+  const rows = ds.map(d => {
+    const e = wEnt[d];
+    const carried = (e.c || []).map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean);
+    return `<div class="arow">
+      <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${carried.length ? 'carried: ' + esc(carried.join(', ')) : Object.keys(e.v).length + ' account' + (Object.keys(e.v).length === 1 ? '' : 's')}</div></div>
+      <span class="asum">${fmtKr(entryTotal(e))}</span>
+      <button class="rowbtn" data-hedit="${d}" aria-label="Correct this entry"><svg class="hi"><use href="#icon-pencil"/></svg></button>
+      <button class="rowbtn" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
+    </div>`;
+  }).join('');
+  const snap = fullestSnap();
+  const safe = snap
+    ? `Safety copy: ${snap.n} entr${snap.n === 1 ? 'y' : 'ies'} and ${(snap.accounts || []).length} account${(snap.accounts || []).length === 1 ? '' : 's'} from ${dayLabel(snap.day)} — kept automatically, once a day.`
+    : 'No safety copy yet — one is kept automatically once a day, after your first entry.';
+  /* the button only appears when entries have actually gone missing (two or more, or all of them) —
+     not after you delete one on purpose */
+  return `${rows || '<p class="dim" style="margin:6px 0 0">No entries yet.</p>'}
+    <p class="wsafe">${safe}</p>
+    ${snap && (snap.n > entryDates().length + 1 || (snap.n > 0 && !entryDates().length)) ? '<button class="btn full" id="wRestoreSnap">Put the safety copy back</button>' : ''}`;
+}
+function bindHistory(){
+  document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => {
+    wEditDate = b.dataset.hedit; wDate = wEditDate; wTyped = {};
+    const e = wEnt[wEditDate];
+    wAcc.forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)) wTyped[a.id] = fmtKr(e.v[a.id]); });
+    wOpenTab('entry');
+  }));
+  document.querySelectorAll('[data-hdel]').forEach(b => b.addEventListener('click', () => {
+    const d = b.dataset.hdel;
+    if(confirm(`Delete the entry for ${dayLabel(d)} ${d.slice(0, 4)} (${fmtKr(entryTotal(wEnt[d]))} kr)?`)){
+      delete wEnt[d]; saveWealth(); refreshWealthTiles(); wOpenTab('history');
+    }
+  }));
+  const r = $('wRestoreSnap');
+  if(r) r.addEventListener('click', () => {
+    const snap = fullestSnap();
+    if(!snap) return;
+    if(!confirm(`Replace what is here now with the safety copy from ${dayLabel(snap.day)} (${snap.n} entries)?`)) return;
+    wAcc = Array.isArray(snap.accounts) ? snap.accounts : wAcc;
+    wEnt = snap.entries && typeof snap.entries === 'object' ? snap.entries : wEnt;
+    saveWealth(); refreshWealthTiles(); wOpenTab('history');
+    showToast('Safety copy put back ✅');
+  });
+}
 
 /* ============ list ⇄ grid view ============ */
 const VIEW_KEY = 'amshub.view';
@@ -1617,7 +1943,7 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 /* ============ backups (links only — the shelf itself is built in) ============ */
 function backupBlob(){
   return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
-    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}), finlinks: finLinks }, null, 2);
+    links: state.links, layout: look, wealthAccounts: wAcc, wealthEntries: wEnt, finlinks: finLinks }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -1673,14 +1999,25 @@ $('importFile').addEventListener('change', () => {
       saveLook(); renderShelf();
       layoutBack = true;
     }
-    let wealthBack = 0;
-    if(data.wealth && typeof data.wealth === 'object' && !Array.isArray(data.wealth)){
-      const wClean = {};
-      Object.keys(data.wealth).forEach(m => {
-        if(/^\d{4}-\d{2}$/.test(m) && typeof data.wealth[m] === 'number'){ wClean[m] = data.wealth[m]; wealthBack++; }
+    let accBack = 0, entBack = 0;
+    if(Array.isArray(data.wealthAccounts) && data.wealthEntries && typeof data.wealthEntries === 'object' && !Array.isArray(data.wealthEntries)){
+      const accs = data.wealthAccounts.filter(a => a && typeof a.id === 'string' && a.name)
+        .map(a => ({ id:a.id, name:String(a.name).slice(0, 30), url: typeof a.url === 'string' ? a.url : '', ...(a.legacy ? { legacy:true } : {}) }));
+      const ents = {};
+      Object.keys(data.wealthEntries).forEach(d => {
+        const e = data.wealthEntries[d];
+        if(!/^\d{4}-\d{2}-\d{2}$/.test(d) || !e || typeof e.v !== 'object') return;
+        const v = {};
+        Object.keys(e.v).forEach(id => { if(typeof e.v[id] === 'number') v[id] = e.v[id]; });
+        if(Object.keys(v).length){ ents[d] = { v, c: Array.isArray(e.c) ? e.c.filter(x => typeof x === 'string') : [] }; }
       });
-      storeJSON(W_MANUAL_KEY, wClean);
+      if(accs.length || Object.keys(ents).length){
+        wAcc = accs; wEnt = ents; saveWealth();
+        accBack = accs.length; entBack = Object.keys(ents).length;
+      }
     }
+    const legacyBack = importLegacyTotals(data.wealth);   /* backups from before v1.15 */
+    refreshWealthTiles();
     let finBack = 0;
     if(data.finlinks && typeof data.finlinks === 'object' && !Array.isArray(data.finlinks)){
       finLinks = {};
@@ -1693,7 +2030,8 @@ $('importFile').addEventListener('change', () => {
     $('ovSettings').classList.remove('show');
     alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
       (layoutBack ? '\nCard order and colours restored too.' : '') +
-      (wealthBack ? `\n${wealthBack} typed wealth number${wealthBack===1?'':'s'} restored.` : '') +
+      (accBack || entBack ? `\n${accBack} account${accBack===1?'':'s'} and ${entBack} wealth entr${entBack===1?'y':'ies'} restored.` : '') +
+      (legacyBack ? `\n${legacyBack} older month total${legacyBack===1?'':'s'} moved into an account called Earlier totals.` : '') +
       (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : ''));
   };
   reader.readAsText(file);
