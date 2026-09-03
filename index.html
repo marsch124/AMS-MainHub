@@ -530,7 +530,7 @@
       <div class="foldbody">
         <h3>Start here</h3>
         <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the tiles, tap the card you need.</b> If the Finance tile shows a missing dot, the Finance shelf is where the work is.</p>
-        <p><b>On the Mac</b>, open the hub at <b>localhost:7780/hub</b> — the Finance engine serves it from there, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
+        <p><b>On the Mac</b>, the hub is what <b>AMS Finance.app</b> in the Dock opens: <b>localhost:7780</b>, served by the Finance engine, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
 
         <h3>Four shelves</h3>
         <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
@@ -543,7 +543,7 @@
         <p>Four words, used strictly, so the names tell you what a thing is: a <b>Hub</b> is a front door, a <b>Dashboard</b> is a page you read, an <b>App</b> is a tool you type into, a <b>Report</b> is the monthly note in Obsidian.</p>
 
         <h3>The two dashboards</h3>
-        <p>The dashboards live on claude.ai, at private addresses. On the Mac (from localhost:7780/hub) the Finance engine hands the hub those addresses itself, and each card admits how many months it lags behind the newest data — the same badge the Finance Hub shows. Anywhere else, tap the <b>pencil</b> on the card once and paste the address; it is stored only on that device and rides along in your backups.</p>
+        <p>The dashboards live on claude.ai, at private addresses. On the Mac (from localhost:7780) the Finance engine hands the hub those addresses itself, and each card admits how many months it lags behind the newest data — the same badge the Finance Hub shows. Anywhere else, tap the <b>pencil</b> on the card once and paste the address; it is stored only on that device and rides along in your backups.</p>
 
         <h3>List or grid</h3>
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
@@ -585,8 +585,8 @@
         <p>And the whole landscape on one page, for the day you come back after weeks away:</p>
         <div class="mapwrap"><table class="map">
           <tr><th>What</th><th>Kind</th><th>Runs</th><th>Its data</th></tr>
-          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780/hub)</td><td>Links, order, colours and typed numbers on each device</td></tr>
-          <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, port 7780</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
+          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780, the Dock app)</td><td>Links, order, colours and typed numbers on each device</td></tr>
+          <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, localhost:7780/finance</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
           <tr><td><b>Spend Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the monthly report</td></tr>
           <tr><td><b>Finance Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the budget workbook</td></tr>
           <tr><td><b>Monthly report</b></td><td>Report</td><td>Obsidian on the Mac</td><td>Areas › Finance › Reports</td></tr>
@@ -637,7 +637,7 @@
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
   { v:'1.12', when:'3 Sep 2026',
-    what:'Four shelves, sorted by purpose. The shelf used to be grouped by where the code runs (web apps, on the Mac, your links), which scattered the money system over three places. Now FINANCE comes first and holds all of it: the Finance Hub, the Spend Dashboard and the Finance Dashboard as cards of their own, the latest monthly report, and Sam. Then EVERYDAY APPS, MAC TOOLS and YOUR LINKS. On the Mac, opened from localhost:7780/hub, the engine hands the hub the two dashboard addresses and the newest report by itself, and each dashboard card admits how many months it is behind. Elsewhere, tap the pencil on a dashboard card once and paste its address — stored on that device only, and carried in backups. The Finance tile now links straight to the Finance Hub, and the guide opens with Start here and a one-page map of everything.' },
+    what:'Four shelves, sorted by purpose. The shelf used to be grouped by where the code runs (web apps, on the Mac, your links), which scattered the money system over three places. Now FINANCE comes first and holds all of it: the Finance Hub, the Spend Dashboard and the Finance Dashboard as cards of their own, the latest monthly report, and Sam. Then EVERYDAY APPS, MAC TOOLS and YOUR LINKS. On the Mac, where the Dock app now lands on this hub at localhost:7780, the engine hands the hub the two dashboard addresses and the newest report by itself, and each dashboard card admits how many months it is behind. Elsewhere, tap the pencil on a dashboard card once and paste its address — stored on that device only, and carried in backups. The Finance tile now links straight to the Finance Hub, and the guide opens with Start here and a one-page map of everything.' },
   { v:'1.11', when:'2 Sep 2026',
     what:'A second way of seeing your wealth, and the tiles are now yours to choose. WEALTH \u00b7 0 is the same money drawn honestly from zero \u2014 a filled block rather than a climbing line, answering "how much is there" instead of "which way is it moving". The original auto-scaled tile stays, because from zero the year\u2019s movement is only a slight tilt at the top. Keep either, both, or neither: tap Arrange and every tile grows a small circle in its corner \u2014 filled means shown. Tiles you switch off stay visible while arranging, greyed, so you can always bring them back. Your choice is remembered on this device.' },
   { v:'1.10', when:'2 Sep 2026',
@@ -698,7 +698,7 @@ const WEB_APPS = [
    their address comes from the Finance engine on the Mac, or is typed once
    on any other device. The latest report only exists when the engine says so. */
 const FIN_APPS = [
-  { id:'finance',    name:'AMS Finance Hub',   sub:'Where the monthly process stands',        icon:'coin',     dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
+  { id:'finance',    name:'AMS Finance Hub',   sub:'Where the monthly process stands',        icon:'coin',     dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780/finance/',
     probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
     store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
   { id:'dashSpend',  name:'Spend Dashboard',   sub:'One month’s spending in detail',          icon:'bars',     dot:'#1f9e93', tint:'#d7f2ef', slot:'spend',
@@ -951,7 +951,7 @@ function openFinEdit(slot){
   if(!a) return;
   editingId = null; editingFin = slot;
   $('editTitle').textContent = a.name;
-  $('editHint').textContent = 'Paste the dashboard’s address (it lives on claude.ai). It is stored only on this device. On the Mac, opened from localhost:7780/hub, the Finance engine fills this in by itself.';
+  $('editHint').textContent = 'Paste the dashboard’s address (it lives on claude.ai). It is stored only on this device. On the Mac, opened from localhost:7780, the Finance engine fills this in by itself.';
   $('editHint').hidden = false;
   $('fName').value = a.name; $('fName').disabled = true;
   $('fUrl').value = finLinks[slot] || '';
@@ -1266,7 +1266,7 @@ function renderFinMonth(p){
   const dots = parts.map(d =>
     `<span class="mdot"${d ? ` style="background:${p.dot}"` : ''}></span>`).join('');
   return `<div class="mbig" style="font-size:20px">${monthLabel(m.month)}</div>
-    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'} · <a href="${ENGINE}" target="_blank" rel="noopener">Finance Hub ›</a></div>
+    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'} · <a href="${ENGINE}/finance/" target="_blank" rel="noopener">Finance Hub ›</a></div>
     <div class="mdots">${dots}</div>`;
 }
 
