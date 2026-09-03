@@ -89,6 +89,10 @@
   }
   .verchip.on{opacity:1;}
   .maclbl{font-size:10.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.12em;}
+  /* a dashboard card admits how far behind the newest data it is */
+  .stalelbl{font-size:10px; font-weight:800; letter-spacing:.08em; padding:4px 8px; border-radius:9px;
+            background:rgba(255,255,255,.6); color:var(--ink-dim); white-space:nowrap;}
+  .stalelbl.behind{color:#b4680f; background:#fdecc8;}
   .verglance{text-align:right; font-size:9px; font-weight:700; letter-spacing:.06em;
              color:var(--ink-dim); padding:1px 10px 0; opacity:.85;}
   .rowbtn{
@@ -101,7 +105,7 @@
   .cluster{display:none; gap:6px;}
   body.custom .cluster{display:flex;}
   body.custom .verchip, body.custom .maclbl{display:none;}
-  body.custom [data-edit]{display:none;}
+  body.custom [data-edit], body.custom [data-editfin]{display:none;}
 
   /* ---------- mini tiles (all five side by side) ---------- */
   .mrow{display:grid; grid-template-columns:repeat(auto-fit, minmax(148px, 1fr)); gap:10px; margin-bottom:16px;}
@@ -118,6 +122,7 @@
   .mbody{margin-top:1px;}
   .mbig{font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1.12; font-variant-numeric:tabular-nums;}
   .msub{font-size:10.5px; color:var(--ink-dim); font-weight:600; margin-top:3px; line-height:1.35;}
+  .msub a{color:inherit; font-weight:800; text-decoration:none;}
   .mspark{width:100%; height:22px; display:block; margin-top:7px;}
   .mbar{height:7px; border-radius:5px; background:rgba(42,36,32,.11); overflow:hidden; margin-top:8px;}
   .mbar > div{height:100%; border-radius:5px;}
@@ -196,6 +201,12 @@
   .sheet h3{font-size:15px; color:var(--accent); margin:18px 0 6px;}
   .sheet p, .sheet li{font-size:14.5px; line-height:1.55; color:var(--ink);}
   .sheet .dim{color:var(--ink-dim);}
+  /* the map of everything, in the guide */
+  .mapwrap{overflow-x:auto; margin-top:8px;}
+  table.map{width:100%; border-collapse:collapse; font-size:13px;}
+  table.map th, table.map td{text-align:left; padding:7px 6px; border-bottom:1px solid var(--line); vertical-align:top; line-height:1.4;}
+  table.map th{color:var(--ink-dim); font-size:10.5px; letter-spacing:.08em; font-weight:800;}
+  table.map td b{white-space:nowrap;}
   label{display:block; font-size:13px; color:var(--ink-dim); margin:14px 0 6px; letter-spacing:.03em; font-weight:600;}
   input[type=text], input[type=url]{
     width:100%; padding:13px 14px; border-radius:13px; border:1px solid var(--line);
@@ -391,6 +402,21 @@
     <path d="M14.6 9.4c-1.6-1-3.4-.8-4.3.4-.9 1.2-.6 2.4.9 2.9 1.4.4 2.7.6 3 1.9.3 1.3-.9 2.3-2.4 2.3-1 0-1.9-.4-2.6-1"/>
     <path d="M12.1 7.3c0 .6 0 1.2-.1 1.8M12 15.1c0 .6 0 1.2-.1 1.8"/>
   </symbol>
+  <symbol id="icon-bars" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5.2 19.2c.1-3.1.1-6.2 0-9.3 1-.2 2-.2 3 0 .2 3.1.2 6.2 0 9.3-1 .1-2 .1-3 0Z"/>
+    <path d="M10.6 19.1c-.1-4.7-.1-9.4.1-14.1 1-.2 2-.2 2.9 0 .2 4.7.2 9.4 0 14.1-1 .1-2 .1-3 0Z"/>
+    <path d="M16 19.2c-.1-2.3-.1-4.6 0-6.9 1-.2 2-.2 3 0 .1 2.3.1 4.6 0 6.9-1 .1-2 .1-3 0Z"/>
+  </symbol>
+  <symbol id="icon-trend" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4.6 18.9c.1-4.6.1-9.2-.1-13.8M4.7 18.8c4.8.2 9.6.2 14.5.1"/>
+    <path d="M7.4 14.6c1.6-1.9 3.1-3.8 4.5-5.8 1.1 1.2 2.1 2.5 3.2 3.7 1.4-2.3 2.8-4.5 4.3-6.6"/>
+    <path d="M16.4 5.8c1.1 0 2.1.1 3.1.2-.1 1.1-.2 2.1-.4 3.2"/>
+  </symbol>
+  <symbol id="icon-document" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6.5 4.6c2.6-.3 5.1-.3 7.6-.1 1.4 1.4 2.7 2.8 3.9 4.3.1 3.4.1 6.9-.1 10.3-3.8.3-7.6.3-11.4.1-.3-4.9-.3-9.8 0-14.6Z"/>
+    <path d="M13.8 4.8c0 1.4 0 2.8.1 4.2 1.4.1 2.8.1 4.1.1"/>
+    <path d="M9.1 12.3c2 0 4 0 5.9-.1M9.1 15.5c1.7.1 3.4 0 5.1-.1"/>
+  </symbol>
   <symbol id="icon-linkout" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M13.9 5.1c1.7-.1 3.4-.1 5.1 0 .1 1.7.1 3.4 0 5.1"/>
     <path d="M18.7 5.4c-3 2.9-6 5.9-8.8 9"/>
@@ -411,13 +437,21 @@
 <main>
   <div class="mrow" id="miniRow"></div>
 
+  <!-- Four shelves, grouped by what you want to do — not by where the code runs.
+       FINANCE holds the whole monthly money system; the other three are the
+       everyday apps, the Mac-only tools, and your own links. -->
+  <section class="panel" style="border-color:rgba(88,104,201,.28)">
+    <div class="sect" style="color:#5868c9">FINANCE</div>
+    <div class="cards" id="finCards"></div>
+  </section>
+
   <section class="panel" style="border-color:rgba(31,158,147,.28)">
-    <div class="sect" style="color:#1f9e93">WEB APPS</div>
+    <div class="sect" style="color:#1f9e93">EVERYDAY APPS</div>
     <div class="cards" id="webCards"></div>
   </section>
 
-  <section class="panel" style="border-color:rgba(88,104,201,.28)">
-    <div class="sect" style="color:#5868c9">ON THE MAC</div>
+  <section class="panel" style="border-color:rgba(122,95,192,.28)">
+    <div class="sect" style="color:#7a5fc0">MAC TOOLS</div>
     <div class="cards" id="macCards"></div>
   </section>
 
@@ -434,8 +468,9 @@
 <div class="overlay" id="ovEdit">
   <div class="sheet">
     <h2 id="editTitle">New link</h2>
+    <p class="dim" id="editHint" style="font-size:13.5px; margin:0" hidden></p>
     <label>Name</label>
-    <input type="text" id="fName" placeholder="e.g. Finance dashboard" maxlength="40" />
+    <input type="text" id="fName" placeholder="e.g. Anna’s recipe site" maxlength="40" />
     <label>Web address</label>
     <input type="url" id="fUrl" placeholder="https://…" autocapitalize="off" autocorrect="off" />
     <div class="btnrow">
@@ -493,8 +528,22 @@
     <details class="fold" id="foldHow">
       <summary><svg class="hi"><use href="#icon-book"/></svg>How this works<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <h3>One shelf for everything</h3>
-        <p>The hub is the front door to all the AMS apps: one card per app, with its hand-drawn icon and a one-line reminder of what it does. Tap a card and the app opens.</p>
+        <h3>Start here</h3>
+        <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the tiles, tap the card you need.</b> If the Finance tile shows a missing dot, the Finance shelf is where the work is.</p>
+        <p><b>On the Mac</b>, open the hub at <b>localhost:7780/hub</b> — the Finance engine serves it from there, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
+
+        <h3>Four shelves</h3>
+        <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
+        <ul>
+          <li><b>FINANCE</b> — the whole monthly money system in one place: the <b>Finance Hub</b> (where the process stands — Mac only), the <b>Spend Dashboard</b> and the <b>Finance Dashboard</b> (the two published chart pages), the <b>latest report</b> in Obsidian (Mac only), and <b>Sam</b>, who runs the month.</li>
+          <li><b>EVERYDAY APPS</b> — the web apps you type into: packing, instructions, habits, and the rest.</li>
+          <li><b>MAC TOOLS</b> — things that only exist on the Mac, like the Timers board.</li>
+          <li><b>YOUR LINKS</b> — anything else you want a card for.</li>
+        </ul>
+        <p>Four words, used strictly, so the names tell you what a thing is: a <b>Hub</b> is a front door, a <b>Dashboard</b> is a page you read, an <b>App</b> is a tool you type into, a <b>Report</b> is the monthly note in Obsidian.</p>
+
+        <h3>The two dashboards</h3>
+        <p>The dashboards live on claude.ai, at private addresses. On the Mac (from localhost:7780/hub) the Finance engine hands the hub those addresses itself, and each card admits how many months it lags behind the newest data — the same badge the Finance Hub shows. Anywhere else, tap the <b>pencil</b> on the card once and paste the address; it is stored only on that device and rides along in your backups.</p>
 
         <h3>List or grid</h3>
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
@@ -508,8 +557,8 @@
         <h3>iPhone rule: open apps from their own icons</h3>
         <p>Each AMS app installed on your home screen keeps its data in its <b>own private box</b>. A link tapped inside the hub app can't open that installed copy — it would open a separate, empty one instead. That's why, when the hub runs as a home-screen app, tapping a web-app card first shows a friendly reminder to use the app's own icon. On the Mac, in Safari, cards simply open in a new tab and everything shares the same data — no reminder needed.</p>
 
-        <h3>On the Mac</h3>
-        <p>Timers and the Finance Hub run only on the Mac (they live on the Mac itself, not on the internet), so their cards are marked <b>MAC ONLY</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
+        <h3>Mac only</h3>
+        <p>Timers, the Finance Hub and the latest report live on the Mac itself, not on the internet, so their cards are marked <b>MAC ONLY</b> or <b>OBSIDIAN</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
 
         <h3>The mini tiles</h3>
         <p>Across the top sit small tiles, all visible at once — no arrows to press. Each shows one number, in its own colour. On a wide screen they sit in a single row; on the iPhone they lay themselves out two across.</p>
@@ -519,7 +568,7 @@
           <li><b>Wealth</b> — your latest net-worth total, how it moved since the month before, and a small line showing its shape over the past year. On the Mac the numbers come straight from the budget workbook: the Finance engine reads them and hands them to this hub alone. On the iPhone (or any device without the engine), tap the <b>pencil</b> on this tile and type the month's total yourself. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
           <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
-          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running.</li>
+          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
 
@@ -533,12 +582,24 @@
           <li><b>A gem</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
           <li>The apps' <b>code</b> is public on GitHub — but none of your data ever is.</li>
         </ul>
+        <p>And the whole landscape on one page, for the day you come back after weeks away:</p>
+        <div class="mapwrap"><table class="map">
+          <tr><th>What</th><th>Kind</th><th>Runs</th><th>Its data</th></tr>
+          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780/hub)</td><td>Links, order, colours and typed numbers on each device</td></tr>
+          <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, port 7780</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
+          <tr><td><b>Spend Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the monthly report</td></tr>
+          <tr><td><b>Finance Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the budget workbook</td></tr>
+          <tr><td><b>Monthly report</b></td><td>Report</td><td>Obsidian on the Mac</td><td>Areas › Finance › Reports</td></tr>
+          <tr><td><b>Sam</b></td><td>Assistant</td><td>Cowork on the Mac</td><td>Notes and memory in the Obsidian vault</td></tr>
+          <tr><td><b>Timers</b></td><td>Mac tool</td><td>Mac, port 7777</td><td>Its own folder</td></tr>
+          <tr><td><b>The everyday apps</b></td><td>Apps</td><td>iPhone (and Safari on the Mac)</td><td>On the device; Packing also syncs via Dexie Cloud</td></tr>
+        </table></div>
 
         <h3>Your links</h3>
-        <p>The bottom section is yours: add any web address you want on the shelf — dashboards, sites, anything. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
+        <p>The bottom shelf is yours: add any web address you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
 
         <h3>Backups</h3>
-        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, and any wealth numbers you've typed in — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links and numbers came back, and if anything goes wrong your current data and your backup file are left untouched.</p>
+        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, the dashboard addresses and any wealth numbers you've typed in — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links and numbers came back, and if anything goes wrong your current data and your backup file are left untouched.</p>
 
         <h3>Updates</h3>
         <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
@@ -548,7 +609,7 @@
     <details class="fold" id="foldData">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, and any typed wealth numbers live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
+        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, the dashboard addresses and any typed wealth numbers live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
         <button class="btn full" id="exportBtn">Export my links</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn">Import / restore…</button>
@@ -575,6 +636,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.12', when:'3 Sep 2026',
+    what:'Four shelves, sorted by purpose. The shelf used to be grouped by where the code runs (web apps, on the Mac, your links), which scattered the money system over three places. Now FINANCE comes first and holds all of it: the Finance Hub, the Spend Dashboard and the Finance Dashboard as cards of their own, the latest monthly report, and Sam. Then EVERYDAY APPS, MAC TOOLS and YOUR LINKS. On the Mac, opened from localhost:7780/hub, the engine hands the hub the two dashboard addresses and the newest report by itself, and each dashboard card admits how many months it is behind. Elsewhere, tap the pencil on a dashboard card once and paste its address — stored on that device only, and carried in backups. The Finance tile now links straight to the Finance Hub, and the guide opens with Start here and a one-page map of everything.' },
   { v:'1.11', when:'2 Sep 2026',
     what:'A second way of seeing your wealth, and the tiles are now yours to choose. WEALTH \u00b7 0 is the same money drawn honestly from zero \u2014 a filled block rather than a climbing line, answering "how much is there" instead of "which way is it moving". The original auto-scaled tile stays, because from zero the year\u2019s movement is only a slight tilt at the top. Keep either, both, or neither: tap Arrange and every tile grows a small circle in its corner \u2014 filled means shown. Tiles you switch off stay visible while arranging, greyed, so you can always bring them back. Your choice is remembered on this device.' },
   { v:'1.10', when:'2 Sep 2026',
@@ -631,15 +694,45 @@ const WEB_APPS = [
     store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-PackTrack/version.json', json:true, pre:'v' } },
 ];
+/* The money system, all on one shelf. The two dashboards are `slot` cards:
+   their address comes from the Finance engine on the Mac, or is typed once
+   on any other device. The latest report only exists when the engine says so. */
+const FIN_APPS = [
+  { id:'finance',    name:'AMS Finance Hub',   sub:'Where the monthly process stands',        icon:'coin',     dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
+    probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
+    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
+  { id:'dashSpend',  name:'Spend Dashboard',   sub:'One month’s spending in detail',          icon:'bars',     dot:'#1f9e93', tint:'#d7f2ef', slot:'spend',
+    store:'A published page on claude.ai · built by Sam from the monthly report', where:['cloud'] },
+  { id:'dashBudget', name:'Finance Dashboard', sub:'Budget, net worth and the runway to 2038', icon:'trend',    dot:'#c8952b', tint:'#faeecb', slot:'budget',
+    store:'A published page on claude.ai · built by Sam from the budget workbook', where:['cloud','excel'] },
+  { id:'report',     name:'Latest report',     sub:'The newest monthly report',               icon:'document', dot:'#d84f86', tint:'#fbdeeb', engineOnly:true,
+    store:'A note in the Obsidian vault · Areas › Finance › Reports', where:['mac','vault'] },
+  { id:'sam',        name:'Sam',               sub:'The robot assistant, run in Cowork',      icon:'bubble',   dot:'#9a5fc9', tint:'#f0e3fa',
+    store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
+];
 const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
     store:'On the Mac, inside the app’s own folder', where:['mac'] },
-  { id:'finance', name:'AMS Finance Hub',  sub:'The monthly finance system',    icon:'coin',  dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780',
-    probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
-    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
-  { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork',  icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
-    store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
 ];
+const ALL_APPS = () => [...FIN_APPS, ...WEB_APPS, ...MAC_APPS];
+
+/* dashboard addresses: the engine's answer wins, a typed one fills the gap */
+const FIN_KEY = 'amshub.finlinks';
+let finLinks = {};
+try{
+  const f = JSON.parse(localStorage.getItem(FIN_KEY) || 'null');
+  if(f && typeof f === 'object' && !Array.isArray(f)){
+    ['spend','budget'].forEach(k => { if(typeof f[k] === 'string' && f[k]) finLinks[k] = f[k]; });
+  }
+}catch(e){ /* none typed yet */ }
+function saveFinLinks(){ try{ localStorage.setItem(FIN_KEY, JSON.stringify(finLinks)); }catch(e){} }
+let engineLinks = null;   /* { spend:{url,behind}, budget:{url,behind}, report:{id,month} } from the engine */
+function finUrl(a){
+  if(!a.slot) return a.url || null;
+  const e = engineLinks && engineLinks[a.slot];
+  if(e && e.url) return e.url;
+  return finLinks[a.slot] || null;
+}
 
 /* ============ your look — card order & colours (this device only) ============ */
 const LOOK_KEY = 'amshub.look';
@@ -660,13 +753,14 @@ const COLORWAYS = [
   { n:'Slate',   dot:'#64748c', tint:'#e7ebf1' },
   { n:'Paper',   dot:'#8a7f72', tint:'#ffffff' },
 ];
-let look = { order:{ web:[], mac:[] }, colors:{} };
+let look = { order:{ fin:[], web:[], mac:[] }, colors:{} };
 try{
   const rawLook = localStorage.getItem(LOOK_KEY);
   if(rawLook){
     const p = JSON.parse(rawLook);
     if(p && typeof p === 'object'){
       if(p.order && typeof p.order === 'object'){
+        if(Array.isArray(p.order.fin)) look.order.fin = p.order.fin.map(String);
         if(Array.isArray(p.order.web)) look.order.web = p.order.web.map(String);
         if(Array.isArray(p.order.mac)) look.order.mac = p.order.mac.map(String);
       }
@@ -732,18 +826,64 @@ function appRow(a, right, sect){
     <span class="badge" style="color:${eff.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
     <span class="cmid"><span class="cname">${esc(a.name)}</span><span class="csub" style="display:block">${esc(a.sub)}</span>${whereHTML(a)}</span>
     <span class="cright">${right}${clusterHTML(sect, a.id)}</span>`;
+  if(a.openId) return `<div class="cardrow" data-app="${a.id}" data-open="${esc(a.openId)}" style="background:${eff.tint}">${mid}</div>`;
   if(!a.url) return `<div class="cardrow" data-app="${a.id}" style="background:${eff.tint}; cursor:default">${mid}</div>`;
   return `<a class="cardrow" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
             style="background:${eff.tint}">${mid}</a>`;
 }
 
+/* the right-hand corner of a finance card: version chip, months-behind badge,
+   the pencil for a dashboard address, or a plain label */
+function finRight(a){
+  if(a.id === 'finance'){
+    return `<span class="verchip" id="ver-finance" style="color:${lookFor(a).dot}"></span> <span class="maclbl">MAC ONLY</span>`;
+  }
+  if(a.slot){
+    const e = engineLinks && engineLinks[a.slot];
+    if(e && e.url){
+      const n = typeof e.behind === 'number' ? e.behind : 0;
+      return n > 0
+        ? `<span class="stalelbl behind">${n} MONTH${n > 1 ? 'S' : ''} BEHIND</span>`
+        : `<span class="stalelbl">UP TO DATE</span>`;
+    }
+    return `<button class="rowbtn" data-editfin="${a.slot}" aria-label="Set the address"><svg class="hi"><use href="#icon-pencil"/></svg></button>`;
+  }
+  if(a.id === 'report') return `<span class="maclbl">OBSIDIAN</span>`;
+  if(a.id === 'sam') return `<span class="maclbl">COWORK</span>`;
+  return '';
+}
+
 function renderShelf(){
+  $('finCards').innerHTML = ordered(FIN_APPS, 'fin').map(a => {
+    if(a.engineOnly){
+      const r = engineLinks && engineLinks.report;
+      if(!r || !r.id) return '';
+      /* the engine opens the note in Obsidian; the card itself goes nowhere */
+      return appRow({ ...a, sub: r.month ? monthLabel(r.month) + ' — opens in Obsidian' : a.sub, openId: r.id }, finRight(a), 'fin');
+    }
+    if(a.slot){
+      const url = finUrl(a);
+      return appRow({ ...a, url, sub: url ? a.sub : 'Tap the pencil and paste its address' }, finRight(a), 'fin');
+    }
+    return appRow(a, finRight(a), 'fin');
+  }).join('');
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
     appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
   $('macCards').innerHTML = ordered(MAC_APPS, 'mac').map(a =>
-    appRow(a, (a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : '') +
-              `<span class="maclbl">${a.id === 'sam' ? 'COWORK' : 'MAC ONLY'}</span>`, 'mac')).join('');
+    appRow(a, `<span class="maclbl">MAC ONLY</span>`, 'mac')).join('');
   fillChips();
+
+  /* the latest report: ask the engine to open it (it only appears when the engine answered) */
+  document.querySelectorAll('#finCards [data-open]').forEach(el => {
+    el.addEventListener('click', () => {
+      if(document.body.classList.contains('custom')) return;
+      const id = el.dataset.open;
+      showToast('Opening the report in Obsidian…', null, null, 3000);
+      fetch(ENGINE + '/api/open?id=' + encodeURIComponent(id), { cache:'no-store' })
+        .then(r => { if(!r.ok) showToast('The engine could not open it.'); })
+        .catch(() => showToast('The engine is not answering.'));
+    });
+  });
 
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
@@ -763,7 +903,7 @@ function renderShelf(){
 function renderLinks(){
   const L = state.links;
   $('linksHint').textContent = L.length ? '' :
-    'Your own corner of the shelf — dashboards, sites, anything. Links are stored only on this device, so private addresses stay private.';
+    'Your own corner of the shelf — any site you want a card for. Links are stored only on this device, so private addresses stay private.';
   $('linkCards').innerHTML = L.map(l => {
     const cw = colorway(l.color);
     const dot = cw ? cw.dot : '#d96a45', bg = cw ? cw.tint : '#fff';
@@ -793,13 +933,29 @@ function renderLinks(){
 
 /* ============ add / edit personal link ============ */
 let editingId = null;
+let editingFin = null;   /* 'spend' | 'budget' while a dashboard address is being typed */
 function openEdit(id){
-  editingId = id;
+  editingId = id; editingFin = null;
   const l = id ? state.links.find(x => x.id === id) : null;
   $('editTitle').textContent = l ? 'Edit link' : 'New link';
+  $('editHint').hidden = true;
+  $('fName').disabled = false;
   $('fName').value = l ? l.name : '';
   $('fUrl').value = l ? l.url : '';
   $('fDelete').style.display = l ? '' : 'none';
+  $('ovEdit').classList.add('show');
+}
+/* same sheet, but the name is fixed — only the address is yours to paste */
+function openFinEdit(slot){
+  const a = FIN_APPS.find(x => x.slot === slot);
+  if(!a) return;
+  editingId = null; editingFin = slot;
+  $('editTitle').textContent = a.name;
+  $('editHint').textContent = 'Paste the dashboard’s address (it lives on claude.ai). It is stored only on this device. On the Mac, opened from localhost:7780/hub, the Finance engine fills this in by itself.';
+  $('editHint').hidden = false;
+  $('fName').value = a.name; $('fName').disabled = true;
+  $('fUrl').value = finLinks[slot] || '';
+  $('fDelete').style.display = finLinks[slot] ? '' : 'none';
   $('ovEdit').classList.add('show');
 }
 $('fCancel').addEventListener('click', () => $('ovEdit').classList.remove('show'));
@@ -809,6 +965,11 @@ $('fSave').addEventListener('click', () => {
   if(!name){ alert('Give the link a name.'); return; }
   if(!url){ alert('Fill in the web address.'); return; }
   if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  if(editingFin){
+    finLinks[editingFin] = url; saveFinLinks(); renderShelf();
+    $('ovEdit').classList.remove('show');
+    return;
+  }
   if(editingId){
     const l = state.links.find(x => x.id === editingId);
     if(l){ l.name = name; l.url = url; }
@@ -819,6 +980,13 @@ $('fSave').addEventListener('click', () => {
   $('ovEdit').classList.remove('show');
 });
 $('fDelete').addEventListener('click', () => {
+  if(editingFin){
+    const a = FIN_APPS.find(x => x.slot === editingFin);
+    if(!confirm(`Forget the ${a ? a.name : 'dashboard'} address on this device?`)) return;
+    delete finLinks[editingFin]; saveFinLinks(); renderShelf();
+    $('ovEdit').classList.remove('show');
+    return;
+  }
   const l = state.links.find(x => x.id === editingId);
   if(!l) return;
   if(!confirm(`Delete “${l.name}”?`)) return;
@@ -829,7 +997,7 @@ $('fDelete').addEventListener('click', () => {
 
 /* ============ live version chips ============ */
 async function probeAll(){
-  for(const a of [...WEB_APPS, ...MAC_APPS]){
+  for(const a of ALL_APPS()){
     if(!a.probe) continue;
     probeOne(a).catch(() => {});
   }
@@ -891,9 +1059,16 @@ document.addEventListener('click', (e) => {
   if(mv){
     e.preventDefault(); e.stopPropagation();
     const dir = parseInt(mv.dataset.move, 10);
-    if(mv.dataset.sect === 'web') moveApp('web', WEB_APPS, mv.dataset.id, dir);
+    if(mv.dataset.sect === 'fin') moveApp('fin', FIN_APPS, mv.dataset.id, dir);
+    else if(mv.dataset.sect === 'web') moveApp('web', WEB_APPS, mv.dataset.id, dir);
     else if(mv.dataset.sect === 'mac') moveApp('mac', MAC_APPS, mv.dataset.id, dir);
     else moveLink(mv.dataset.id, dir);
+    return;
+  }
+  const ef = e.target.closest('[data-editfin]');
+  if(ef){
+    e.preventDefault(); e.stopPropagation();
+    openFinEdit(ef.dataset.editfin);
     return;
   }
   const pt = e.target.closest('[data-paint]');
@@ -931,7 +1106,7 @@ function openPaint(kind, id){
   paint = { kind, id };
   const item = kind === 'link'
     ? state.links.find(l => l.id === id)
-    : [...WEB_APPS, ...MAC_APPS].find(a => a.id === id);
+    : ALL_APPS().find(a => a.id === id);
   if(!item) return;
   $('paintName').textContent = 'Colour for ' + item.name;
   const cur = kind === 'link' ? item.color : look.colors[id];
@@ -1091,12 +1266,12 @@ function renderFinMonth(p){
   const dots = parts.map(d =>
     `<span class="mdot"${d ? ` style="background:${p.dot}"` : ''}></span>`).join('');
   return `<div class="mbig" style="font-size:20px">${monthLabel(m.month)}</div>
-    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'}</div>
+    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'} · <a href="${ENGINE}" target="_blank" rel="noopener">Finance Hub ›</a></div>
     <div class="mdots">${dots}</div>`;
 }
 
 function renderVersions(){
-  const apps = [...WEB_APPS, ...MAC_APPS].filter(a => a.probe);
+  const apps = ALL_APPS().filter(a => a.probe);
   const on = apps.filter(a => verCache[a.id]).length;
   return `<div class="mbig">${on}/${apps.length}</div>
     <div class="msub">apps answering</div>`;
@@ -1142,6 +1317,16 @@ async function fetchFin(){
     finCache = await res.json();
     renderTile('finmonth');
   }catch(e){ /* engine off or unreachable */ }
+}
+/* the dashboard addresses and the newest report — the engine hands these
+   over only when the hub is served from its own address (localhost:7780/hub) */
+async function fetchLinks(){
+  try{
+    const res = await fetch(ENGINE + '/hublinks?vercheck=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) return;
+    const data = await res.json();
+    if(data && data.ok){ engineLinks = data; renderShelf(); }
+  }catch(e){ /* not on the Mac, or served from the web */ }
 }
 
 /* wealth editor: engine months shown locked, the rest typed by hand */
@@ -1213,7 +1398,7 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 /* ============ backups (links only — the shelf itself is built in) ============ */
 function backupBlob(){
   return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
-    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}) }, null, 2);
+    links: state.links, layout: look, wealth: loadJSON(W_MANUAL_KEY, {}), finlinks: finLinks }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -1260,6 +1445,7 @@ $('importFile').addEventListener('change', () => {
       const lo = data.layout;
       look = {
         order:{
+          fin: Array.isArray(lo.order && lo.order.fin) ? lo.order.fin.map(String) : [],
           web: Array.isArray(lo.order && lo.order.web) ? lo.order.web.map(String) : [],
           mac: Array.isArray(lo.order && lo.order.mac) ? lo.order.mac.map(String) : [],
         },
@@ -1276,11 +1462,20 @@ $('importFile').addEventListener('change', () => {
       });
       storeJSON(W_MANUAL_KEY, wClean);
     }
+    let finBack = 0;
+    if(data.finlinks && typeof data.finlinks === 'object' && !Array.isArray(data.finlinks)){
+      finLinks = {};
+      ['spend','budget'].forEach(k => {
+        if(typeof data.finlinks[k] === 'string' && /^https?:\/\//i.test(data.finlinks[k])){ finLinks[k] = data.finlinks[k]; finBack++; }
+      });
+      saveFinLinks(); renderShelf();
+    }
     renderMini();   /* older backups may carry a `miniPanel` choice — harmless, ignored */
     $('ovSettings').classList.remove('show');
     alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
       (layoutBack ? '\nCard order and colours restored too.' : '') +
-      (wealthBack ? `\n${wealthBack} typed wealth number${wealthBack===1?'':'s'} restored.` : ''));
+      (wealthBack ? `\n${wealthBack} typed wealth number${wealthBack===1?'':'s'} restored.` : '') +
+      (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : ''));
   };
   reader.readAsText(file);
 });
@@ -1343,9 +1538,10 @@ renderMini();
 probeAll();
 fetchWealth();
 fetchFin();
+fetchLinks();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 
