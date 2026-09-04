@@ -61,12 +61,13 @@
     background:rgba(255,255,255,.62);
     border:2px solid var(--shelfline, var(--line));
     border-bottom:6px solid var(--shelf, var(--line));
-    border-radius:28px; padding:14px 14px 16px; margin-bottom:20px;
+    /* the shelf's own padding and gap, 40% off — the cards keep their size */
+    border-radius:26px; padding:8px 9px 10px; margin-bottom:12px;
   }
   .sect{
     display:flex; align-items:center; gap:11px;
     font-size:13.5px; font-weight:800; letter-spacing:.16em;
-    color:var(--shelf, var(--ink-dim)); padding:6px 8px 13px;
+    color:var(--shelf, var(--ink-dim)); padding:4px 5px 8px;
   }
   .sect::after{content:''; flex:1; height:2.5px; border-radius:2px; background:var(--shelfline, var(--line));}
   .cards{display:flex; flex-direction:column; gap:12px;}
@@ -948,6 +949,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.20', when:'4 Sep 2026',
+    what:'Tighter shelves and one version number instead of two. The four shelves give back 40% of their own padding and the gap beneath them \u2014 the cards inside are untouched and so are the coloured planks, the shelves simply stop wasting space around them, which is about a hundred pixels down the page on the phone. And the hidden store the app keeps on your device used to be numbered on its own \u2014 v1.19 of the app kept its files in a box labelled 20 \u2014 which was confusing every time it came up. The box is now named after the app version itself, so a fresh install of this release keeps its files in ams-mainhub-v1.20. Nothing changes in what you see or do; it simply means the two numbers can never disagree again, because there is only one of them.' },
   { v:'1.19', when:'4 Sep 2026',
     what:'The four shelves are easier to tell apart. Each one now writes its name a little larger in its own colour \u2014 FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral \u2014 with a matching rule running across the rest of that line, and a solid plank of the same colour along the bottom of the shelf. Nothing moved and no card changed; the shelves simply say where one ends and the next begins, which matters most on the phone where only part of a shelf is on screen. Also, on the Mac the hub no longer asks the Finance engine for a service worker it deliberately does not hand out: the page there comes straight off the disk, so it needs no offline copy, and the console stops printing an error on every load.' },
   { v:'1.18', when:'3 Sep 2026',

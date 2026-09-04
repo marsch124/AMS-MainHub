@@ -1,5 +1,10 @@
 /* AMS Main Hub — offline service worker */
-const CACHE = 'ams-mainhub-v20';
+/* The cache is named after the app version itself: index.html registers this
+   file as service-worker.js?v=<app version>, and that query rides along on
+   this script's own URL. So there is only ever one number to bump, and the
+   cache can never drift from the version shown in the corner of the app. */
+const APP_V = new URL(self.location.href).searchParams.get('v') || 'dev';
+const CACHE = 'ams-mainhub-v' + APP_V;
 const ASSETS = [
   './',
   './index.html',
