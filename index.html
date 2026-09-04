@@ -55,11 +55,20 @@
 
   /* ---------- sections & cards ---------- */
   main{flex:1; min-height:0; overflow-y:auto; -webkit-overflow-scrolling:touch; padding-top:8px;}
+  /* each shelf says where it starts: its own colour on the label, a rule across
+     the rest of the line, and a solid plank along the bottom */
   .panel{
-    background:rgba(255,255,255,.55); border:1.5px solid var(--line);
-    border-radius:28px; padding:14px 14px 16px; margin-bottom:16px;
+    background:rgba(255,255,255,.62);
+    border:2px solid var(--shelfline, var(--line));
+    border-bottom:6px solid var(--shelf, var(--line));
+    border-radius:28px; padding:14px 14px 16px; margin-bottom:20px;
   }
-  .sect{font-size:12.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.14em; padding:6px 8px 12px;}
+  .sect{
+    display:flex; align-items:center; gap:11px;
+    font-size:13.5px; font-weight:800; letter-spacing:.16em;
+    color:var(--shelf, var(--ink-dim)); padding:6px 8px 13px;
+  }
+  .sect::after{content:''; flex:1; height:2.5px; border-radius:2px; background:var(--shelfline, var(--line));}
   .cards{display:flex; flex-direction:column; gap:12px;}
   .cardrow{
     display:flex; align-items:center; gap:15px; width:100%;
@@ -540,23 +549,23 @@
   <!-- Four shelves, grouped by what you want to do — not by where the code runs.
        FINANCE holds the whole monthly money system; the other three are the
        everyday apps, the Mac-only tools, and your own links. -->
-  <section class="panel" style="border-color:rgba(88,104,201,.28)">
-    <div class="sect" style="color:#5868c9">FINANCE</div>
+  <section class="panel" style="--shelf:#5868c9; --shelfline:#5868c94d">
+    <div class="sect">FINANCE</div>
     <div class="cards" id="finCards"></div>
   </section>
 
-  <section class="panel" style="border-color:rgba(31,158,147,.28)">
-    <div class="sect" style="color:#1f9e93">EVERYDAY APPS</div>
+  <section class="panel" style="--shelf:#1f9e93; --shelfline:#1f9e934d">
+    <div class="sect">EVERYDAY APPS</div>
     <div class="cards" id="webCards"></div>
   </section>
 
-  <section class="panel" style="border-color:rgba(122,95,192,.28)">
-    <div class="sect" style="color:#7a5fc0">MAC TOOLS</div>
+  <section class="panel" style="--shelf:#7a5fc0; --shelfline:#7a5fc04d">
+    <div class="sect">MAC TOOLS</div>
     <div class="cards" id="macCards"></div>
   </section>
 
-  <section class="panel" style="border-color:rgba(217,106,69,.28)">
-    <div class="sect" style="color:#d96a45">YOUR LINKS</div>
+  <section class="panel" style="--shelf:#d96a45; --shelfline:#d96a454d">
+    <div class="sect">YOUR LINKS</div>
     <div class="empty-hint" id="linksHint"></div>
     <div class="cards" id="linkCards"></div>
   </section>
@@ -665,6 +674,7 @@
           <summary>List or grid<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
+        <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
           </div>
         </details>
 
@@ -938,6 +948,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.19', when:'4 Sep 2026',
+    what:'The four shelves are easier to tell apart. Each one now writes its name a little larger in its own colour \u2014 FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral \u2014 with a matching rule running across the rest of that line, and a solid plank of the same colour along the bottom of the shelf. Nothing moved and no card changed; the shelves simply say where one ends and the next begins, which matters most on the phone where only part of a shelf is on screen. Also, on the Mac the hub no longer asks the Finance engine for a service worker it deliberately does not hand out: the page there comes straight off the disk, so it needs no offline copy, and the console stops printing an error on every load.' },
   { v:'1.18', when:'3 Sep 2026',
     what:'AMS WatchLater joins the Mac shelf — the new app that keeps the YouTube videos you mean to watch and sorts them by how much time you actually have, rather than by when you saved them. Its card sits beside Timers with a hand-drawn play mark, and it carries a live version chip like the others. The chip is answered by the app’s own engine here on the Mac, so it fills in whenever that engine is running and stays quiet when it is not.' },
   { v:'1.17', when:'3 Sep 2026',
@@ -2231,8 +2243,14 @@ document.addEventListener('visibilitychange', () => {
 setTimeout(() => checkForUpdate(false), 2500);
 
 /* Stamp the SW registration with the version so the phone can't keep
-   re-checking against a stale cached copy of the worker. */
-if('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js?v=' + VERSIONLOG[0].v).catch(()=>{});
+   re-checking against a stale cached copy of the worker.
+   Not on the Mac: served from the Finance engine the page comes live off the
+   disk, so a worker would only put a stale cache in front of it. The engine
+   refuses to hand one out (404) — asking for it anyway just printed an error
+   on every load, so this copy does not ask. */
+if('serviceWorker' in navigator && !FROM_ENGINE){
+  navigator.serviceWorker.register('service-worker.js?v=' + VERSIONLOG[0].v).catch(()=>{});
+}
 })();
 </script>
 </body>
