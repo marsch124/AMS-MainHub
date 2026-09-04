@@ -718,6 +718,7 @@
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
           <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
           <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
+          <li><b>Watch later</b> — how many videos are waiting in AMS WatchLater, how long they come to altogether, and how many of them fit into five minutes. Answered by that app's own engine here on the Mac, so it fills in when the engine is running and stays quiet otherwise. It asks for those counts and nothing else — no titles and no links ever leave the app.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
           </div>
@@ -949,6 +950,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.22', when:'4 Sep 2026',
+    what:'A WATCH LATER tile. The small tiles across the top gain one for AMS WatchLater: how many videos are waiting, how long they come to altogether, and \u2014 the useful number \u2014 how many of them fit into five minutes. It is answered by that app\u2019s own engine here on the Mac, so it fills in whenever the engine is running and stays quiet when it is not, exactly like the Finance tile. The app hands over those counts and nothing else: no titles and no links, and it answers only to the hub\u2019s own addresses. Like every other tile you can switch it off in Arrange \u2014 and switching tiles off now actually sticks: the choice has been written down since it was added, but never read back, so it quietly forgot itself every time the hub was opened. A tile added by a later release also switches itself on rather than hiding behind a choice made before it existed.' },
   { v:'1.21', when:'4 Sep 2026',
     what:'Better neighbours. All of your AMS apps live at the same web address, and each one used to clear out every stored copy it found there that was not its own \u2014 so opening this app in Safari quietly made the last app you had looked at fetch itself again the next time. It now tidies up only its own older copies and leaves the others alone. Your own data was never involved and is untouched.' },
   { v:'1.20', when:'4 Sep 2026',
@@ -1099,6 +1102,8 @@ try{
         if(Array.isArray(p.order.mac)) look.order.mac = p.order.mac.map(String);
       }
       if(p.colors && typeof p.colors === 'object' && !Array.isArray(p.colors)) look.colors = p.colors;
+      if(Array.isArray(p.tiles)) look.tiles = p.tiles.map(String);
+      if(Array.isArray(p.tilesKnown)) look.tilesKnown = p.tilesKnown.map(String);
     }
   }
 }catch(e){ /* default look */ }
@@ -1570,6 +1575,7 @@ const PANELS = [
   { id:'retire',   label:'RETIREMENT', dot:'#1f9e93', tint:'#d7f2ef' },
   { id:'year',     label:'THE YEAR',   dot:'#3487d6', tint:'#dcebfb' },
   { id:'finmonth', label:'FINANCE',    dot:'#5868c9', tint:'#e2e6fa' },
+  { id:'watch',    label:'WATCH LATER',dot:'#1a6b56', tint:'#dcefe8' },
   { id:'versions', label:'APPS',       dot:'#33a065', tint:'#d9f2e2' },
 ];
 
@@ -1582,8 +1588,29 @@ function toggleTile(id){
   const i = on.indexOf(id);
   if(i >= 0) on.splice(i, 1); else on.push(id);
   look.tiles = PANELS.filter(x => on.includes(x.id)).map(x => x.id);   // keep PANELS order
+  look.tilesKnown = PANELS.map(x => x.id);
   saveLook();
   renderMini();
+}
+
+/* A tile added by a LATER release would be missing from a choice already saved,
+   and so would never appear — the new thing invisible to exactly the people who
+   have used the chooser. So the hub remembers which tiles existed when the
+   choice was made, and switches on anything that choice has never seen. Tiles
+   deliberately switched off stay off. */
+const TILES_BEFORE_V122 = ['wealth', 'wealth0', 'retire', 'year', 'finmonth', 'versions'];
+function adoptNewTiles(){
+  if(!Array.isArray(look.tiles)) return;              // never chosen: all show anyway
+  const known = Array.isArray(look.tilesKnown) ? look.tilesKnown : TILES_BEFORE_V122;
+  const fresh = PANELS.map(p => p.id).filter(id => !known.includes(id));
+  const all = PANELS.map(p => p.id);
+  if(fresh.length || String(known) !== String(all)){
+    look.tiles = PANELS
+      .filter(p => look.tiles.includes(p.id) || fresh.includes(p.id))
+      .map(p => p.id);
+    look.tilesKnown = all;
+    saveLook();
+  }
 }
 
 /* ---- wealth store: accounts + dated entries ---- */
@@ -1755,6 +1782,24 @@ function renderFinMonth(p){
     <div class="mdots">${dots}</div>`;
 }
 
+let watchCache = null;
+function renderWatch(){
+  if(!watchCache || !watchCache.ok){
+    return `<div class="mbig">—</div><div class="msub">engine not answering</div>`;
+  }
+  const n = watchCache.toWatch, fits = watchCache.fits || {};
+  if(!n) return `<div class="mbig">0</div><div class="msub">nothing waiting</div>`;
+  const h = Math.floor((watchCache.minutes || 0) / 60), m = (watchCache.minutes || 0) % 60;
+  const long = h ? (m ? `${h} h ${m} min` : `${h} h`) : `${m} min`;
+  /* Five minutes is the question worth answering, but "none under 5 min" is a
+     dead end — so it falls through to the shortest slot that does hold something. */
+  const slot = [['5', 'in 5 min'], ['20', 'in 20 min'], ['60', 'in an hour']]
+    .find(([k]) => fits[k] > 0);
+  return `<div class="mbig">${n}</div>
+    <div class="msub">to watch · ${long}</div>
+    <div class="msub">${slot ? `${fits[slot[0]]} fit ${slot[1]}` : 'all of them long'}</div>`;
+}
+
 function renderVersions(){
   const apps = ALL_APPS().filter(a => a.probe);
   const on = apps.filter(a => verCache[a.id]).length;
@@ -1762,7 +1807,7 @@ function renderVersions(){
     <div class="msub">apps answering</div>`;
 }
 
-const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
+const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, watch:renderWatch, versions:renderVersions };
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
@@ -1803,6 +1848,17 @@ async function fetchFin(){
     renderTile('finmonth');
   }catch(e){ /* engine off or unreachable */ }
 }
+/* AMS WatchLater keeps its own engine on 7821. It hands over counts only —
+   never a title or a link — and only to the hub's own addresses. */
+async function fetchWatch(){
+  try{
+    const res = await fetch('http://localhost:7821/api/stats?vercheck=' + Date.now(), { cache:'no-store' });
+    if(!res.ok) return;
+    watchCache = await res.json();
+    renderTile('watch');
+  }catch(e){ /* engine off, or the hub is being read from the web */ }
+}
+
 /* the dashboard addresses and the newest report — the engine hands these
    over only when the hub is served from its own address (localhost:7780/hub) */
 async function fetchLinks(){
@@ -2236,14 +2292,16 @@ $('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show
 /* ============ go ============ */
 renderShelf();
 renderLinks();
+adoptNewTiles();
 renderMini();
 probeAll();
 fetchWealth();
 fetchFin();
+fetchWatch();
 fetchLinks();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchWatch(); fetchLinks(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 
