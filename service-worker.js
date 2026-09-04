@@ -4,7 +4,8 @@
    this script's own URL. So there is only ever one number to bump, and the
    cache can never drift from the version shown in the corner of the app. */
 const APP_V = new URL(self.location.href).searchParams.get('v') || 'dev';
-const CACHE = 'ams-mainhub-v' + APP_V;
+const PREFIX = 'ams-mainhub-v';
+const CACHE = PREFIX + APP_V;
 const ASSETS = [
   './',
   './index.html',
@@ -24,7 +25,7 @@ self.addEventListener('install', (e) => {
 self.addEventListener('activate', (e) => {
   e.waitUntil(
     caches.keys().then((keys) =>
-      Promise.all(keys.filter((k) => k !== CACHE).map((k) => caches.delete(k)))
+      Promise.all(keys.filter((k) => k.startsWith(PREFIX) && k !== CACHE).map((k) => caches.delete(k)))
     ).then(() => self.clients.claim())
   );
 });
