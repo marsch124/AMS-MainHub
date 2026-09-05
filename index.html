@@ -87,8 +87,76 @@
   .cardrow:nth-child(odd) .badge{transform:rotate(-3deg);}
   .cardrow:nth-child(even) .badge{transform:rotate(2.5deg);}
   .cmid{flex:1; min-width:0;}
-  .cname{font-size:18px; font-weight:800; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
+  /* display:block matters — ellipsis and overflow do nothing on an inline span,
+     so a long name used to run straight under its own right-hand label */
+  .cname{display:block; font-size:18px; font-weight:800; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
   .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+
+  /* ---------- a front door and the rooms behind it ----------
+     The Finance Hub leads to the two dashboards and the monthly report, so
+     they are drawn INSIDE it: the door is big, the rooms are small, they are
+     stepped in from the left, and a thin rail drops out of the door and turns
+     into each one. Three things carry it — size, indent, rail — and no card
+     is repainted, so each keeps its own colour and icon. */
+  body:not(.gridview) .cardrow.parent{padding:20px; gap:17px;}
+  body:not(.gridview) .cardrow.parent .badge{width:62px; height:62px; border-radius:21px;}
+  body:not(.gridview) .cardrow.parent .badge .hi{width:40px; height:40px;}
+  body:not(.gridview) .cardrow.parent .cright{flex-direction:column; align-items:flex-end; gap:5px;}
+  body:not(.gridview) .cardrow.parent .cname{
+    white-space:normal; line-height:1.18;
+    display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+  }
+
+  body:not(.gridview) .cardrow.kid{
+    /* width:auto matters — .cardrow sets width:100%, which a left margin then
+       pushes straight off the right edge of the shelf */
+    position:relative; margin-left:34px; width:auto;
+    padding:8px 14px 8px 15px; gap:10px; border-radius:15px;
+  }
+  body:not(.gridview) .cardrow.kid .badge{width:26px; height:26px; border-radius:9px;}
+  body:not(.gridview) .cardrow.kid .badge .hi{width:17px; height:17px;}
+  /* the tilt is charm at 52px and a wobble at 26 */
+  body:not(.gridview) .cardrow.kid .badge{transform:none;}
+  body:not(.gridview) .cardrow.kid .cname{font-size:14px; font-weight:700;}
+  body:not(.gridview) .cardrow.kid .csub{font-size:10.5px; margin-top:0;}
+  /* the where-icons stand down on these three: a row this short clips the
+     sub-line before ever reaching them, and each already says where it lives
+     in its own right-hand label. They are still on every full-size card. */
+  body:not(.gridview) .cardrow.kid .cwhere{display:none;}
+  body:not(.gridview) .cardrow.kid .stalelbl,
+  body:not(.gridview) .cardrow.kid .maclbl{font-size:9px;}
+
+  /* rooms sit close under their door and under each other */
+  body:not(.gridview) .cardrow.parent + .cardrow.kid{margin-top:-6px;}
+  body:not(.gridview) .cardrow.kid + .cardrow.kid{margin-top:-7px;}
+
+  /* The line down the gutter and the turn into the card. Each room draws the
+     piece above itself, so a run of them makes one unbroken line and the last
+     one simply stops at its own middle — no "which one is last" bookkeeping.
+     Nothing is drawn unless the card above really is the door or another room,
+     so a room moved away in Arrange stops claiming to hang off whatever now
+     sits above it; it keeps its indent, its size and its colour. */
+  body:not(.gridview) .cardrow.kid::before,
+  body:not(.gridview) .cardrow.kid::after{
+    content:''; position:absolute; left:-20px; display:none;
+    border-radius:2px; background:var(--kin, var(--accent)); opacity:.5;
+  }
+  body:not(.gridview) .cardrow.kid::before{width:2.5px; bottom:50%;}
+  body:not(.gridview) .cardrow.kid::after{width:20px; height:2.5px; top:calc(50% - 1.25px);}
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::before,
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::before,
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::after,
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::after{display:block;}
+  /* down from just under the door … */
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::before{top:-12px;}
+  /* … and from the middle of the room above, so the segments meet */
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::before{top:-28px;}
+
+  /* in the grid there is no left-hand gutter to nest into and every tile is
+     stretched to its row, so the coloured edge carries it there on its own */
+  body.gridview .cardrow.kid{padding-left:25px; box-shadow:inset 7px 0 0 var(--kin, var(--accent));}
+  body.gridview .cardrow.parent .badge{width:66px; height:66px; border-radius:22px;}
+  body.gridview .cardrow.parent .badge .hi{width:44px; height:44px;}
   /* ---------- your links: smaller type, a kind pill, a colour of their own ---------- */
   #linkCards .cardrow{border:1.6px solid var(--cardline, transparent);}
   /* a name may take two lines rather than being cut off — it is the one thing on the card */
@@ -129,7 +197,7 @@
   /* ---------- arrange mode (▲▼ + palette on every card) ---------- */
   .cluster{display:none; gap:6px;}
   body.custom .cluster{display:flex;}
-  body.custom .verchip, body.custom .maclbl{display:none;}
+  body.custom .verchip, body.custom .maclbl, body.custom .stalelbl{display:none;}
   body.custom [data-edit], body.custom [data-editfin]{display:none;}
 
   /* ---------- mini tiles (all five side by side) ---------- */
@@ -655,7 +723,7 @@
           <div class="subbody">
         <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
         <ul>
-          <li><b>FINANCE</b> — the whole monthly money system in one place: the <b>Finance Hub</b> (where the process stands — Mac only), the <b>Spend Dashboard</b> and the <b>Finance Dashboard</b> (the two published chart pages), the <b>latest report</b> in Obsidian (Mac only), and <b>Sam</b>, who runs the month.</li>
+          <li><b>FINANCE</b> — the whole monthly money system in one place: the <b>Finance Hub</b> (where the process stands — Mac only), the <b>Spend Dashboard</b> and the <b>Finance Dashboard</b> (the two published chart pages), the <b>latest report</b> in Obsidian (Mac only), and <b>Sam</b>, who runs the month. This shelf is the one place where cards are not all equal — see <b>A front door and the rooms behind it</b> below.</li>
           <li><b>EVERYDAY APPS</b> — the web apps you type into: packing, instructions, habits, and the rest.</li>
           <li><b>MAC TOOLS</b> — things that only exist on the Mac, like the Timers board.</li>
           <li><b>YOUR LINKS</b> — anything else you want a card for.</li>
@@ -676,6 +744,8 @@
           <div class="subbody">
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
         <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
+        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is the big card, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>: small, stepped in from the left, and joined to the hub by a thin line that turns into each one. Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
+        <p>Move one of the three away from the hub in <b>Arrange</b> and its connecting line simply disappears rather than pointing at whatever now sits above it; it keeps its indent and its small size. Switch to the <b>grid</b> and there is no column to step into — every tile is stretched to the same height there — so those three wear the hub’s indigo down their left edge instead. Repaint the Finance Hub card and the line takes its new colour.</p>
           </div>
         </details>
 
@@ -950,6 +1020,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.25', when:'5 Sep 2026',
+    what:'The Finance shelf is nested. The Spend Dashboard, the Finance Dashboard and the latest report are things the AMS Finance Hub takes you to, not things standing beside it, but all five cards on the shelf were drawn the same size, so nothing said so. The Finance Hub card is now the big one; those three are small, stepped in from the left, and joined to it by a thin line that drops out of the hub and turns into each of them \u2014 the way a folder and the things inside it are drawn everywhere else. Their icons are much smaller, about the size of the writing beside them, which is what makes the step-in read at a glance. Sam is unchanged and stays a full card: Sam runs the month with you rather than being somewhere the hub sends you. Nothing was recoloured \u2014 all four keep their own colour, icon and badge \u2014 and the three shorter rows leave the whole shelf shorter than it was. Move one of the three away from the hub in Arrange and its line disappears instead of pointing at whatever now sits above it. In the grid, where every tile is stretched to the same height and there is no column to step into, those three wear the hub\u2019s indigo down their left edge instead. One older fault fixed on the way: a long card name used to run underneath its own right-hand label on a narrow phone \u2014 AMS Finance Hub over MAC ONLY \u2014 on every shelf, not just this one. Names now stop cleanly.' },
   { v:'1.22', when:'4 Sep 2026',
     what:'A WATCH LATER tile. The small tiles across the top gain one for AMS WatchLater: how many videos are waiting, how long they come to altogether, and \u2014 the useful number \u2014 how many of them fit into five minutes. It is answered by that app\u2019s own engine here on the Mac, so it fills in whenever the engine is running and stays quiet when it is not, exactly like the Finance tile. The app hands over those counts and nothing else: no titles and no links, and it answers only to the hub\u2019s own addresses. Like every other tile you can switch it off in Arrange \u2014 and switching tiles off now actually sticks: the choice has been written down since it was added, but never read back, so it quietly forgot itself every time the hub was opened. A tile added by a later release also switches itself on rather than hiding behind a choice made before it existed.' },
   { v:'1.21', when:'4 Sep 2026',
@@ -1035,11 +1107,11 @@ const FIN_APPS = [
   { id:'finance',    name:'AMS Finance Hub',   sub:'Where the monthly process stands',        icon:'coin',     dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780/finance/',
     probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
     store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
-  { id:'dashSpend',  name:'Spend Dashboard',   sub:'One month’s spending in detail',          icon:'bars',     dot:'#1f9e93', tint:'#d7f2ef', slot:'spend',
+  { id:'dashSpend',  name:'Spend Dashboard',   sub:'One month’s spending in detail',          icon:'bars',     dot:'#1f9e93', tint:'#d7f2ef', slot:'spend',  under:'finance',
     store:'A published page on claude.ai · built by Sam from the monthly report', where:['cloud'] },
-  { id:'dashBudget', name:'Finance Dashboard', sub:'Budget, net worth and the runway to 2038', icon:'trend',    dot:'#c8952b', tint:'#faeecb', slot:'budget',
+  { id:'dashBudget', name:'Finance Dashboard', sub:'Budget, net worth and the runway to 2038', icon:'trend',    dot:'#c8952b', tint:'#faeecb', slot:'budget', under:'finance',
     store:'A published page on claude.ai · built by Sam from the budget workbook', where:['cloud','excel'] },
-  { id:'report',     name:'Latest report',     sub:'The newest monthly report',               icon:'document', dot:'#d84f86', tint:'#fbdeeb', engineOnly:true,
+  { id:'report',     name:'Latest report',     sub:'The newest monthly report',               icon:'document', dot:'#d84f86', tint:'#fbdeeb', engineOnly:true, under:'finance',
     store:'A note in the Obsidian vault · Areas › Finance › Reports', where:['mac','vault'] },
   { id:'sam',        name:'Sam',               sub:'The robot assistant, run in Cowork',      icon:'bubble',   dot:'#9a5fc9', tint:'#f0e3fa',
     store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
@@ -1052,6 +1124,9 @@ const MAC_APPS = [
     store:'On the Mac, inside the app’s own folder · dated backups', where:['mac'] },
 ];
 const ALL_APPS = () => [...FIN_APPS, ...WEB_APPS, ...MAC_APPS];
+/* any card another card names as its `under` is a front door, and is drawn
+   as one — nothing has to be listed twice */
+const PARENT_IDS = new Set(ALL_APPS().filter(a => a.under).map(a => a.under));
 
 /* dashboard addresses: the engine's answer wins, a typed one fills the gap */
 const FIN_KEY = 'amshub.finlinks';
@@ -1220,14 +1295,24 @@ function whereHTML(a){
 
 function appRow(a, right, sect){
   const eff = lookFor(a);
+  /* a card that leads to others is drawn bigger; a card that lives behind one
+     is drawn smaller and wears its front door's own colour down the left edge
+     — its CURRENT colour, so repainting the parent repaints its subviews too */
+  let cls = 'cardrow', sty = `background:${eff.tint}`;
+  if(PARENT_IDS.has(a.id)) cls += ' parent';
+  if(a.under){
+    const p = ALL_APPS().find(x => x.id === a.under);
+    cls += ' kid';
+    sty += `; --kin:${(p ? lookFor(p) : eff).dot}`;
+  }
   const mid = `
     <span class="badge" style="color:${eff.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
     <span class="cmid"><span class="cname">${esc(a.name)}</span><span class="csub" style="display:block">${esc(a.sub)}</span>${whereHTML(a)}</span>
     <span class="cright">${right}${clusterHTML(sect, a.id)}</span>`;
-  if(a.openId) return `<div class="cardrow" data-app="${a.id}" data-open="${esc(a.openId)}" style="background:${eff.tint}">${mid}</div>`;
-  if(!a.url) return `<div class="cardrow" data-app="${a.id}" style="background:${eff.tint}; cursor:default">${mid}</div>`;
-  return `<a class="cardrow" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
-            style="background:${eff.tint}">${mid}</a>`;
+  if(a.openId) return `<div class="${cls}" data-app="${a.id}" data-open="${esc(a.openId)}" style="${sty}">${mid}</div>`;
+  if(!a.url) return `<div class="${cls}" data-app="${a.id}" style="${sty}; cursor:default">${mid}</div>`;
+  return `<a class="${cls}" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
+            style="${sty}">${mid}</a>`;
 }
 
 /* the right-hand corner of a finance card: version chip, months-behind badge,
