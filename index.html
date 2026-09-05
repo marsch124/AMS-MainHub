@@ -93,11 +93,54 @@
   .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
   /* ---------- a front door and the rooms behind it ----------
-     The Finance Hub leads to the two dashboards and the monthly report, so
-     they are drawn INSIDE it: the door is big, the rooms are small, they are
-     stepped in from the left, and a thin rail drops out of the door and turns
-     into each one. Three things carry it — size, indent, rail — and no card
-     is repainted, so each keeps its own colour and icon. */
+     The Finance Hub leads to the two dashboards and the monthly report. In
+     BOTH views the door is the big card and the rooms are a `.nest` — one
+     block, stepped in from the left, with a rail down its edge. The Mac's
+     grid is the view that matters most here, so it is written first: the
+     door spans the whole shelf as a banner and the nest spans the row under
+     it, holding its own smaller tiles. */
+
+  .nest{position:relative; margin-left:36px;}
+  /* a hairline in the margin, not a bar on the cards — the rail says where
+     the group starts; it must never make these three louder than the door */
+  .nest::before{
+    content:''; position:absolute; left:-21px; top:-8px; width:2px;
+    border-radius:2px; background:var(--kin, var(--accent)); opacity:.28;
+  }
+  /* small badges sit straight — the tilt is charm at 56px and a wobble at 34 */
+  .cardrow.kid .badge{transform:none; opacity:.88;}
+  /* a white pill reads LOUDER on a pale card than it did on a strong one, so
+     the calm labels lose their pill here — but "n months behind" is a real
+     warning and keeps its voice */
+  .cardrow.kid .stalelbl:not(.behind),
+  .cardrow.kid .maclbl{background:transparent; opacity:.62;}
+
+  /* ---- the Mac: grid ---- */
+  body.gridview .cardrow.parent{
+    grid-column:1 / -1;
+    flex-direction:row; align-items:center; gap:18px; padding:18px 20px;
+  }
+  body.gridview .cardrow.parent .cmid{width:auto; flex:1; min-width:0;}
+  body.gridview .cardrow.parent .cright{position:static;}
+  body.gridview .cardrow.parent .badge{width:60px; height:60px; border-radius:20px;}
+  body.gridview .cardrow.parent .badge .hi{width:39px; height:39px;}
+  body.gridview .nest{
+    grid-column:1 / -1;
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(190px, 1fr)); gap:12px;
+  }
+  body.gridview .nest::before{bottom:0;}
+  body.gridview .cardrow.kid{padding:14px 15px; gap:10px; border-radius:18px;}
+  body.gridview .cardrow.kid .badge{width:34px; height:34px; border-radius:12px;}
+  body.gridview .cardrow.kid .badge .hi{width:22px; height:22px;}
+  body.gridview .cardrow.kid .cname{font-size:15px;}
+  body.gridview .cardrow.kid .csub{font-size:11.5px;}
+  body.gridview .cardrow.kid .cright{top:11px; right:12px;}
+  body.gridview .cardrow.kid .stalelbl,
+  body.gridview .cardrow.kid .maclbl{font-size:9px;}
+  body.gridview .cardrow.kid{padding:13px 14px;}
+  body.gridview .cardrow.kid .cname{font-size:14.5px;}
+
+  /* ---- the iPhone: list ---- */
   body:not(.gridview) .cardrow.parent{padding:20px; gap:17px;}
   body:not(.gridview) .cardrow.parent .badge{width:62px; height:62px; border-radius:21px;}
   body:not(.gridview) .cardrow.parent .badge .hi{width:40px; height:40px;}
@@ -106,57 +149,30 @@
     white-space:normal; line-height:1.18;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
   }
-
+  body:not(.gridview) .nest{display:flex; flex-direction:column; gap:8px; margin-top:6px;}
+  /* the rail stops at the middle of the last room, and turns into each one */
+  body:not(.gridview) .nest::before{bottom:23px;}
+  body:not(.gridview) .nest .cardrow.kid::after{
+    content:''; position:absolute; left:-21px; top:calc(50% - 1px);
+    width:21px; height:2px; border-radius:2px;
+    background:var(--kin, var(--accent)); opacity:.28;
+  }
   body:not(.gridview) .cardrow.kid{
-    /* width:auto matters — .cardrow sets width:100%, which a left margin then
-       pushes straight off the right edge of the shelf */
-    position:relative; margin-left:34px; width:auto;
+    /* width:auto matters — .cardrow sets width:100%, which the nest's left
+       margin would then push off the right edge of the shelf */
+    position:relative; width:auto;
     padding:8px 14px 8px 15px; gap:10px; border-radius:15px;
   }
   body:not(.gridview) .cardrow.kid .badge{width:26px; height:26px; border-radius:9px;}
   body:not(.gridview) .cardrow.kid .badge .hi{width:17px; height:17px;}
-  /* the tilt is charm at 52px and a wobble at 26 */
-  body:not(.gridview) .cardrow.kid .badge{transform:none;}
   body:not(.gridview) .cardrow.kid .cname{font-size:14px; font-weight:700;}
   body:not(.gridview) .cardrow.kid .csub{font-size:10.5px; margin-top:0;}
+  body:not(.gridview) .cardrow.kid .stalelbl,
+  body:not(.gridview) .cardrow.kid .maclbl{font-size:9px;}
   /* the where-icons stand down on these three: a row this short clips the
      sub-line before ever reaching them, and each already says where it lives
      in its own right-hand label. They are still on every full-size card. */
   body:not(.gridview) .cardrow.kid .cwhere{display:none;}
-  body:not(.gridview) .cardrow.kid .stalelbl,
-  body:not(.gridview) .cardrow.kid .maclbl{font-size:9px;}
-
-  /* rooms sit close under their door and under each other */
-  body:not(.gridview) .cardrow.parent + .cardrow.kid{margin-top:-6px;}
-  body:not(.gridview) .cardrow.kid + .cardrow.kid{margin-top:-7px;}
-
-  /* The line down the gutter and the turn into the card. Each room draws the
-     piece above itself, so a run of them makes one unbroken line and the last
-     one simply stops at its own middle — no "which one is last" bookkeeping.
-     Nothing is drawn unless the card above really is the door or another room,
-     so a room moved away in Arrange stops claiming to hang off whatever now
-     sits above it; it keeps its indent, its size and its colour. */
-  body:not(.gridview) .cardrow.kid::before,
-  body:not(.gridview) .cardrow.kid::after{
-    content:''; position:absolute; left:-20px; display:none;
-    border-radius:2px; background:var(--kin, var(--accent)); opacity:.5;
-  }
-  body:not(.gridview) .cardrow.kid::before{width:2.5px; bottom:50%;}
-  body:not(.gridview) .cardrow.kid::after{width:20px; height:2.5px; top:calc(50% - 1.25px);}
-  body:not(.gridview) .cardrow.parent + .cardrow.kid::before,
-  body:not(.gridview) .cardrow.kid + .cardrow.kid::before,
-  body:not(.gridview) .cardrow.parent + .cardrow.kid::after,
-  body:not(.gridview) .cardrow.kid + .cardrow.kid::after{display:block;}
-  /* down from just under the door … */
-  body:not(.gridview) .cardrow.parent + .cardrow.kid::before{top:-12px;}
-  /* … and from the middle of the room above, so the segments meet */
-  body:not(.gridview) .cardrow.kid + .cardrow.kid::before{top:-28px;}
-
-  /* in the grid there is no left-hand gutter to nest into and every tile is
-     stretched to its row, so the coloured edge carries it there on its own */
-  body.gridview .cardrow.kid{padding-left:25px; box-shadow:inset 7px 0 0 var(--kin, var(--accent));}
-  body.gridview .cardrow.parent .badge{width:66px; height:66px; border-radius:22px;}
-  body.gridview .cardrow.parent .badge .hi{width:44px; height:44px;}
   /* ---------- your links: smaller type, a kind pill, a colour of their own ---------- */
   #linkCards .cardrow{border:1.6px solid var(--cardline, transparent);}
   /* a name may take two lines rather than being cut off — it is the one thing on the card */
@@ -744,8 +760,8 @@
           <div class="subbody">
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
         <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
-        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is the big card, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>: small, stepped in from the left, and joined to the hub by a thin line that turns into each one. Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
-        <p>Move one of the three away from the hub in <b>Arrange</b> and its connecting line simply disappears rather than pointing at whatever now sits above it; it keeps its indent and its small size. Switch to the <b>grid</b> and there is no column to step into — every tile is stretched to the same height there — so those three wear the hub’s indigo down their left edge instead. Repaint the Finance Hub card and the line takes its new colour.</p>
+        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is the front door, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>. On the Mac, in the grid, the hub runs across the whole width of the shelf and the three sit indented below it in their own block, on smaller tiles. On the phone the same idea takes its own shape: the hub is the big card and the three are small rows stepped in from the left, joined by a thin line. Either way they are drawn <b>quieter</b> than everything else — each keeps its own colour, faded most of the way to the paper, and the calm labels lose their pill (only <i>n months behind</i> keeps its voice, because that one is a warning). Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
+        <p>Move one of the three away from the hub in <b>Arrange</b> and it steps back out of the group — no line, no indent, just an ordinary card again, rather than pretending to hang off whatever now sits above it. Repaint the Finance Hub and the line takes its new colour. <b>Sam</b> is untouched throughout: Sam runs the month with you rather than being somewhere the hub sends you.</p>
           </div>
         </details>
 
@@ -1020,8 +1036,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
-  { v:'1.25', when:'5 Sep 2026',
-    what:'The Finance shelf is nested. The Spend Dashboard, the Finance Dashboard and the latest report are things the AMS Finance Hub takes you to, not things standing beside it, but all five cards on the shelf were drawn the same size, so nothing said so. The Finance Hub card is now the big one; those three are small, stepped in from the left, and joined to it by a thin line that drops out of the hub and turns into each of them \u2014 the way a folder and the things inside it are drawn everywhere else. Their icons are much smaller, about the size of the writing beside them, which is what makes the step-in read at a glance. Sam is unchanged and stays a full card: Sam runs the month with you rather than being somewhere the hub sends you. Nothing was recoloured \u2014 all four keep their own colour, icon and badge \u2014 and the three shorter rows leave the whole shelf shorter than it was. Move one of the three away from the hub in Arrange and its line disappears instead of pointing at whatever now sits above it. In the grid, where every tile is stretched to the same height and there is no column to step into, those three wear the hub\u2019s indigo down their left edge instead. One older fault fixed on the way: a long card name used to run underneath its own right-hand label on a narrow phone \u2014 AMS Finance Hub over MAC ONLY \u2014 on every shelf, not just this one. Names now stop cleanly.' },
+  { v:'1.26', when:'5 Sep 2026',
+    what:'The nesting, done for the Mac. v1.25 drew the Spend Dashboard, the Finance Dashboard and the latest report as things behind the AMS Finance Hub, but only in the list on the phone. In the grid on the Mac \u2014 which is where this hub is actually used \u2014 it did nothing but stick a blue bar on three tiles, which made them shout rather than step back. The grid is now the view this was designed for. The Finance Hub runs across the whole width of the shelf as its front door, and the three sit indented underneath it in their own block, on smaller tiles with smaller icons. They are also quieter than everything around them, which is the point: each keeps its own colour but faded most of the way to the paper, and the calm labels lose their white pill. Only \u201Cn months behind\u201D keeps its voice, because that one is a warning. Sam is unchanged and drops back to a normal tile below. The phone keeps the same idea in its own shape: the door big, the three stepped in and small, joined by a thin line. Nothing was recoloured for good \u2014 repaint the Finance Hub in Arrange and the line follows it \u2014 and moving one of the three away from the hub lets it go back to being an ordinary card rather than pretending to hang off whatever now sits above it.' },
   { v:'1.22', when:'4 Sep 2026',
     what:'A WATCH LATER tile. The small tiles across the top gain one for AMS WatchLater: how many videos are waiting, how long they come to altogether, and \u2014 the useful number \u2014 how many of them fit into five minutes. It is answered by that app\u2019s own engine here on the Mac, so it fills in whenever the engine is running and stays quiet when it is not, exactly like the Finance tile. The app hands over those counts and nothing else: no titles and no links, and it answers only to the hub\u2019s own addresses. Like every other tile you can switch it off in Arrange \u2014 and switching tiles off now actually sticks: the choice has been written down since it was added, but never read back, so it quietly forgot itself every time the hub was opened. A tile added by a later release also switches itself on rather than hiding behind a choice made before it existed.' },
   { v:'1.21', when:'4 Sep 2026',
@@ -1188,6 +1204,14 @@ function lookFor(a){
   const cw = colorway(look.colors[a.id]);
   return cw ? { dot:cw.dot, tint:cw.tint } : { dot:a.dot, tint:a.tint };
 }
+/* blend a colour towards the paper the shelves sit on */
+const PAPER = [250, 241, 226];   /* --bg */
+function faded(hex, t){
+  const h = hex.replace('#', '');
+  const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
+  const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
+  return '#' + c.map((v, i) => Math.round(v + (PAPER[i] - v) * t).toString(16).padStart(2, '0')).join('');
+}
 /* saved order first (ignoring ids that no longer exist), then any new apps */
 function ordered(list, key){
   const byId = new Map(list.map(a => [a.id, a]));
@@ -1296,14 +1320,16 @@ function whereHTML(a){
 function appRow(a, right, sect){
   const eff = lookFor(a);
   /* a card that leads to others is drawn bigger; a card that lives behind one
-     is drawn smaller and wears its front door's own colour down the left edge
-     — its CURRENT colour, so repainting the parent repaints its subviews too */
+     is drawn smaller and quieter — nothing is added to it */
   let cls = 'cardrow', sty = `background:${eff.tint}`;
   if(PARENT_IDS.has(a.id)) cls += ' parent';
   if(a.under){
-    const p = ALL_APPS().find(x => x.id === a.under);
+    /* a room behind a door should read as LESS than the door, so it steps
+       back rather than gaining a mark: it keeps its own colour, faded most
+       of the way to the paper, and its badge keeps the full one so the icon
+       is still recognisable at a glance */
     cls += ' kid';
-    sty += `; --kin:${(p ? lookFor(p) : eff).dot}`;
+    sty = `background:${faded(eff.tint, .62)}`;
   }
   const mid = `
     <span class="badge" style="color:${eff.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
@@ -1336,20 +1362,51 @@ function finRight(a){
   return '';
 }
 
+/* one finance card, whichever kind it is */
+function finCardHTML(a){
+  if(a.engineOnly){
+    const r = engineLinks && engineLinks.report;
+    if(!r || !r.id) return '';
+    /* the engine opens the note in Obsidian; the card itself goes nowhere */
+    return appRow({ ...a, sub: r.month ? monthLabel(r.month) + ' — opens in Obsidian' : a.sub, openId: r.id }, finRight(a), 'fin');
+  }
+  if(a.slot){
+    const url = finUrl(a);
+    return appRow({ ...a, url, sub: url ? a.sub : 'Tap the pencil and paste its address' }, finRight(a), 'fin');
+  }
+  return appRow(a, finRight(a), 'fin');
+}
+
+/* The rooms behind a door are wrapped in one <div class="nest">, so the whole
+   group can be stepped in and railed as a single block. That wrapper is what
+   makes this work in the GRID as well as the list: a grid has no left-hand
+   gutter to draw a line into, so the nest has to be a real element that spans
+   the row and holds its own smaller tiles.
+   A run is only wrapped when it genuinely follows its door — move one away in
+   Arrange and it renders as a plain card again, small but not pretending to
+   hang off whatever now sits above it. */
+function finShelfHTML(){
+  const list = ordered(FIN_APPS, 'fin');
+  const out = [];
+  for(let i = 0; i < list.length; ){
+    const a = list[i];
+    const prev = i > 0 ? list[i - 1] : null;
+    if(a.under && prev && prev.id === a.under){
+      const run = [];
+      while(i < list.length && list[i].under === a.under){ run.push(finCardHTML(list[i])); i++; }
+      const inner = run.filter(Boolean).join('');
+      const door = ALL_APPS().find(x => x.id === a.under);
+      if(inner) out.push(`<div class="nest" style="--kin:${(door ? lookFor(door) : lookFor(a)).dot}">${inner}</div>`);
+      continue;
+    }
+    out.push(finCardHTML(a));
+    i++;
+  }
+  return out.join('');
+}
+
 function renderShelf(){
-  $('finCards').innerHTML = ordered(FIN_APPS, 'fin').map(a => {
-    if(a.engineOnly){
-      const r = engineLinks && engineLinks.report;
-      if(!r || !r.id) return '';
-      /* the engine opens the note in Obsidian; the card itself goes nowhere */
-      return appRow({ ...a, sub: r.month ? monthLabel(r.month) + ' — opens in Obsidian' : a.sub, openId: r.id }, finRight(a), 'fin');
-    }
-    if(a.slot){
-      const url = finUrl(a);
-      return appRow({ ...a, url, sub: url ? a.sub : 'Tap the pencil and paste its address' }, finRight(a), 'fin');
-    }
-    return appRow(a, finRight(a), 'fin');
-  }).join('');
+  $('finCards').innerHTML = finShelfHTML();
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
     appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
   $('macCards').innerHTML = ordered(MAC_APPS, 'mac').map(a =>
