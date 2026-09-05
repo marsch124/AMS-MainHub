@@ -93,15 +93,12 @@
   .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
   /* ---------- a front door and the rooms behind it ----------
-     The Finance Hub leads to the two dashboards and the monthly report; they
-     are not things beside it. Two marks say so, and both belong to the card
-     itself rather than to where it happens to sit, so Arrange can move any of
-     them without leaving the picture telling a lie:
-       · the front door is simply drawn bigger,
-       · each room wears the front door's own colour down its left edge.
-     The tighter gap is the one positional touch — adjacent rooms cling to
-     their door, and simply stop clinging if one is moved away. */
-  .cardrow.kid{box-shadow:inset 7px 0 0 var(--kin, var(--accent));}
+     The Finance Hub leads to the two dashboards and the monthly report, so
+     they are drawn INSIDE it: stepped in from the left, much smaller, and
+     joined to the card above by a line that drops down the gutter and turns
+     into each one. Each room draws its own piece of that line — from just
+     above itself down to its own middle — so a run of them makes one
+     unbroken line and the last one simply stops. */
   body:not(.gridview) .cardrow.parent{padding:20px; gap:17px;}
   body:not(.gridview) .cardrow.parent .badge{width:62px; height:62px; border-radius:21px;}
   body:not(.gridview) .cardrow.parent .badge .hi{width:40px; height:40px;}
@@ -110,20 +107,56 @@
     white-space:normal; line-height:1.18;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
   }
-  body:not(.gridview) .cardrow.kid{padding:9px 14px 9px 24px; gap:12px; border-radius:17px;}
-  body:not(.gridview) .cardrow.kid .badge{width:38px; height:38px; border-radius:13px;}
-  body:not(.gridview) .cardrow.kid .badge .hi{width:24px; height:24px;}
-  body:not(.gridview) .cardrow.kid .cname{font-size:14.5px; font-weight:700;}
-  body:not(.gridview) .cardrow.kid .csub{font-size:11px; margin-top:1px;}
+
+  body:not(.gridview) .cardrow.kid{
+    /* width:auto matters — .cardrow sets width:100%, which a left margin then
+       pushes straight off the right edge of the shelf */
+    position:relative; margin-left:34px; width:auto;
+    padding:8px 14px 8px 15px; gap:10px; border-radius:15px;
+    box-shadow:inset 4px 0 0 var(--kin, var(--accent));
+  }
+  body:not(.gridview) .cardrow.kid .badge{width:26px; height:26px; border-radius:9px;}
+  body:not(.gridview) .cardrow.kid .badge .hi{width:17px; height:17px;}
+  /* the tilt is charm at 52px and a wobble at 26 */
+  body:not(.gridview) .cardrow.kid .badge{transform:none;}
+  body:not(.gridview) .cardrow.kid .cname{font-size:14px; font-weight:700;}
+  body:not(.gridview) .cardrow.kid .csub{font-size:10.5px; margin-top:0;}
   /* the where-icons stand down on these three: a row this short clips the
      sub-line before ever reaching them, and each already says where it lives
      in its own right-hand label. They are still on every full-size card. */
   body:not(.gridview) .cardrow.kid .cwhere{display:none;}
-  body:not(.gridview) .cardrow.parent + .cardrow.kid{margin-top:-5px;}
-  body:not(.gridview) .cardrow.kid + .cardrow.kid{margin-top:-6px;}
-  /* in the grid every tile is stretched to its row anyway, so the size
-     difference has nothing to say there — the edge stripe carries it alone */
-  body.gridview .cardrow.kid{padding-left:25px;}
+  body:not(.gridview) .cardrow.kid .stalelbl,
+  body:not(.gridview) .cardrow.kid .maclbl{font-size:9px;}
+
+  /* rooms sit close under their door and under each other */
+  body:not(.gridview) .cardrow.parent + .cardrow.kid{margin-top:-6px;}
+  body:not(.gridview) .cardrow.kid + .cardrow.kid{margin-top:-7px;}
+
+  /* The line down the gutter and the turn into the card. Each room draws the
+     piece above itself, so a run of them makes one unbroken line and the last
+     one simply stops at its own middle — no "which one is last" bookkeeping.
+     Nothing is drawn unless the card above really is the door or another room,
+     so a room moved away in Arrange stops claiming to hang off whatever now
+     sits above it; it keeps its indent, its size and its colour. */
+  body:not(.gridview) .cardrow.kid::before,
+  body:not(.gridview) .cardrow.kid::after{
+    content:''; position:absolute; left:-20px; display:none;
+    border-radius:2px; background:var(--kin, var(--accent)); opacity:.5;
+  }
+  body:not(.gridview) .cardrow.kid::before{width:2.5px; bottom:50%;}
+  body:not(.gridview) .cardrow.kid::after{width:20px; height:2.5px; top:calc(50% - 1.25px);}
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::before,
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::before,
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::after,
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::after{display:block;}
+  /* down from just under the door … */
+  body:not(.gridview) .cardrow.parent + .cardrow.kid::before{top:-12px;}
+  /* … and from the middle of the room above, so the segments meet */
+  body:not(.gridview) .cardrow.kid + .cardrow.kid::before{top:-28px;}
+
+  /* in the grid there is no left-hand gutter to nest into and every tile is
+     stretched to its row, so the coloured edge carries it there on its own */
+  body.gridview .cardrow.kid{padding-left:25px; box-shadow:inset 7px 0 0 var(--kin, var(--accent));}
   body.gridview .cardrow.parent .badge{width:66px; height:66px; border-radius:22px;}
   body.gridview .cardrow.parent .badge .hi{width:44px; height:44px;}
   /* ---------- your links: smaller type, a kind pill, a colour of their own ---------- */
@@ -713,8 +746,8 @@
           <div class="subbody">
         <p>The button next to Settings switches the shelf between a <b>list</b> (best on the iPhone) and a <b>grid</b> of tiles (best on the Mac). The hub picks a sensible default for your screen and remembers your choice on each device. Everything works the same in both — the sections just sit in their own panels either way.</p>
         <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
-        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is drawn larger than everything else, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — sit under it as slim rows with the Finance Hub’s indigo running down their left edge. Nothing about them changed except how they are drawn: they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
-        <p>The two marks travel with the cards, not with their position, so you can reorder the shelf in <b>Arrange</b> or switch to the <b>grid</b> and neither starts telling a lie — in the grid, where every tile is stretched to the same height anyway, the coloured edge carries it on its own. Repaint the Finance Hub card and the three edges take its new colour with it.</p>
+        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is drawn large, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>: stepped in from the left, with small icons, joined to the hub by a line that runs down beside them and turns into each one. Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
+        <p>The indent, the small size and the indigo edge belong to the cards themselves, so nothing here can start telling a lie. Move one of the three away from the hub in <b>Arrange</b> and its connecting line simply disappears rather than pointing at whatever now sits above it. Switch to the <b>grid</b> and there is no column to step into — every tile is stretched to the same height there — so the coloured edge carries it alone. Repaint the Finance Hub card and the line and the three edges all take its new colour.</p>
           </div>
         </details>
 
@@ -989,6 +1022,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.24', when:'5 Sep 2026',
+    what:'Properly nested. v1.23 made the Spend Dashboard, the Finance Dashboard and the latest report smaller than the AMS Finance Hub, but it left them sitting in the same column as everything else, so they still read as a list rather than as things inside the hub. They are now stepped in from the left and joined to it by a line that drops down beside the cards and turns into each one, the way a folder and its contents are drawn everywhere else. Their icons are much smaller too \u2014 about the size of the writing next to them \u2014 which is what makes the step-in read at a glance instead of having to be looked for. The rows are barely a third the height of the Finance Hub card, so the whole shelf is shorter than it was before any of this started. If you move one of the three away from the hub in Arrange, its line disappears rather than pointing at whatever now sits above it; it keeps its indent, its small size and its indigo edge. In the grid there is no column to step into and every tile is stretched to the same height, so there the coloured edge carries it alone.' },
   { v:'1.23', when:'5 Sep 2026',
     what:'The Finance shelf says what leads to what. The Spend Dashboard, the Finance Dashboard and the latest report are all things the AMS Finance Hub takes you to \u2014 not things standing beside it \u2014 but all five cards were drawn the same size, so the shelf never said so. The Finance Hub card is now the biggest thing on the shelf, and those three sit under it as slim rows wearing the Finance Hub\u2019s own indigo down their left edge. Sam is unchanged: Sam runs the month with you rather than being a room behind the hub. Both marks belong to the cards themselves, so you can still rearrange the shelf in Arrange, or switch to the grid, and nothing starts pointing at the wrong thing \u2014 and if you repaint the Finance Hub card a different colour, the three edges follow it. The shorter rows also give back about ninety pixels of the shelf on the phone. While arranging, the \u201Cmonths behind\u201D badge now steps aside like the other labels already did, so the \u25B2\u25BC buttons have room on the slimmer rows.' },
   { v:'1.22', when:'4 Sep 2026',
