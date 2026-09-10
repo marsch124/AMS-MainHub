@@ -1042,6 +1042,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.28', when:'10 Sep 2026',
+    what:'<b>Export my links</b> used a plain download link, which does nothing inside an app opened from the Home Screen — so on a phone it could save nothing and still record that you had backed up. It now offers the share sheet there, keeps the straightforward download on the Mac, and only notes a backup once a file has actually been saved. The same fault has been fixed across CountDown, PackTrack, ColdShower, TechLingo, FermentLog and Breathing.' },
   { v:'1.27', when:'5 Sep 2026',
     what:'The latest report no longer vanishes on the iPhone. That card is the one thing on the Finance shelf the hub knows nothing about by itself \u2014 the Finance engine on the Mac tells it which note is newest, what month it covers and how to open it. Away from the Mac there is nothing to ask, so the card used to disappear altogether, which left the nest holding two things on the phone and three on the Mac and made it look like something had gone wrong. It now stands in its place with its glyph greyed and MAC ONLY beside it, and a tap explains that the report lives in Obsidian on the Mac rather than doing nothing at all. On the Mac, with the engine running, it is exactly as it was: the month it covers, and a tap opens the note.' },
   { v:'1.26', when:'5 Sep 2026',
@@ -2321,13 +2323,31 @@ function showMeta(){
   $('backupMeta').textContent = when ? 'Last backup: ' + new Date(when).toLocaleString() : 'No backup saved yet.';
 }
 showMeta();
-$('exportBtn').addEventListener('click', () => {
+/* A plain download link is inert inside an app opened from the Home Screen, so this
+   could save nothing and still stamp a backup. Share sheet first on a phone; the
+   Mac keeps the straightforward download. Only a real save counts. */
+$('exportBtn').addEventListener('click', async () => {
+  const name = 'ams-mainhub-links-' + new Date().toISOString().slice(0,10) + '.json';
   const blob = new Blob([backupBlob()], { type:'application/json' });
-  const aEl = document.createElement('a');
-  aEl.href = URL.createObjectURL(blob);
-  aEl.download = 'ams-mainhub-links-' + new Date().toISOString().slice(0,10) + '.json';
-  document.body.appendChild(aEl); aEl.click(); aEl.remove();
-  stampBackup();
+  const file = new File([blob], name, { type:'application/json' });
+
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try{
+      await navigator.share({ files: [file], title: 'AMS Main Hub links' });
+      stampBackup(); showToast('Backup saved ✅');
+    }catch(err){
+      showToast((err && err.name === 'AbortError') ? 'Backup cancelled — nothing saved' : 'Could not save the backup');
+    }
+    return;
+  }
+  try{
+    const url = URL.createObjectURL(blob);
+    const aEl = document.createElement('a');
+    aEl.href = url; aEl.download = name;
+    document.body.appendChild(aEl); aEl.click(); aEl.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    stampBackup(); showToast('Backup saved ✅');
+  }catch(err){ showToast('Could not save the backup'); }
 });
 $('copyBtn').addEventListener('click', async () => {
   try{
