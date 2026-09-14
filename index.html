@@ -541,6 +541,12 @@
     <path d="M8.2 8.4c-.1-2.2 1.6-3.8 3.8-3.8 2.2 0 3.9 1.5 3.9 3.7 0 .4 0 .8-.1 1.2-2.5-.5-5-.5-7.4.1-.1-.4-.2-.8-.2-1.2Z"/>
     <path d="M8.5 11.8c-.3 1-.7 1.9-1.1 2.8M12.1 12.1c-.1 1-.3 2.1-.6 3.1M15.6 11.8c.4.9.7 1.8 1.1 2.7M9.9 16.9c-.2.8-.5 1.6-.8 2.4M14.2 17c.3.8.6 1.6.9 2.3"/>
   </symbol>
+  <symbol id="icon-bubbles" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8.6 10.9c2.6-.1 4.6 2 4.5 4.6-.1 2.5-2.1 4.5-4.6 4.5-2.5 0-4.5-2.1-4.4-4.6.1-2.4 2-4.3 4.3-4.5"/>
+    <path d="M6.6 14.3c.2-.8.8-1.4 1.6-1.6"/>
+    <path d="M16.1 5.7c1.3 0 2.3 1.1 2.3 2.3 0 1.3-1.1 2.3-2.3 2.3-1.3 0-2.3-1-2.3-2.3 0-1.2 1-2.2 2.2-2.3"/>
+    <path d="M20.3 2.3c.6 0 1.1.5 1.1 1.1 0 .6-.5 1.1-1.1 1.1-.6 0-1.1-.5-1.1-1.1 0-.6.5-1.1 1.1-1.1"/>
+  </symbol>
   <symbol id="icon-wind" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M4.6 9.3c3.9-.2 7.8-.3 11.7-.1 1.4.1 2.4-.6 2.5-1.7.1-1-.7-1.9-1.9-2"/>
     <path d="M4.6 13.2c4.6-.1 9.2-.1 13.8.1 1.3.1 2.1.9 2 2-.1 1.1-1.1 1.8-2.5 1.7"/>
@@ -1042,6 +1048,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.29', when:'14 Sep 2026',
+    what:'<b>AMS Apnea</b> has a card. It is the first real iPhone app on the shelf rather than a web page, so a tap opens the app itself on the iPhone. On the Mac it stands greyed with iPHONE APP beside it, because there is nothing there to open.' },
   { v:'1.28', when:'10 Sep 2026',
     what:'<b>Export my links</b> used a plain download link, which does nothing inside an app opened from the Home Screen — so on a phone it could save nothing and still record that you had backed up. It now offers the share sheet there, keeps the straightforward download on the Mac, and only notes a backup once a file has actually been saved. The same fault has been fixed across CountDown, PackTrack, ColdShower, TechLingo, FermentLog and Breathing.' },
   { v:'1.27', when:'5 Sep 2026',
@@ -1125,6 +1133,10 @@ const WEB_APPS = [
   { id:'packtrack', name:'AMS PackTrack',   sub:'Deliveries, tracked from the mail',     icon:'parcel',    dot:'#a9713f', tint:'#f7e7d6', url:GH+'AMS-PackTrack/',
     store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-PackTrack/version.json', json:true, pre:'v' } },
+  /* a real iPhone app (TestFlight), not a web page: it opens through its own
+     address, so it only works on the iPhone where it is installed */
+  { id:'apnea',    name:'AMS Apnea',        sub:'Breath-hold training, led by voice',    icon:'bubbles',   dot:'#2f6fa8', tint:'#dce8f5', url:'amsapnea://',
+    native:true, store:'On this iPhone only · backup files', where:['iphone'] },
 ];
 /* The money system, all on one shelf. The two dashboards are `slot` cards:
    their address comes from the Finance engine on the Mac, or is typed once
@@ -1327,8 +1339,10 @@ function whereHTML(a){
   return `<span class="cwhere" data-store="${esc(a.store)}" title="${esc(a.store)}">${icons}</span>`;
 }
 
+const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
 function appRow(a, right, sect){
   const eff = lookFor(a);
+  if(a.native && !IS_IOS) a = { ...a, away:true };      /* an iPhone app cannot open on the Mac */
   /* a card that leads to others is drawn bigger; a card that lives behind one
      is drawn smaller and quieter — nothing is added to it */
   let cls = 'cardrow', sty = `background:${eff.tint}`;
@@ -1348,6 +1362,7 @@ function appRow(a, right, sect){
   if(a.away) cls += ' away';
   if(a.openId) return `<div class="${cls}" data-app="${a.id}" data-open="${esc(a.openId)}" style="${sty}">${mid}</div>`;
   if(a.away) return `<div class="${cls}" data-app="${a.id}" data-away="1" style="${sty}">${mid}</div>`;
+  if(a.native) return `<a class="${cls}" data-app="${a.id}" data-native="1" href="${esc(a.url)}" style="${sty}">${mid}</a>`;
   if(!a.url) return `<div class="${cls}" data-app="${a.id}" style="${sty}; cursor:default">${mid}</div>`;
   return `<a class="${cls}" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
             style="${sty}">${mid}</a>`;
@@ -1424,7 +1439,13 @@ function finShelfHTML(){
 function renderShelf(){
   $('finCards').innerHTML = finShelfHTML();
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
-    appRow(a, `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
+    appRow(a, a.native ? `<span class="maclbl">iPHONE APP</span>` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
+  document.querySelectorAll('#webCards [data-away]').forEach(el => {
+    el.addEventListener('click', () => {
+      if(document.body.classList.contains('custom')) return;
+      showToast('AMS Apnea is an iPhone app. Open the hub on the iPhone, or tap Apnea on the Home Screen.', null, null, 6000);
+    });
+  });
   $('macCards').innerHTML = ordered(MAC_APPS, 'mac').map(a =>
     /* a Mac tool that announces its version gets a live chip too, the same way
        the Finance Hub card does — the label alone said nothing about whether
@@ -1456,7 +1477,7 @@ function renderShelf(){
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
   if(IS_STANDALONE){
-    document.querySelectorAll('#webCards .cardrow').forEach(el => {
+    document.querySelectorAll('#webCards .cardrow:not([data-native]):not([data-away])').forEach(el => {
       el.addEventListener('click', (e) => {
         e.preventDefault();
         const app = WEB_APPS.find(a => a.id === el.dataset.app);
