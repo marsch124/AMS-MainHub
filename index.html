@@ -1048,6 +1048,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.30', when:'14 Sep 2026',
+    what:'The <b>AMS Apnea</b> card shows the iPhone app\'s current version, like the other cards do.' },
   { v:'1.29', when:'14 Sep 2026',
     what:'<b>AMS Apnea</b> has a card. It is the first real iPhone app on the shelf rather than a web page, so a tap opens the app itself on the iPhone. On the Mac it stands greyed with iPHONE APP beside it, because there is nothing there to open.' },
   { v:'1.28', when:'10 Sep 2026',
@@ -1136,7 +1138,8 @@ const WEB_APPS = [
   /* a real iPhone app (TestFlight), not a web page: it opens through its own
      address, so it only works on the iPhone where it is installed */
   { id:'apnea',    name:'AMS Apnea',        sub:'Breath-hold training, led by voice',    icon:'bubbles',   dot:'#2f6fa8', tint:'#dce8f5', url:'amsapnea://',
-    native:true, store:'On this iPhone only · backup files', where:['iphone'] },
+    native:true, store:'On this iPhone only · backup files', where:['iphone'],
+    probe:{ path:'AMS-Apnea/ios.json', json:true, pre:'v' } },      /* the app can't be asked directly; ios.json is updated with every upload */
 ];
 /* The money system, all on one shelf. The two dashboards are `slot` cards:
    their address comes from the Finance engine on the Mac, or is typed once
@@ -1439,7 +1442,7 @@ function finShelfHTML(){
 function renderShelf(){
   $('finCards').innerHTML = finShelfHTML();
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
-    appRow(a, a.native ? `<span class="maclbl">iPHONE APP</span>` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
+    appRow(a, a.native ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>${IS_IOS ? '' : ' <span class="maclbl">iPHONE APP</span>'}` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
   document.querySelectorAll('#webCards [data-away]').forEach(el => {
     el.addEventListener('click', () => {
       if(document.body.classList.contains('custom')) return;
