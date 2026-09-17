@@ -282,6 +282,14 @@
   .wtot span{font-size:13px; color:var(--ink-dim); font-weight:600;}
   .wtot b{font-size:24px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
   .wnote{font-size:13px !important; margin:6px 0 0 !important;}
+  /* opens the Excel workbook the grey cross-check is read from (Mac + engine only) */
+  .wbook{display:flex; align-items:center; gap:9px; width:100%; margin-top:14px; padding:10px 12px;
+         border:1px solid var(--line); border-radius:12px; background:var(--card, transparent);
+         font:inherit; font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; text-align:left;}
+  .wbook:hover{border-color:var(--ink-dim);}
+  .wbook span{flex:1;}
+  .wbook .hi{width:18px; height:18px; color:var(--ink-dim);}
+  .wbook .hi.out{width:15px; height:15px;}
   .wnote.warn{color:#b4680f;}
   .arow{display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line);}
   .arow .anum{flex:0 0 18px; font-size:12px; font-weight:800; color:var(--ink-dim);}
@@ -292,6 +300,14 @@
   .arow .rowbtn{background:rgba(28,32,40,.06);}
   .arow .rowbtn:disabled{opacity:.25;}
   .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
+
+  /* the working behind the three most recent entries */
+  .wbd{padding:2px 0 10px 2px; border-bottom:1px solid var(--line);}
+  .wbdrow{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:3px 0;
+          font-size:13.5px; color:var(--ink-dim);}
+  .wbdrow b{font-variant-numeric:tabular-nums; font-weight:700; color:var(--ink);}
+  .wbdrow i{font-style:normal; font-size:11.5px; opacity:.75;}
+  .wbdrow.sum{margin-top:4px; padding-top:6px; border-top:1px solid var(--line); font-weight:700; color:var(--ink);}
 
   /* colour swatches */
   .swgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;}
@@ -833,9 +849,10 @@
           <div class="subbody">
         <p>Tap the <b>pencil</b> on the Wealth tile. The sheet has three pages, chosen with the buttons at the top:</p>
         <ul>
-          <li><b>New entry</b> — the date (today, unless you change it) and one row per account. Type each balance in kronor; spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>New entry</b> — the date (today, unless you change it) and one row per account. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it; ▲ ▼ change the order of the rows. Deleting an account keeps its old balances in past entries — it only stops appearing in new ones.</li>
-          <li><b>History</b> — every entry, newest first, with its total and what was carried. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>History</b> — every entry, newest first, with its total and what was carried. The <b>three most recent</b> also show their working: a line for each account that went into them, and the total underneath. Older entries stay in the list exactly as before, so nothing is hidden. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -869,6 +886,21 @@
         </details>
 
         <details class="sub">
+          <summary>Where your numbers live<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
+        <p>Worth knowing before you ever move, reinstall or rename anything.</p>
+        <p><b>Two different numbers sit in the Wealth tile, and only one of them is yours.</b></p>
+        <ul>
+          <li><b>Your entries</b> — the big total, and everything behind it: the balances you type through the pencil, your account names and their order, and the daily safety copies. These live <b>inside this app, on this device</b>, and nowhere else. Not on a server, not in the hub's public code, not in iCloud.</li>
+          <li><b>The small grey workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. The hub never stores it, and your own entry is always the number that counts.</li>
+        </ul>
+        <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
+        <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the app in the Dock is a separate box from the hub open in Safari, even though they show the same page. Typing an entry in one does not put it in the other.</p>
+        <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty, and the backup file under <b>Your data</b> is the only bridge across. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
+          </div>
+        </details>
+
+        <details class="sub">
           <summary>Your links<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>The bottom shelf is yours: add any web address, file or folder you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
@@ -880,7 +912,7 @@
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Under <b>Your data</b> below you can save your links — along with the card order and colours you've chosen, the dashboard addresses, and your wealth accounts and entries — as a small backup file, copy them to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
+        <p><b>A backup only counts once the file exists.</b> On the Mac the Finance engine writes it for you, checks its size on the disk and reports the name back — so <i>Last backup</i> is never a guess. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
           </div>
         </details>
 
@@ -1027,8 +1059,8 @@
     <details class="fold" id="foldData">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your personal links, the card order and colours you've chosen, the dashboard addresses and your wealth accounts and entries live only on this device. Every now and then, save a backup file you can keep safe or move to another device.</p>
-        <button class="btn full" id="exportBtn">Export my links</button>
+        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b>. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
+        <button class="btn full" id="exportBtn">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn">Import / restore…</button>
         <input type="file" id="importFile" accept=".json,application/json" style="display:none" />
@@ -1054,6 +1086,14 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.35', when:'17 Sep 2026',
+    what:'<b>"Last backup" is now a fact, not a hope.</b> A browser download never tells the page whether the file was really saved — so if Safari was still asking whether to allow downloads, the hub would record a backup that had not happened. On the Mac the <b>Finance engine</b> now writes the file itself, reads its size back off the disk, and only then does the hub note the backup — and it tells you the file name and how big it is. Safari stops asking about downloads altogether. On the iPhone nothing changes: the share sheet only finishes once you have chosen where to put it. Anywhere else, the plain download says it cannot promise the file landed, and deliberately does not count as a backup until you have seen it.' },
+  { v:'1.34', when:'17 Sep 2026',
+    what:'<b>The budget workbook is one tap from the wealth sheet.</b> Under the Total on <b>New entry</b> there is now a <b>Budget workbook</b> row that opens the Excel file the grey cross-check is read from — so you can put your typed figures next to the workbook without going hunting for it. It only appears on the Mac with the Finance engine running, because that is the only place the file exists. The hub does not know or store where the file lives: it asks the engine to open <i>its own</i> workbook by name, so nothing about your folders ends up in the hub\'s public code.' },
+  { v:'1.33', when:'17 Sep 2026',
+    what:'<b>Save a backup file now actually saves one on the Mac.</b> It was handing the file to the macOS share sheet, which offers contacts and apps but no way to put a JSON file on disk — so on the Mac there was no way to save a backup at all, and it honestly said "No backup saved yet". The share sheet is right on the iPhone, where <b>Save to Files</b> lives, and the Mac now gets a straight download into your <b>Downloads</b> folder instead. Asking the browser whether it <i>can</i> share was not enough to tell a Mac from a phone — a Mac web app now answers yes — so it checks what kind of machine it is on.' },
+  { v:'1.32', when:'17 Sep 2026',
+    what:'<b>Wealth entry, in thousands.</b> On <b>New entry</b> you can now type just the thousands — <b>250</b> and a press of Tab becomes <b>250 000</b>. Five digits or more is taken exactly as typed, so an exact balance like 1 234 567 still goes in in full, and a figure already in the box when you correct an old entry is never scaled a second time. <b>History</b> now shows its working for the <b>three most recent</b> entries: a line per account and the total underneath, with everything older listed just as before. And the backup got safer and honester — the button is now <b>Save a backup file</b> (it always held your wealth too, not just links), the file now carries the daily safety copies as well, and a restore no longer forgets which mini tiles you keep on the shelf. A new guide section, <b>Where your numbers live</b>, spells out what sits on this device and what is only ever read from the Excel workbook.' },
   { v:'1.31', when:'15 Sep 2026',
     what:'<b>AMS Workout Sync</b> has a card. On the iPhone it opens the iPhone app, which is the Workout Sync now; on the Mac it opens the web app, where the Progress tab still lives. The version chip says which one it is looking at.' },
   { v:'1.30', when:'14 Sep 2026',
@@ -1337,6 +1377,22 @@ async function openPath(l){
                           : 'Mac paths open from the hub on the Mac (AMS Finance in the Dock). Copied it for you.';
   if(!FROM_ENGINE){ try{ await navigator.clipboard.writeText(p); }catch(e){} }
   showToast(why, null, '', 6000);
+}
+
+/* one of the Finance engine's own whitelisted targets (the budget workbook, a folder,
+   a note) — the hub never holds the path, it just names the thing it wants opened, so
+   nothing personal lands in this public file. Only works where the engine answers. */
+async function openEngineTarget(id, label){
+  try{
+    const res = await fetch(ENGINE + '/api/open?id=' + encodeURIComponent(id) + '&vercheck=' + Date.now(), { cache:'no-store' });
+    const data = await res.json().catch(() => null);
+    if(res.ok && data && data.ok){ showToast('Opening ' + label + '…', null, '', 2500); return; }
+    if(res.status === 404){ showToast('The engine does not know that one — check AMS Finance is up to date.', null, '', 6000); return; }
+    showToast('Could not open ' + label, null, '', 5000);
+  }catch(e){
+    showToast(FROM_ENGINE ? 'The Finance engine is not answering — open AMS Finance from the Dock once.'
+                          : 'The workbook opens from the hub on the Mac.', null, '', 6000);
+  }
 }
 
 const WHERE_ICON = { iphone:'dev-iphone', mac:'dev-mac', cloud:'dev-cloud', excel:'dev-excel', vault:'dev-vault' };
@@ -1821,6 +1877,7 @@ function adoptNewTiles(){
 }
 
 /* ---- wealth store: accounts + dated entries ---- */
+let wExact = {};   /* accounts whose field text is already an exact kr figure */
 let wAcc = loadJSON(W_ACC_KEY, []);
 let wEnt = loadJSON(W_ENT_KEY, {});
 if(!Array.isArray(wAcc)) wAcc = [];
@@ -1828,6 +1885,19 @@ if(!wEnt || typeof wEnt !== 'object' || Array.isArray(wEnt)) wEnt = {};
 function saveWealth(){ storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); snapWealth(); }
 function fmtKr(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 function parseKr(s){ const d = String(s == null ? '' : s).replace(/[^\d]/g, ''); return d ? parseInt(d, 10) : null; }
+/* He types THOUSANDS: 250 becomes 250 000. Five digits or more is taken exactly, so an
+   exact balance like 1 234 567 can still be typed in full. Anything already normalised —
+   a field he has tabbed out of, or a figure pre-filled when correcting an old entry — is
+   flagged in wExact and never scaled again, or 5 000 kr would quietly become 5 000 000. */
+const KR_SHORT_MAX = 4;
+function scalesByThousand(s){
+  const d = String(s == null ? '' : s).replace(/[^\d]/g, '');
+  return !!d && d.length <= KR_SHORT_MAX;
+}
+function parseEntryKr(s){
+  const n = parseKr(s);
+  return n == null ? null : (scalesByThousand(s) ? n * 1000 : n);
+}
 function entryTotal(e){ return Object.values(e.v || {}).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0); }
 function entryDates(){ return Object.keys(wEnt).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d) && wEnt[d] && wEnt[d].v).sort(); }
 /* the newest entry on or before a date — but never the one currently being corrected */
@@ -2091,9 +2161,9 @@ function wOpenTab(v){
   if(v === 'entry') bindEntry(); else if(v === 'accounts') bindAccounts(); else bindHistory();
 }
 function openWealth(v){
-  wEditDate = null; wTyped = {}; wDate = null;
+  wEditDate = null; wTyped = {}; wExact = {}; wDate = null;
   const draft = loadJSON(W_DRAFT_KEY, null);
-  if(draft && draft.date && draft.v){ wDate = draft.date; wTyped = draft.v; }
+  if(draft && draft.date && draft.v){ wDate = draft.date; wTyped = draft.v; wExact = (draft.x && typeof draft.x === 'object') ? draft.x : {}; }
   wOpenTab(v || 'entry');
   $('ovWealth').classList.add('show');
 }
@@ -2126,9 +2196,15 @@ function viewEntry(){
     <input type="date" id="wDate" value="${date}" max="${todayKey()}" />
     ${existing && date !== wEditDate ? `<p class="dim wnote warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
     ${wEditDate ? `<p class="dim wnote">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
+    <p class="dim wnote">Thousands: <b>250</b> ⇥ <b>250 000</b>. Five digits or more is taken exactly.</p>
     ${rows}
     <div class="wtot"><span>Total</span><b id="wTotal">—</b></div>
     <p class="dim wnote" id="wSince"></p>
+    ${FROM_ENGINE ? `<button class="wbook" id="wOpenBook">
+      <svg class="hi"><use href="#icon-dev-excel"/></svg>
+      <span>Budget workbook</span>
+      <svg class="hi out"><use href="#icon-linkout"/></svg>
+    </button>` : ''}
     <div class="btnrow">
       <button class="btn" id="wCancel">Cancel</button>
       <button class="btn primary" id="wSave">${wEditDate ? 'Save changes' : 'Save entry'}</button>
@@ -2143,7 +2219,7 @@ function entryFromForm(date){
   const v = {}, c = [];
   let typedAny = false;
   wAcc.forEach(a => {
-    const n = parseKr(wTyped[a.id]);
+    const n = wExact[a.id] ? parseKr(wTyped[a.id]) : parseEntryKr(wTyped[a.id]);
     if(n != null && n >= 0){ v[a.id] = n; typedAny = true; }
     else if(base){
       if(typeof base.v[a.id] === 'number'){ v[a.id] = base.v[a.id]; if((base.c || []).includes(a.id)) c.push(a.id); typedAny = true; }
@@ -2169,14 +2245,23 @@ function updateTotalLine(){
 function bindEntry(){
   const goAcc = document.querySelector('#wBody [data-wv]');
   if(goAcc){ goAcc.addEventListener('click', () => wOpenTab('accounts')); return; }
-  const saveDraft = () => { if(!wEditDate) storeJSON(W_DRAFT_KEY, { date: $('wDate').value || todayKey(), v: wTyped }); };
+  const saveDraft = () => { if(!wEditDate) storeJSON(W_DRAFT_KEY, { date: $('wDate').value || todayKey(), v: wTyped, x: wExact }); };
   document.querySelectorAll('#wBody [data-wa]').forEach(inp => {
     inp.addEventListener('input', () => {
       const raw = inp.value;
+      delete wExact[inp.dataset.wa];   /* freshly typed — the thousands rule applies again */
       if(raw.trim() === '') delete wTyped[inp.dataset.wa]; else wTyped[inp.dataset.wa] = raw;
       updateTotalLine(); saveDraft();
     });
-    inp.addEventListener('blur', () => { const n = parseKr(inp.value); if(n != null){ inp.value = fmtKr(n); wTyped[inp.dataset.wa] = inp.value; } });
+    inp.addEventListener('blur', () => {
+      const n = wExact[inp.dataset.wa] ? parseKr(inp.value) : parseEntryKr(inp.value);
+      if(n != null){
+        inp.value = fmtKr(n);
+        wTyped[inp.dataset.wa] = inp.value;
+        wExact[inp.dataset.wa] = true;   /* now an exact figure — Tab again must not scale it */
+        updateTotalLine(); saveDraft();
+      }
+    });
   });
   $('wDate').addEventListener('change', () => {
     const d = $('wDate').value;
@@ -2185,6 +2270,8 @@ function bindEntry(){
     saveDraft();
     wOpenTab('entry');
   });
+  const book = $('wOpenBook');
+  if(book) book.addEventListener('click', () => openEngineTarget('workbook', 'the budget workbook'));
   $('wCancel').addEventListener('click', () => {
     try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
     closeWealth();
@@ -2200,7 +2287,7 @@ function bindEntry(){
     wEnt[date] = { v:f.v, c:f.c, at:new Date().toISOString() };
     saveWealth();
     try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
-    wTyped = {}; wDate = null; wEditDate = null;
+    wTyped = {}; wExact = {}; wDate = null; wEditDate = null;
     refreshWealthTiles();
     closeWealth();
     showToast(`Saved — ${fmtKr(entryTotal(f))} kr on ${dayLabel(date)}${f.c.length ? ` (${f.c.length} carried)` : ''}`);
@@ -2273,17 +2360,30 @@ function bindAccounts(){
 }
 
 /* ---- History ---- */
+/* one line per account behind an entry, in his account order; balances belonging to an
+   account he has since deleted still count, so they are listed last rather than dropped */
+function entryRows(e){
+  const ids = Object.keys(e.v || {});
+  const known = wAcc.filter(a => ids.indexOf(a.id) >= 0)
+    .map(a => ({ name:a.name, v:e.v[a.id], carried:(e.c || []).indexOf(a.id) >= 0 }));
+  const gone = ids.filter(id => !wAcc.some(a => a.id === id))
+    .map(id => ({ name:'Account since removed', v:e.v[id], carried:(e.c || []).indexOf(id) >= 0 }));
+  return known.concat(gone);
+}
+const HIST_DETAIL = 3;   /* the three most recent entries show their working */
 function viewHistory(){
   const ds = entryDates().slice().reverse();
-  const rows = ds.map(d => {
+  const rows = ds.map((d, i) => {
     const e = wEnt[d];
     const carried = (e.c || []).map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean);
+    const detail = i < HIST_DETAIL ? `<div class="wbd">${entryRows(e).map(r =>
+        `<div class="wbdrow"><span>${esc(r.name)}${r.carried ? ' <i>carried</i>' : ''}</span><b>${fmtKr(r.v)}</b></div>`).join('')}<div class="wbdrow sum"><span>Total</span><b>${fmtKr(entryTotal(e))} kr</b></div></div>` : '';
     return `<div class="arow">
       <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${carried.length ? 'carried: ' + esc(carried.join(', ')) : Object.keys(e.v).length + ' account' + (Object.keys(e.v).length === 1 ? '' : 's')}</div></div>
       <span class="asum">${fmtKr(entryTotal(e))}</span>
       <button class="rowbtn" data-hedit="${d}" aria-label="Correct this entry"><svg class="hi"><use href="#icon-pencil"/></svg></button>
       <button class="rowbtn" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
-    </div>`;
+    </div>${detail}`;
   }).join('');
   const snap = fullestSnap();
   const safe = snap
@@ -2297,9 +2397,9 @@ function viewHistory(){
 }
 function bindHistory(){
   document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => {
-    wEditDate = b.dataset.hedit; wDate = wEditDate; wTyped = {};
+    wEditDate = b.dataset.hedit; wDate = wEditDate; wTyped = {}; wExact = {};
     const e = wEnt[wEditDate];
-    wAcc.forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)) wTyped[a.id] = fmtKr(e.v[a.id]); });
+    wAcc.forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
     wOpenTab('entry');
   }));
   document.querySelectorAll('[data-hdel]').forEach(b => b.addEventListener('click', () => {
@@ -2351,7 +2451,8 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 /* ============ backups (links only — the shelf itself is built in) ============ */
 function backupBlob(){
   return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
-    links: state.links, layout: look, wealthAccounts: wAcc, wealthEntries: wEnt, finlinks: finLinks }, null, 2);
+    links: state.links, layout: look, wealthAccounts: wAcc, wealthEntries: wEnt, finlinks: finLinks,
+    wealthSnaps: loadJSON(W_SNAP_KEY, []) }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -2360,20 +2461,57 @@ function stampBackup(){
 function showMeta(){
   let when = null;
   try{ when = localStorage.getItem(META_KEY); }catch(e){}
+  /* only ever set where a file (or a finished share) was proven, so it never flatters */
   $('backupMeta').textContent = when ? 'Last backup: ' + new Date(when).toLocaleString() : 'No backup saved yet.';
 }
 showMeta();
-/* A plain download link is inert inside an app opened from the Home Screen, so this
-   could save nothing and still stamp a backup. Share sheet first on a phone; the
-   Mac keeps the straightforward download. Only a real save counts. */
+/* Three ways out, and each one only stamps "Last backup" on PROOF that a file exists.
+   - On the Mac, served by the Finance engine: the engine writes the file and reads its
+     size back, so the stamp is a fact. A browser download cannot do this — it never
+     tells the page whether the file was saved, and Safari may be sitting on an "allow
+     downloads?" question while the hub cheerfully records a backup that never happened.
+   - On a phone: the share sheet, where "Save to Files" lives, and navigator.share only
+     resolves once he has actually chosen somewhere. A plain download link is inert
+     inside an app opened from the Home Screen.
+   - Anywhere else: the download link, and it says it cannot promise the file landed.
+   Asking navigator.canShare is not enough to tell a Mac from a phone — a Mac web app
+   now answers yes — so ask what kind of machine this is. */
+function isHandheld(){
+  if(/iPhone|iPad|iPod/i.test(navigator.userAgent)) return true;
+  /* iPadOS reports itself as a Mac; a real Mac has no touch screen */
+  return /Mac/i.test(navigator.platform || '') && (navigator.maxTouchPoints || 0) > 1;
+}
 $('exportBtn').addEventListener('click', async () => {
-  const name = 'ams-mainhub-links-' + new Date().toISOString().slice(0,10) + '.json';
-  const blob = new Blob([backupBlob()], { type:'application/json' });
+  const name = 'ams-mainhub-backup-' + new Date().toISOString().slice(0,10) + '.json';
+  const payload = backupBlob();
+  const blob = new Blob([payload], { type:'application/json' });
   const file = new File([blob], name, { type:'application/json' });
 
-  if(navigator.canShare && navigator.canShare({ files: [file] })){
+  /* the engine writes it and tells us the real file and its size */
+  if(FROM_ENGINE){
     try{
-      await navigator.share({ files: [file], title: 'AMS Main Hub links' });
+      const res = await fetch(ENGINE + '/api/hubbackup', {
+        method:'POST', cache:'no-store',
+        headers:{ 'Content-Type':'application/json' },
+        body: payload,
+      });
+      const data = await res.json().catch(() => null);
+      if(res.ok && data && data.ok && data.bytes > 0){
+        stampBackup();
+        showToast('Saved to Downloads — ' + data.name + ' (' + Math.round(data.bytes / 1024) + ' KB)', null, '', 6000);
+        return;
+      }
+      showToast('The engine could not write the backup — nothing saved', null, '', 6000);
+      return;
+    }catch(e){
+      showToast('The Finance engine is not answering — open AMS Finance from the Dock, then try again', null, '', 7000);
+      return;
+    }
+  }
+
+  if(isHandheld() && navigator.canShare && navigator.canShare({ files: [file] })){
+    try{
+      await navigator.share({ files: [file], title: 'AMS Main Hub backup' });
       stampBackup(); showToast('Backup saved ✅');
     }catch(err){
       showToast((err && err.name === 'AbortError') ? 'Backup cancelled — nothing saved' : 'Could not save the backup');
@@ -2386,8 +2524,10 @@ $('exportBtn').addEventListener('click', async () => {
     aEl.href = url; aEl.download = name;
     document.body.appendChild(aEl); aEl.click(); aEl.remove();
     setTimeout(() => URL.revokeObjectURL(url), 1000);
-    stampBackup(); showToast('Backup saved ✅');
-  }catch(err){ showToast('Could not save the backup'); }
+    /* deliberately NOT stamped: a download link never reports back, so this cannot
+       be called a backup until he has seen the file */
+    showToast('Sent to your downloads — check the file is there, then it counts', null, null, 7000);
+  }catch(err){ showToast('Could not save the backup — use Copy backup to clipboard instead', null, null, 6000); }
 });
 $('copyBtn').addEventListener('click', async () => {
   try{
@@ -2422,6 +2562,10 @@ $('importFile').addEventListener('change', () => {
         },
         colors: (lo.colors && typeof lo.colors === 'object' && !Array.isArray(lo.colors)) ? lo.colors : {},
       };
+      /* which mini tiles he keeps on the shelf lives in `look` too — rebuilding the object
+         without these two used to forget that choice on every restore */
+      if(Array.isArray(lo.tiles)) look.tiles = lo.tiles.map(String);
+      if(Array.isArray(lo.tilesKnown)) look.tilesKnown = lo.tilesKnown.map(String);
       saveLook(); renderShelf();
       layoutBack = true;
     }
@@ -2442,6 +2586,13 @@ $('importFile').addEventListener('change', () => {
         accBack = accs.length; entBack = Object.keys(ents).length;
       }
     }
+    /* the safety copies ride along from v1.32 — an older backup simply has none, and
+       what is already on this device is left alone rather than blanked */
+    let snapBack = 0;
+    if(Array.isArray(data.wealthSnaps)){
+      const snaps = data.wealthSnaps.filter(sn => sn && sn.day && sn.entries && typeof sn.entries === 'object');
+      if(snaps.length){ storeJSON(W_SNAP_KEY, snaps); snapBack = snaps.length; }
+    }
     const legacyBack = importLegacyTotals(data.wealth);   /* backups from before v1.15 */
     refreshWealthTiles();
     let finBack = 0;
@@ -2458,7 +2609,8 @@ $('importFile').addEventListener('change', () => {
       (layoutBack ? '\nCard order and colours restored too.' : '') +
       (accBack || entBack ? `\n${accBack} account${accBack===1?'':'s'} and ${entBack} wealth entr${entBack===1?'y':'ies'} restored.` : '') +
       (legacyBack ? `\n${legacyBack} older month total${legacyBack===1?'':'s'} moved into an account called Earlier totals.` : '') +
-      (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : ''));
+      (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : '') +
+      (snapBack ? `\n${snapBack} safety cop${snapBack===1?'y':'ies'} came back too.` : ''));
   };
   reader.readAsText(file);
 });
