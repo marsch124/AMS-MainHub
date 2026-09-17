@@ -351,13 +351,54 @@
   .arow .rowbtn:disabled{opacity:.25;}
   .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
 
-  /* the working behind the three most recent entries */
-  .wbd{padding:2px 0 10px 2px; border-bottom:1px solid var(--line);}
-  .wbdrow{display:flex; justify-content:space-between; align-items:baseline; gap:12px; padding:3px 0;
-          font-size:13.5px; color:var(--ink-dim);}
-  .wbdrow b{font-variant-numeric:tabular-nums; font-weight:700; color:var(--ink);}
-  .wbdrow i{font-style:normal; font-size:11.5px; opacity:.75;}
-  .wbdrow.sum{margin-top:4px; padding-top:6px; border-top:1px solid var(--line); font-weight:700; color:var(--ink);}
+  /* History as a table: accounts down the side, the three newest entries across */
+  .htwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:4px;}
+  table.htab{width:100%; border-collapse:collapse; font-size:13px;
+             font-variant-numeric:tabular-nums;}
+  table.htab th, table.htab td{padding:7px 8px; text-align:right; white-space:nowrap;
+             border-bottom:1px solid var(--line);}
+  table.htab thead .dhead{text-align:center; font-size:10.5px; letter-spacing:.08em;
+             text-transform:uppercase; color:var(--ink-dim); font-weight:800; border-bottom:none;
+             padding-bottom:2px;}
+  table.htab thead .ahead{text-align:left; font-weight:800;}
+  table.htab thead tr:last-child th{font-size:11.5px; color:var(--ink-dim); font-weight:700;}
+  table.htab tbody th{text-align:left; font-weight:600; color:var(--ink);}
+  table.htab .corner{border-bottom:none;}
+  table.htab td.none{color:var(--ink-dim); opacity:.5;}
+  /* carried forward, not typed — paler, so a repeated figure never looks like fresh work */
+  table.htab td.carried{color:var(--ink-dim);}
+  table.htab tr.retired th{color:var(--ink-dim);}
+  table.htab tr.retired i{font-style:normal; font-size:10.5px; opacity:.7;}
+  table.htab tr.tot th, table.htab tr.tot td{font-weight:800; color:var(--ink);
+             border-top:2px solid var(--line); border-bottom:none; padding-top:9px;}
+  table.htab tfoot td{border-bottom:none; padding-top:10px;}
+  table.htab td.acts{text-align:right; white-space:nowrap;}
+  /* Adjust / delete, used by the table and by the earlier-entry rows below it */
+  .hadj{appearance:none; cursor:pointer; font:inherit; font-size:11.5px; font-weight:700;
+        letter-spacing:.04em; text-transform:uppercase; color:var(--accent);
+        background:var(--tint); border:1px solid transparent; border-radius:9px; padding:5px 9px;}
+  .hadj:hover{border-color:#eccdb8;}
+  .hdel{appearance:none; cursor:pointer; background:none; border:none; padding:4px;
+        color:var(--ink-dim); border-radius:8px; vertical-align:middle;}
+  .hdel .hi{width:15px; height:15px; display:block;}
+  .hdel:hover{background:#f6eee1; color:var(--ink);}
+  .arow .hadj{margin-left:4px;}
+  .htab .dshort{display:none;}
+  /* on a phone the table has to fit: no year in the heading, tighter cells, and the
+     account name may wrap rather than force the column wide */
+  @media (max-width:430px){
+    table.htab{font-size:12px;}
+    table.htab th, table.htab td{padding:6px 3px;}
+    table.htab thead .ahead{font-size:10.5px;}
+    .htab .dfull{display:none;}
+    .htab .dshort{display:inline;}
+    table.htab tbody th{white-space:normal; line-height:1.25;}
+    /* Adjust and × sit one above the other, or that cell alone would set the
+       width of every column in the table */
+    table.htab td.acts .hadj, table.htab td.acts .hdel{display:block; margin-left:auto;}
+    table.htab td.acts .hdel{margin-top:3px;}
+    .hadj{padding:4px 6px; font-size:10.5px; letter-spacing:0;}
+  }
 
   /* colour swatches */
   .swgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;}
@@ -912,8 +953,8 @@
         <ul>
           <li><b>New entry</b> — the date (today, unless you change it) and one row per account. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
-          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it; ▲ ▼ change the order of the rows. Deleting an account keeps its old balances in past entries — it only stops appearing in new ones.</li>
-          <li><b>History</b> — every entry, newest first, with its total and what was carried. The <b>three most recent</b> also show their working: a line for each account that went into them, and the total underneath. Older entries stay in the list exactly as before, so nothing is hidden. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it; ▲ ▼ change the order of the rows. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
+          <li><b>History</b> — a table: your accounts down the side in <b>alphabetical order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it, and the × beside it deletes that entry. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears in its alphabetical place, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -1158,6 +1199,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.39', when:'17 Sep 2026',
+    what:'<b>History is a table now.</b> Your accounts run down the side in <b>alphabetical order</b>, the three most recent entries across the top, and a <b>TOTAL</b> along the bottom — so you can read a figure across three dates at a glance instead of down three separate lists. <b>Adjust</b> under a column reopens that entry; the × deletes it. A <b>—</b> means the account was not in that entry, which is not the same as a zero, and paler figures were carried rather than typed. <b>Adding and removing accounts now behaves properly:</b> a new account appears in its alphabetical place with dashes for the entries it missed, and a deleted one keeps its row in History marked <i>removed</i> — before this, deleting an account threw its name away and its old balances were left labelled \'Account since removed\'. Anything older than the three columns is listed below as <b>Earlier entries</b>.' },
   { v:'1.38', when:'17 Sep 2026',
     what:'<b>The Wealth sheet\'s three pages now match the header.</b> <b>New entry · Accounts · History</b> were three separate boxes, one of them filled black. They are now the same joined pill as Arrange · View · Settings: hairline dividers between them, and the page you are on wears the terracotta tint instead of a black slab. The hairlines either side of the current page step out of the way, so the tint reads as one clean block. Same three pages, same taps — the app simply has one idea now of what a row of three choices looks like.' },
   { v:'1.37', when:'17 Sep 2026',
@@ -1983,6 +2026,21 @@ function dayLabel(d){ const [y, m, dd] = d.split('-').map(Number); return `${dd}
 function todayKey(){ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
 function newAccId(){ return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
+/* The accounts you still keep, in your own ▲▼ order. A deleted account is RETIRED
+   (gone:true) rather than dropped, because an entry only stores {accountId: kronor} —
+   throw the account away and its past balances lose their name. Retired ones vanish
+   from New entry and Accounts and live on only as History rows. */
+function liveAccounts(){ return wAcc.filter(a => !a.gone); }
+/* History lists accounts alphabetically, whatever order the entry form is in */
+function accountsByName(){
+  return wAcc.slice().sort((a, b) =>
+    String(a.name || '').localeCompare(String(b.name || ''), 'sv', { sensitivity:'base' }));
+}
+function accountName(id){
+  const a = wAcc.find(x => x.id === id);
+  return a ? a.name : 'Removed account';
+}
+
 /* pre-1.15 month totals (from this device or an old backup) become entries under one account */
 function importLegacyTotals(map){
   if(!map || typeof map !== 'object' || Array.isArray(map)) return 0;
@@ -2250,7 +2308,8 @@ $('wealthClose').addEventListener('click', closeWealth);
 
 /* ---- New entry ---- */
 function viewEntry(){
-  if(!wAcc.length){
+  const live = liveAccounts();
+  if(!live.length){
     return `<p class="dim" style="margin:6px 0 0">No accounts yet. Add each one you want to count — a bank, a broker, a fund — and it becomes a row here.</p>
       <button class="btn full primary" data-wv="accounts">Add your accounts</button>`;
   }
@@ -2258,7 +2317,7 @@ function viewEntry(){
   const existing = wEnt[date];
   const base = wEditDate ? wEnt[wEditDate] : null;
   const prev = lastEntryBefore(date);
-  const rows = wAcc.map(a => {
+  const rows = live.map(a => {
     const last = wEditDate ? null : (prev && typeof prev.e.v[a.id] === 'number' ? prev.e.v[a.id] : null);
     const v = wTyped[a.id];
     return `<div class="wrow">
@@ -2294,13 +2353,21 @@ function entryFromForm(date){
   const base = wEditDate ? wEnt[wEditDate] : null;
   const v = {}, c = [];
   let typedAny = false;
-  wAcc.forEach(a => {
+  liveAccounts().forEach(a => {
     const n = wExact[a.id] ? parseKr(wTyped[a.id]) : parseEntryKr(wTyped[a.id]);
     if(n != null && n >= 0){ v[a.id] = n; typedAny = true; }
     else if(base){
       if(typeof base.v[a.id] === 'number'){ v[a.id] = base.v[a.id]; if((base.c || []).includes(a.id)) c.push(a.id); typedAny = true; }
     }
     else if(prev && typeof prev.e.v[a.id] === 'number'){ v[a.id] = prev.e.v[a.id]; c.push(a.id); }
+  });
+  /* balances belonging to a retired account are kept exactly as they were — correcting
+     an old entry must never quietly drop the accounts it was made of */
+  if(base) Object.keys(base.v || {}).forEach(id => {
+    if(!(id in v) && typeof base.v[id] === 'number'){
+      v[id] = base.v[id];
+      if((base.c || []).includes(id)) c.push(id);
+    }
   });
   return { v, c, typedAny, prev, base };
 }
@@ -2387,17 +2454,18 @@ function viewAccounts(){
       </div>`;
   }
   const latest = entryDates().length ? wEnt[entryDates()[entryDates().length - 1]] : null;
-  const rows = wAcc.map((a, i) => `<div class="arow">
+  const live = liveAccounts();
+  const rows = live.map((a, i) => `<div class="arow">
       <span class="anum">${i + 1}</span>
       <div class="amid"><div class="aname">${esc(a.name)}</div><div class="aurl">${a.url ? esc(a.url.replace(/^https?:\/\//i, '')) : 'no link'}</div></div>
       ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
       <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
       <button class="rowbtn" data-wup="${a.id}" aria-label="Move up" ${i === 0 ? 'disabled' : ''}><svg class="hi"><use href="#icon-up"/></svg></button>
-      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move down" ${i === wAcc.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
+      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move down" ${i === live.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
     </div>`).join('');
   return `${rows || '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
     <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
-    <p class="dim wnote">Deleting an account keeps its balances in past entries — it only stops appearing in new ones.</p>`;
+    <p class="dim wnote">Deleting an account keeps its balances <i>and</i> its name in past entries — it only stops appearing in new ones. New accounts slot into History in alphabetical order.</p>`;
 }
 function bindAccounts(){
   if(wAccForm){
@@ -2415,8 +2483,10 @@ function bindAccounts(){
     if(del) del.addEventListener('click', () => {
       const a = wAcc.find(x => x.id === wAccForm);
       if(a && confirm(`Delete ${a.name}? Its past balances stay in History.`)){
-        wAcc = wAcc.filter(x => x.id !== wAccForm);
+        /* retired, not erased — History still needs the name against the old numbers */
+        a.gone = true;
         delete wTyped[wAccForm];
+        delete wExact[wAccForm];
         saveWealth(); wAccForm = null; wOpenTab('accounts'); refreshWealthTiles();
       }
     });
@@ -2436,38 +2506,77 @@ function bindAccounts(){
 }
 
 /* ---- History ---- */
-/* one line per account behind an entry, in his account order; balances belonging to an
-   account he has since deleted still count, so they are listed last rather than dropped */
-function entryRows(e){
-  const ids = Object.keys(e.v || {});
-  const known = wAcc.filter(a => ids.indexOf(a.id) >= 0)
-    .map(a => ({ name:a.name, v:e.v[a.id], carried:(e.c || []).indexOf(a.id) >= 0 }));
-  const gone = ids.filter(id => !wAcc.some(a => a.id === id))
-    .map(id => ({ name:'Account since removed', v:e.v[id], carried:(e.c || []).indexOf(id) >= 0 }));
-  return known.concat(gone);
+/* ---- History: accounts down the side, the three newest entries across ----
+   Rows are alphabetical and include RETIRED accounts, so a deleted account keeps its
+   place in the past; a new account simply appears in its alphabetical slot. An empty
+   cell is shown as — rather than 0, because "not in this entry" is not "was zero". */
+const HIST_COLS = 3;
+function histRowAccounts(cols){
+  const seen = new Set();
+  cols.forEach(d => Object.keys((wEnt[d] || {}).v || {}).forEach(id => seen.add(id)));
+  /* every account still kept, plus any account (retired, or orphaned by an old
+     delete) that actually carries a number in one of these columns */
+  const rows = accountsByName().filter(a => !a.gone || seen.has(a.id));
+  const known = new Set(wAcc.map(a => a.id));
+  [...seen].filter(id => !known.has(id)).forEach(id => rows.push({ id, name:'Removed account' }));
+  return rows;
 }
-const HIST_DETAIL = 3;   /* the three most recent entries show their working */
 function viewHistory(){
   const ds = entryDates().slice().reverse();
-  const rows = ds.map((d, i) => {
+  const cols = ds.slice(0, HIST_COLS);
+  const older = ds.slice(HIST_COLS);
+
+  let table = '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
+  if(cols.length){
+    const rows = histRowAccounts(cols);
+    const anyCarried = cols.some(d => (wEnt[d].c || []).length);
+    table = `<div class="htwrap"><table class="htab">
+      <thead>
+        <tr><td class="corner"></td><th class="dhead" colspan="${cols.length}">Date</th></tr>
+        <tr><th class="ahead">Accounts</th>${cols.map(d =>
+          `<th><span class="dfull">${d}</span><span class="dshort">${d.slice(5)}</span></th>`).join('')}</tr>
+      </thead>
+      <tbody>
+        ${rows.map(a => `<tr${a.gone ? ' class="retired"' : ''}>
+          <th>${esc(a.name)}${a.gone ? '<i> removed</i>' : ''}</th>
+          ${cols.map(d => {
+            const e = wEnt[d], val = (e.v || {})[a.id];
+            if(typeof val !== 'number') return '<td class="none">—</td>';
+            const carried = (e.c || []).includes(a.id);
+            return `<td${carried ? ' class="carried" title="carried from the entry before"' : ''}>${fmtKr(val)}</td>`;
+          }).join('')}
+        </tr>`).join('')}
+        <tr class="tot"><th>TOTAL</th>${cols.map(d => `<td>${fmtKr(entryTotal(wEnt[d]))}</td>`).join('')}</tr>
+      </tbody>
+      <tfoot>
+        <tr><td class="corner"></td>${cols.map(d => `<td class="acts">
+          <button class="hadj" data-hedit="${d}">Adjust</button>
+          <button class="hdel" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
+        </td>`).join('')}</tr>
+      </tfoot>
+    </table></div>
+    ${anyCarried ? '<p class="wsafe" style="margin-top:8px">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
+  }
+
+  /* everything older keeps its one-line row, so no entry is ever hidden */
+  const oldRows = older.map(d => {
     const e = wEnt[d];
-    const carried = (e.c || []).map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean);
-    const detail = i < HIST_DETAIL ? `<div class="wbd">${entryRows(e).map(r =>
-        `<div class="wbdrow"><span>${esc(r.name)}${r.carried ? ' <i>carried</i>' : ''}</span><b>${fmtKr(r.v)}</b></div>`).join('')}<div class="wbdrow sum"><span>Total</span><b>${fmtKr(entryTotal(e))} kr</b></div></div>` : '';
     return `<div class="arow">
-      <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${carried.length ? 'carried: ' + esc(carried.join(', ')) : Object.keys(e.v).length + ' account' + (Object.keys(e.v).length === 1 ? '' : 's')}</div></div>
+      <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${Object.keys(e.v).length} account${Object.keys(e.v).length === 1 ? '' : 's'}</div></div>
       <span class="asum">${fmtKr(entryTotal(e))}</span>
-      <button class="rowbtn" data-hedit="${d}" aria-label="Correct this entry"><svg class="hi"><use href="#icon-pencil"/></svg></button>
-      <button class="rowbtn" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
-    </div>${detail}`;
+      <button class="hadj" data-hedit="${d}">Adjust</button>
+      <button class="hdel" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
+    </div>`;
   }).join('');
+
   const snap = fullestSnap();
   const safe = snap
     ? `Safety copy: ${snap.n} entr${snap.n === 1 ? 'y' : 'ies'} and ${(snap.accounts || []).length} account${(snap.accounts || []).length === 1 ? '' : 's'} from ${dayLabel(snap.day)} — kept automatically, once a day.`
     : 'No safety copy yet — one is kept automatically once a day, after your first entry.';
   /* the button only appears when entries have actually gone missing (two or more, or all of them) —
      not after you delete one on purpose */
-  return `${rows || '<p class="dim" style="margin:6px 0 0">No entries yet.</p>'}
+  return `${table}
+    ${older.length ? `<h3 style="margin-top:20px">Earlier entries</h3>${oldRows}` : ''}
     <p class="wsafe">${safe}</p>
     ${snap && (snap.n > entryDates().length + 1 || (snap.n > 0 && !entryDates().length)) ? '<button class="btn full" id="wRestoreSnap">Put the safety copy back</button>' : ''}`;
 }
@@ -2475,7 +2584,7 @@ function bindHistory(){
   document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => {
     wEditDate = b.dataset.hedit; wDate = wEditDate; wTyped = {}; wExact = {};
     const e = wEnt[wEditDate];
-    wAcc.forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
+    liveAccounts().forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
     wOpenTab('entry');
   }));
   document.querySelectorAll('[data-hdel]').forEach(b => b.addEventListener('click', () => {
@@ -2715,7 +2824,8 @@ $('importFile').addEventListener('change', () => {
     let accBack = 0, entBack = 0;
     if(Array.isArray(data.wealthAccounts) && data.wealthEntries && typeof data.wealthEntries === 'object' && !Array.isArray(data.wealthEntries)){
       const accs = data.wealthAccounts.filter(a => a && typeof a.id === 'string' && a.name)
-        .map(a => ({ id:a.id, name:String(a.name).slice(0, 30), url: typeof a.url === 'string' ? a.url : '', ...(a.legacy ? { legacy:true } : {}) }));
+        .map(a => ({ id:a.id, name:String(a.name).slice(0, 30), url: typeof a.url === 'string' ? a.url : '',
+          ...(a.legacy ? { legacy:true } : {}), ...(a.gone ? { gone:true } : {}) }));
       const ents = {};
       Object.keys(data.wealthEntries).forEach(d => {
         const e = data.wealthEntries[d];
