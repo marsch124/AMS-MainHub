@@ -350,6 +350,7 @@
   .arow .rowbtn{background:rgba(28,32,40,.06);}
   .arow .rowbtn:disabled{opacity:.25;}
   .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
+  .wsafe.warnline{color:#b4680f; font-weight:600;}
 
   /* History as a table: accounts down the side, the three newest entries across */
   .htwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:4px;}
@@ -374,15 +375,12 @@
   table.htab tfoot td{border-bottom:none; padding-top:10px;}
   table.htab td.acts{text-align:right; white-space:nowrap;}
   /* Adjust / delete, used by the table and by the earlier-entry rows below it */
-  .hadj{appearance:none; cursor:pointer; font:inherit; font-size:11.5px; font-weight:700;
-        letter-spacing:.04em; text-transform:uppercase; color:var(--accent);
-        background:var(--tint); border:1px solid transparent; border-radius:9px; padding:5px 9px;}
-  .hadj:hover{border-color:#eccdb8;}
-  .hdel{appearance:none; cursor:pointer; background:none; border:none; padding:4px;
-        color:var(--ink-dim); border-radius:8px; vertical-align:middle;}
-  .hdel .hi{width:15px; height:15px; display:block;}
-  .hdel:hover{background:#f6eee1; color:var(--ink);}
-  .arow .hadj{margin-left:4px;}
+  /* small and quiet — it is a way back into an entry, not something to reach for */
+  .hadj{appearance:none; cursor:pointer; font:inherit; font-size:10px; font-weight:700;
+        letter-spacing:.05em; text-transform:uppercase; color:var(--accent);
+        background:none; border:none; border-radius:6px; padding:2px 3px;}
+  .hadj:hover{background:var(--tint);}
+  .arow .hadj{margin-left:8px;}
   .htab .dshort{display:none;}
   /* on a phone the table has to fit: no year in the heading, tighter cells, and the
      account name may wrap rather than force the column wide */
@@ -395,9 +393,7 @@
     table.htab tbody th{white-space:normal; line-height:1.25;}
     /* Adjust and × sit one above the other, or that cell alone would set the
        width of every column in the table */
-    table.htab td.acts .hadj, table.htab td.acts .hdel{display:block; margin-left:auto;}
-    table.htab td.acts .hdel{margin-top:3px;}
-    .hadj{padding:4px 6px; font-size:10.5px; letter-spacing:0;}
+    .hadj{font-size:9.5px; letter-spacing:.03em;}
   }
 
   /* colour swatches */
@@ -951,10 +947,10 @@
           <div class="subbody">
         <p>Tap the <b>pencil</b> on the Wealth tile. The sheet has three pages, chosen with the buttons at the top:</p>
         <ul>
-          <li><b>New entry</b> — the date (today, unless you change it) and one row per account. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in alphabetical order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
-          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it; ▲ ▼ change the order of the rows. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
-          <li><b>History</b> — a table: your accounts down the side in <b>alphabetical order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it, and the × beside it deletes that entry. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears in its alphabetical place, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. Accounts are listed <b>alphabetically</b> on every page, so a name is always in the same place and there is no order to keep by hand. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
+          <li><b>History</b> — a table: your accounts down the side in <b>alphabetical order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears in its alphabetical place, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -1199,6 +1195,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.40', when:'17 Sep 2026',
+    what:'<b>Accounts are alphabetical everywhere, and the wealth sheet is quieter.</b> <b>New entry</b> now lists your accounts in the same alphabetical order as History, so a name is always in the same place — and because there is no order to keep by hand any more, the ▲▼ arrows and the row numbers are gone from <b>Accounts</b>. The <b>Adjust</b> link in History is much smaller and no longer a filled button, and the <b>×</b> beside it has gone: deleting an entry now happens inside Adjust, next to Cancel, which is where deleting an account already lived. And the line about safety copies no longer describes the machinery — it simply says there is a copy to put back if numbers ever go missing, and speaks up properly only when some actually have.' },
   { v:'1.39', when:'17 Sep 2026',
     what:'<b>History is a table now.</b> Your accounts run down the side in <b>alphabetical order</b>, the three most recent entries across the top, and a <b>TOTAL</b> along the bottom — so you can read a figure across three dates at a glance instead of down three separate lists. <b>Adjust</b> under a column reopens that entry; the × deletes it. A <b>—</b> means the account was not in that entry, which is not the same as a zero, and paler figures were carried rather than typed. <b>Adding and removing accounts now behaves properly:</b> a new account appears in its alphabetical place with dashes for the entries it missed, and a deleted one keeps its row in History marked <i>removed</i> — before this, deleting an account threw its name away and its old balances were left labelled \'Account since removed\'. Anything older than the three columns is listed below as <b>Earlier entries</b>.' },
   { v:'1.38', when:'17 Sep 2026',
@@ -2026,11 +2024,13 @@ function dayLabel(d){ const [y, m, dd] = d.split('-').map(Number); return `${dd}
 function todayKey(){ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
 function newAccId(){ return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
-/* The accounts you still keep, in your own ▲▼ order. A deleted account is RETIRED
+/* The accounts you still keep. A deleted account is RETIRED
    (gone:true) rather than dropped, because an entry only stores {accountId: kronor} —
    throw the account away and its past balances lose their name. Retired ones vanish
    from New entry and Accounts and live on only as History rows. */
-function liveAccounts(){ return wAcc.filter(a => !a.gone); }
+/* alphabetical everywhere, so a name is always in the same place whichever page you
+   are on — there is no hand-made order to keep any more */
+function liveAccounts(){ return accountsByName().filter(a => !a.gone); }
 /* History lists accounts alphabetically, whatever order the entry form is in */
 function accountsByName(){
   return wAcc.slice().sort((a, b) =>
@@ -2341,6 +2341,7 @@ function viewEntry(){
       <svg class="hi out"><use href="#icon-linkout"/></svg>
     </button>` : ''}
     <div class="btnrow">
+      ${wEditDate ? '<button class="btn danger" id="wDelEntry">Delete</button>' : ''}
       <button class="btn" id="wCancel">Cancel</button>
       <button class="btn primary" id="wSave">${wEditDate ? 'Save changes' : 'Save entry'}</button>
     </div>`;
@@ -2413,6 +2414,18 @@ function bindEntry(){
     saveDraft();
     wOpenTab('entry');
   });
+  const delEntry = $('wDelEntry');
+  if(delEntry) delEntry.addEventListener('click', () => {
+    const d = wEditDate;
+    if(!d || !wEnt[d]) return;
+    if(!confirm(`Delete the entry for ${dayLabel(d)} ${d.slice(0, 4)} (${fmtKr(entryTotal(wEnt[d]))} kr)?`)) return;
+    delete wEnt[d];
+    saveWealth();
+    wTyped = {}; wExact = {}; wDate = null; wEditDate = null;
+    refreshWealthTiles();
+    wOpenTab('history');
+    showToast('Entry deleted');
+  });
   const book = $('wOpenBook');
   if(book) book.addEventListener('click', () => openEngineTarget('workbook', 'the budget workbook'));
   $('wCancel').addEventListener('click', () => {
@@ -2454,18 +2467,14 @@ function viewAccounts(){
       </div>`;
   }
   const latest = entryDates().length ? wEnt[entryDates()[entryDates().length - 1]] : null;
-  const live = liveAccounts();
-  const rows = live.map((a, i) => `<div class="arow">
-      <span class="anum">${i + 1}</span>
+  const rows = liveAccounts().map(a => `<div class="arow">
       <div class="amid"><div class="aname">${esc(a.name)}</div><div class="aurl">${a.url ? esc(a.url.replace(/^https?:\/\//i, '')) : 'no link'}</div></div>
       ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
       <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
-      <button class="rowbtn" data-wup="${a.id}" aria-label="Move up" ${i === 0 ? 'disabled' : ''}><svg class="hi"><use href="#icon-up"/></svg></button>
-      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move down" ${i === live.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
     </div>`).join('');
   return `${rows || '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
     <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
-    <p class="dim wnote">Deleting an account keeps its balances <i>and</i> its name in past entries — it only stops appearing in new ones. New accounts slot into History in alphabetical order.</p>`;
+    <p class="dim wnote">Accounts are listed alphabetically everywhere. Deleting one keeps its balances <i>and</i> its name in past entries — it only stops appearing in new ones.</p>`;
 }
 function bindAccounts(){
   if(wAccForm){
@@ -2495,14 +2504,6 @@ function bindAccounts(){
   }
   $('waAdd').addEventListener('click', () => { wAccForm = 'new'; wOpenTab('accounts'); });
   document.querySelectorAll('[data-wedit]').forEach(b => b.addEventListener('click', () => { wAccForm = b.dataset.wedit; wOpenTab('accounts'); }));
-  const move = (id, dir) => {
-    const i = wAcc.findIndex(a => a.id === id), j = i + dir;
-    if(i < 0 || j < 0 || j >= wAcc.length) return;
-    [wAcc[i], wAcc[j]] = [wAcc[j], wAcc[i]];
-    saveWealth(); wOpenTab('accounts');
-  };
-  document.querySelectorAll('[data-wup]').forEach(b => b.addEventListener('click', () => move(b.dataset.wup, -1)));
-  document.querySelectorAll('[data-wdown]').forEach(b => b.addEventListener('click', () => move(b.dataset.wdown, 1)));
 }
 
 /* ---- History ---- */
@@ -2549,10 +2550,8 @@ function viewHistory(){
         <tr class="tot"><th>TOTAL</th>${cols.map(d => `<td>${fmtKr(entryTotal(wEnt[d]))}</td>`).join('')}</tr>
       </tbody>
       <tfoot>
-        <tr><td class="corner"></td>${cols.map(d => `<td class="acts">
-          <button class="hadj" data-hedit="${d}">Adjust</button>
-          <button class="hdel" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
-        </td>`).join('')}</tr>
+        <tr><td class="corner"></td>${cols.map(d =>
+          `<td class="acts"><button class="hadj" data-hedit="${d}">Adjust</button></td>`).join('')}</tr>
       </tfoot>
     </table></div>
     ${anyCarried ? '<p class="wsafe" style="margin-top:8px">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
@@ -2565,20 +2564,22 @@ function viewHistory(){
       <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${Object.keys(e.v).length} account${Object.keys(e.v).length === 1 ? '' : 's'}</div></div>
       <span class="asum">${fmtKr(entryTotal(e))}</span>
       <button class="hadj" data-hedit="${d}">Adjust</button>
-      <button class="hdel" data-hdel="${d}" aria-label="Delete this entry"><svg class="hi"><use href="#icon-close"/></svg></button>
     </div>`;
   }).join('');
 
+  /* This used to announce the machinery — "Safety copy: 3 entries and 6 accounts from
+     17 Sep, kept automatically once a day" — which says nothing about what it is FOR.
+     Now it says only what it is for, and only speaks up properly when something has
+     actually gone missing (two or more entries, or all of them — not one you deleted). */
   const snap = fullestSnap();
-  const safe = snap
-    ? `Safety copy: ${snap.n} entr${snap.n === 1 ? 'y' : 'ies'} and ${(snap.accounts || []).length} account${(snap.accounts || []).length === 1 ? '' : 's'} from ${dayLabel(snap.day)} — kept automatically, once a day.`
-    : 'No safety copy yet — one is kept automatically once a day, after your first entry.';
-  /* the button only appears when entries have actually gone missing (two or more, or all of them) —
-     not after you delete one on purpose */
+  const lost = snap && (snap.n > entryDates().length + 1 || (snap.n > 0 && !entryDates().length));
+  const safe = lost
+    ? `<p class="wsafe warnline">Some entries are missing from this device. A copy saved on ${dayLabel(snap.day)} still has ${snap.n} of them.</p>
+       <button class="btn full" id="wRestoreSnap">Put those entries back</button>`
+    : (snap ? `<p class="wsafe">If numbers ever go missing, there is a copy from ${dayLabel(snap.day)} to put back.</p>` : '');
   return `${table}
     ${older.length ? `<h3 style="margin-top:20px">Earlier entries</h3>${oldRows}` : ''}
-    <p class="wsafe">${safe}</p>
-    ${snap && (snap.n > entryDates().length + 1 || (snap.n > 0 && !entryDates().length)) ? '<button class="btn full" id="wRestoreSnap">Put the safety copy back</button>' : ''}`;
+    ${safe}`;
 }
 function bindHistory(){
   document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => {
@@ -2586,12 +2587,6 @@ function bindHistory(){
     const e = wEnt[wEditDate];
     liveAccounts().forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
     wOpenTab('entry');
-  }));
-  document.querySelectorAll('[data-hdel]').forEach(b => b.addEventListener('click', () => {
-    const d = b.dataset.hdel;
-    if(confirm(`Delete the entry for ${dayLabel(d)} ${d.slice(0, 4)} (${fmtKr(entryTotal(wEnt[d]))} kr)?`)){
-      delete wEnt[d]; saveWealth(); refreshWealthTiles(); wOpenTab('history');
-    }
   }));
   const r = $('wRestoreSnap');
   if(r) r.addEventListener('click', () => {
