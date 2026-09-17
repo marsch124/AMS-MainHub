@@ -45,12 +45,42 @@
     padding:0; box-shadow:0 1px 3px rgba(28,32,40,.08);
   }
   .iconbtn:active{transform:scale(.94);}
-  /* a word under the glyph — a pencil alone can mean note, edit, add… */
-  .iconbtn.labelled{flex-direction:column; gap:1px;}
-  .iconbtn.labelled .hi{width:17px; height:17px;}
   .btnlbl{
     font-size:8px; font-weight:800; letter-spacing:.02em; line-height:1;
     color:var(--ink-dim); white-space:nowrap;
+  }
+
+  /* ---------- the header's three: Arrange · View · Settings ----------
+     One joined pill rather than three separate tiles, so the header reads as a
+     single control. Terracotta appears on one of them only, and only to say
+     Arrange mode is switched on. */
+  .hpill{
+    display:flex; background:var(--card); border:1px solid var(--line);
+    border-radius:15px; box-shadow:0 2px 8px rgba(28,32,40,.07); overflow:hidden;
+  }
+  .hpill button{
+    appearance:none; border:none; background:none; cursor:pointer; color:var(--ink);
+    display:flex; flex-direction:column; align-items:center; gap:4px;
+    padding:9px 15px 8px; position:relative; transition:background .12s ease;
+  }
+  /* the divider is drawn by the button that follows, so the ends stay clean */
+  .hpill button + button::before{
+    content:""; position:absolute; left:0; top:9px; bottom:9px;
+    width:1px; background:var(--line);
+  }
+  .hpill .hi{width:19px; height:19px;}
+  .hpill .btnlbl{
+    font-size:9.5px; font-weight:700; letter-spacing:.06em;
+    text-transform:uppercase; color:var(--ink-dim);
+  }
+  .hpill button:hover{background:#fbf6ee;}
+  .hpill button:active{background:#f6eee1;}
+  /* arrange mode on — set on <body>, so the pill needs no state of its own */
+  body.custom .hpill #custBtn{background:var(--tint); color:var(--accent);}
+  body.custom .hpill #custBtn .btnlbl{color:var(--accent);}
+  @media (max-width:380px){
+    .hpill button{padding:9px 11px 8px;}
+    .hpill .btnlbl{letter-spacing:.03em;}
   }
 
   /* ---------- sections & cards ---------- */
@@ -663,10 +693,11 @@
 
 <header>
   <div class="brand">AMS <b>Main Hub</b></div>
-  <div style="display:flex; gap:10px">
-    <button class="iconbtn labelled" id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-pencil"/></svg><span class="btnlbl" id="custLbl">Arrange</span></button>
-    <button class="iconbtn labelled" id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg><span class="btnlbl">View</span></button>
-    <button class="iconbtn labelled" id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg><span class="btnlbl">Settings</span></button>
+  <!-- one control, not three floating tiles: joined, hairline dividers between -->
+  <div class="hpill">
+    <button id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-pencil"/></svg><span class="btnlbl" id="custLbl">Arrange</span></button>
+    <button id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg><span class="btnlbl">View</span></button>
+    <button id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg><span class="btnlbl">Settings</span></button>
   </div>
 </header>
 <div class="verglance" id="verGlance"></div>
@@ -922,7 +953,7 @@
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens a small form: name it what you like and pick where it goes — Downloads, Documents, Desktop, iCloud Drive, or any folder you type. The Finance engine writes it there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
+        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens a small form: name it what you like and pick where it goes — Downloads, Documents, Desktop, iCloud Drive, your <b>Budgeting</b> folder, or any folder you type. The Finance engine writes it there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
           </div>
         </details>
 
@@ -1075,13 +1106,7 @@
           <label for="saveName">Name</label>
           <input type="text" id="saveName" autocomplete="off" spellcheck="false" />
           <label for="saveWhere">Where</label>
-          <select id="saveWhere">
-            <option value="~/Downloads">Downloads</option>
-            <option value="~/Documents">Documents</option>
-            <option value="~/Desktop">Desktop</option>
-            <option value="~/Library/Mobile Documents/com~apple~CloudDocs">iCloud Drive</option>
-            <option value="other">Another folder…</option>
-          </select>
+          <select id="saveWhere"></select>
           <input type="text" id="saveOther" placeholder="~/some/folder" autocomplete="off" spellcheck="false" hidden />
           <div class="btnrow">
             <button class="btn" id="saveCancel">Cancel</button>
@@ -1113,6 +1138,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.37', when:'17 Sep 2026',
+    what:'<b>The three header buttons are one control now.</b> Arrange, View and Settings were three little tiles floating side by side with 8px words under them. They are now a single rounded pill with hairline dividers between them, bigger glyphs and labels you can actually read — and when <b>Arrange</b> is switched on, that one segment turns terracotta and says <b>Done</b>, so the mode is obvious without anything glowing. Nothing else moved. <b>Also:</b> the <b>Budgeting</b> folder is now one of the places you can keep a backup, alongside Downloads, Documents, Desktop and iCloud Drive. The hub is not told where that folder is — the Finance engine offers it, so no personal path sits in the hub\'s public code.' },
   { v:'1.36', when:'17 Sep 2026',
     what:'<b>You name the backup and choose where it goes — and "Last backup" is now a fact, not a hope.</b> On the Mac, <b>Save a backup file</b> now opens a small form: type whatever name you like and pick the folder — Downloads, Documents, Desktop, iCloud Drive, or any other folder you type in. The Finance engine writes it there, then reads the file\'s size back off the disk before the hub records anything, and tells you the name, the folder and the size. If a file of that name is already there it asks before replacing it. Cancel, and nothing is saved and nothing is claimed. Before this, a browser download could neither ask where to save nor report back at all — so if Safari was still asking whether to allow downloads, the hub noted a backup that had not happened. On the iPhone nothing changes: the share sheet asks where to put it and only a finished save counts.' },
   { v:'1.34', when:'17 Sep 2026',
@@ -2519,6 +2546,24 @@ function chosenFolder(){
   const w = $('saveWhere').value;
   return w === 'other' ? ($('saveOther').value || '').trim() : w;
 }
+/* the fixed places, plus any folder the engine tells us about (the Budgeting folder,
+   for one) — those paths are the engine's to know, never written into this file */
+const SAVE_PLACES = [
+  { label:'Downloads',    path:'~/Downloads' },
+  { label:'Documents',    path:'~/Documents' },
+  { label:'Desktop',      path:'~/Desktop' },
+  { label:'iCloud Drive', path:'~/Library/Mobile Documents/com~apple~CloudDocs' },
+];
+function fillSavePlaces(){
+  const sel = $('saveWhere');
+  const keep = sel.value;
+  const extra = (engineLinks && Array.isArray(engineLinks.folders) ? engineLinks.folders : [])
+    .filter(f => f && f.label && f.path);
+  sel.innerHTML = SAVE_PLACES.concat(extra)
+    .map(f => `<option value="${esc(f.path)}">${esc(f.label)}</option>`).join('')
+    + '<option value="other">Another folder…</option>';
+  if(keep && [...sel.options].some(o => o.value === keep)) sel.value = keep;
+}
 /* the engine writes it where he said and reads the size back, so the note is a fact */
 async function saveBackupHere(replace){
   const name = ($('saveName').value || '').trim() || suggestedBackupName();
@@ -2566,6 +2611,7 @@ $('exportBtn').addEventListener('click', async () => {
   if(FROM_ENGINE){
     const f = $('saveForm');
     if(f.hidden){
+      fillSavePlaces();
       $('saveName').value = suggestedBackupName();
       f.hidden = false;
       $('saveName').focus();
