@@ -291,13 +291,33 @@
   .mtile.off{display:none;}
   body.custom .mtile.off{display:flex; opacity:.45;}
 
-  /* wealth sheet: New entry · Accounts · History */
-  .wnav{display:flex; gap:6px; margin:-4px 0 6px;}
-  .wtab{
-    flex:1; padding:9px 6px; border-radius:12px; border:1px solid var(--line); background:var(--bg);
-    color:var(--ink-dim); font-family:inherit; font-size:13.5px; font-weight:700; cursor:pointer;
+  /* wealth sheet: New entry · Accounts · History — the same joined pill as the
+     header's Arrange · View · Settings, so the app has one idea of what a group
+     of three choices looks like. One is always current, so it wears the tint. */
+  .wnav{
+    display:flex; margin:-2px 0 12px;
+    background:var(--card); border:1px solid var(--line);
+    border-radius:15px; box-shadow:0 2px 8px rgba(28,32,40,.07); overflow:hidden;
   }
-  .wtab.cur{background:var(--ink); border-color:var(--ink); color:#fff;}
+  .wtab{
+    flex:1; padding:11px 6px; border:none; background:none; position:relative;
+    color:var(--ink-dim); font-family:inherit; font-size:12px; font-weight:700;
+    letter-spacing:.06em; text-transform:uppercase; cursor:pointer;
+    transition:background .12s ease;
+  }
+  /* each tab draws its own left divider, so the pill's ends stay clean */
+  .wtab + .wtab::before{
+    content:""; position:absolute; left:0; top:9px; bottom:9px;
+    width:1px; background:var(--line);
+  }
+  .wtab:hover{background:#fbf6ee;}
+  .wtab:active{background:#f6eee1;}
+  .wtab.cur{background:var(--tint); color:var(--accent);}
+  /* no hairline either side of the current tab — the tint is the edge */
+  .wtab.cur::before, .wtab.cur + .wtab::before{background:transparent;}
+  @media (max-width:380px){
+    .wtab{padding:11px 3px; font-size:11px; letter-spacing:.03em;}
+  }
   .wrow{display:flex; align-items:center; gap:8px; margin-top:9px;}
   .wrow .wm{flex:0 0 84px; font-size:13.5px; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
   .wrow input{flex:1; min-width:0; min-height:42px; padding:8px 12px; text-align:right; font-variant-numeric:tabular-nums;}
@@ -1138,6 +1158,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.38', when:'17 Sep 2026',
+    what:'<b>The Wealth sheet\'s three pages now match the header.</b> <b>New entry · Accounts · History</b> were three separate boxes, one of them filled black. They are now the same joined pill as Arrange · View · Settings: hairline dividers between them, and the page you are on wears the terracotta tint instead of a black slab. The hairlines either side of the current page step out of the way, so the tint reads as one clean block. Same three pages, same taps — the app simply has one idea now of what a row of three choices looks like.' },
   { v:'1.37', when:'17 Sep 2026',
     what:'<b>The three header buttons are one control now.</b> Arrange, View and Settings were three little tiles floating side by side with 8px words under them. They are now a single rounded pill with hairline dividers between them, bigger glyphs and labels you can actually read — and when <b>Arrange</b> is switched on, that one segment turns terracotta and says <b>Done</b>, so the mode is obvious without anything glowing. Nothing else moved. <b>Also:</b> the <b>Budgeting</b> folder is now one of the places you can keep a backup, alongside Downloads, Documents, Desktop and iCloud Drive. The hub is not told where that folder is — the Finance engine offers it, so no personal path sits in the hub\'s public code.' },
   { v:'1.36', when:'17 Sep 2026',
