@@ -971,7 +971,7 @@
         <p>And the whole landscape on one page, for the day you come back after weeks away:</p>
         <div class="mapwrap"><table class="map">
           <tr><th>What</th><th>Kind</th><th>Runs</th><th>Its data</th></tr>
-          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (localhost:7780, the Dock app)</td><td>Links, order, colours, wealth accounts and entries — on each device</td></tr>
+          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (the AMS Main Hub app, served at localhost:7780)</td><td>Links, order, colours, wealth accounts and entries — on each device</td></tr>
           <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, localhost:7780/finance</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
           <tr><td><b>Spend Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the monthly report</td></tr>
           <tr><td><b>Finance Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the budget workbook</td></tr>
@@ -993,7 +993,7 @@
           <li><b>The small grey workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. The hub never stores it, and your own entry is always the number that counts.</li>
         </ul>
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
-        <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the app in the Dock is a separate box from the hub open in Safari, even though they show the same page. Typing an entry in one does not put it in the other.</p>
+        <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
         <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty, and the backup file under <b>Your data</b> is the only bridge across. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
           </div>
         </details>
@@ -1003,7 +1003,7 @@
           <div class="subbody">
         <p>The bottom shelf is yours: add any web address, file or folder you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
         <p><b>How a link card reads.</b> The name you gave it, and under it one small word for what it is — SPREADSHEET, PDF, PICTURE, SLIDES, DOCUMENT, FOLDER, or the site's name for a web link. The long address is <b>not</b> on the card: it lives behind the pencil (and on the Mac it appears if you rest the pointer on the card). Each kind brings its own colour and its own hand-drawn icon — a spreadsheet is green, a PDF red, a folder honey — and a web link keeps a colour picked from its name. The palette in Arrange still overrules all of it whenever you want a particular card a particular colour.</p>
-        <p><b>Files and folders on the Mac.</b> The same field also takes a path — for example <code>/Users/you/Library/CloudStorage/Dropbox/Triathlon/Training plan.xlsx</code>. In the Finder, right-click the file, hold ⌥ and choose <b>Copy as Pathname</b>, then paste it here. The card gets a document or folder icon, and a tap opens the file in its own app (or the folder in the Finder). This works from the hub on the Mac — the one AMS Finance in the Dock opens at localhost:7780 — because that copy can ask the Finance engine to open things for it. The engine only opens what exists inside your home folder or on an attached disk. On the iPhone, or in the published copy on the web, tapping such a card simply copies the path.</p>
+        <p><b>Files and folders on the Mac.</b> The same field also takes a path — for example <code>/Users/you/Library/CloudStorage/Dropbox/Triathlon/Training plan.xlsx</code>. In the Finder, right-click the file, hold ⌥ and choose <b>Copy as Pathname</b>, then paste it here. The card gets a document or folder icon, and a tap opens the file in its own app (or the folder in the Finder). This works from the AMS Main Hub app on the Mac, because it is served by the Finance engine at localhost:7780 and can ask the engine to open things for it. The engine only opens what exists inside your home folder or on an attached disk. On the iPhone, or in the published copy on the web, tapping such a card simply copies the path.</p>
           </div>
         </details>
 
@@ -1195,6 +1195,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.42', when:'18 Sep 2026',
+    what:'<b>One door on the Mac.</b> There were three ways into this page on the Mac and only one held your numbers: the <b>AMS Main Hub</b> app. The <b>AMS Finance Hub</b> icon in your Dock opened this same page in a box of its own, with no accounts in it, and <b>AMS Finance</b> opened it in a Safari tab — another empty box. The extra app is gone, AMS Finance now opens the AMS Main Hub app, and neither is pinned to the Dock: type <b>AMS Main Hub</b> in Raycast. The guide now says so too.' },
   { v:'1.41', when:'18 Sep 2026',
     what:'<b>An empty wealth sheet now tells you why it is empty.</b> Open the hub in a browser tab instead of the AMS Main Hub app and you get a separate copy with nothing in it — every browser tab and every app window keeps its own. That looked exactly like your accounts had vanished. They had not: they were safe in the app all along. Now, when the hub is open in a browser tab and has no accounts, the wealth sheet says so in plain words and points you to the app.' },
   { v:'1.40', when:'17 Sep 2026',
