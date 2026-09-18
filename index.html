@@ -294,16 +294,19 @@
   .mdots{display:flex; gap:5px; margin-top:9px;}
   .mdot{width:9px; height:9px; border-radius:50%; background:rgba(42,36,32,.15);}
   .mpen{
-    /* invisible, so it can be a generous target: a big button around a modest pen */
-    flex:0 0 auto; width:42px; height:42px; border-radius:12px; border:none;
+    /* invisible, so it can be a huge target: on the Mac it fills the tile's whole right end */
+    flex:0 0 auto; width:76px; height:59px; border-radius:12px; border:none; margin:-6px -11px -6px 0;
     background:transparent; color:var(--ink);   /* just the pen, on the tile's own colour */
     display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
   }
-  .mpen .hi{width:16px; height:16px;}
-  /* a phone: the pen sits in the tile's label row, so the button tucks into the padding
-     (negative margins) instead of making that row taller */
+  .mpen .hi{width:38px; height:38px;}
+  /* a phone: the tile is narrow and stacked, so the pen floats in its top-right corner
+     instead of sitting in the label row (which would make the tile taller) */
   @media (max-width:600px){
-    header .mpen{width:32px; height:32px; border-radius:10px; margin:-6px -5px -6px 0;}
+    header .mtile{position:relative;}
+    header .mpen{position:absolute; top:0; right:0; width:58px; height:58px; border-radius:12px; margin:0;
+                 align-items:flex-start; justify-content:flex-end; padding:5px 7px 0 0;}   /* pen up in the corner, clear of the number */
+    header .mpen .hi{width:30px; height:30px;}
   }
   .mpen:hover{background:rgba(42,36,32,.07);}   /* a faint tint only under the pointer */
   .mpen:active{transform:scale(.92);}
@@ -1271,6 +1274,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.53', when:'18 Sep 2026',
+    what:'The ✎ on the Wealth tile is now really big, and its invisible button covers the whole right end of the tile (the top-right corner on a phone). The tile stays the same size.' },
   { v:'1.52', when:'18 Sep 2026',
     what:'The ✎ on the Wealth tile is a little larger, and the invisible button around it much larger, so it is easy to hit without adding anything you can see. The tile itself stays the same size.' },
   { v:'1.51', when:'18 Sep 2026',
