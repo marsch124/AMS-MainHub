@@ -814,9 +814,9 @@
     <button class="iconbtn closex" id="wealthClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
     <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth</h2>
     <div class="wnav">
+      <button class="wtab" data-wv="history">History</button>
       <button class="wtab" data-wv="entry">New entry</button>
       <button class="wtab" data-wv="accounts">Accounts</button>
-      <button class="wtab" data-wv="history">History</button>
     </div>
     <div id="wBody"></div>
   </div>
@@ -935,12 +935,12 @@
         <details class="sub">
           <summary>Entering your wealth<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Tap the <b>pencil</b> on the Wealth tile. The sheet has three pages, chosen with the buttons at the top:</p>
+        <p>Tap the <b>pencil</b> on the Wealth tile. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
         <ul>
-          <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in alphabetical order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
-          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. Accounts are listed <b>alphabetically</b> on every page, so a name is always in the same place and there is no order to keep by hand. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
-          <li><b>History</b> — a table: your accounts down the side in <b>alphabetical order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears in its alphabetical place, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
+          <li><b>History</b> — the page the sheet opens on. A table: your accounts down the side in <b>your own order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -1174,6 +1174,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.44', when:'18 Sep 2026',
+    what:'<b>The wealth sheet opens on History, and your accounts are in your own order again.</b> The three pages now run <b>History · New entry · Accounts</b>, and the pencil always opens on History, so you see where things stand before you type anything. The ▲▼ arrows are back on <b>Accounts</b>, and the order you set there is the one used everywhere — History, New entry and Accounts alike — so a name never moves between pages. (1.40 had made everything alphabetical, which was not what you asked for.) A new account starts at the bottom until you move it; a deleted one keeps its place in History.' },
   { v:'1.43', when:'18 Sep 2026',
     what:'<b>Save a backup file opens Apple\'s own Save window.</b> No more folder list and no typing a folder\'s address: you get the same Save window every Mac app uses — name the file, browse anywhere, make a new folder if you like, and press Save. It opens in the folder you used last. The Finance engine then writes the backup there and checks it on the disk before anything is recorded, so <i>Last backup</i> still only appears when a file really exists. On the iPhone nothing changes: the share sheet\'s <b>Save to Files</b> is Apple\'s own picker there.' },
   { v:'1.42', when:'18 Sep 2026',
@@ -2022,14 +2024,10 @@ function separateCopyNote(){
    (gone:true) rather than dropped, because an entry only stores {accountId: kronor} —
    throw the account away and its past balances lose their name. Retired ones vanish
    from New entry and Accounts and live on only as History rows. */
-/* alphabetical everywhere, so a name is always in the same place whichever page you
-   are on — there is no hand-made order to keep any more */
-function liveAccounts(){ return accountsByName().filter(a => !a.gone); }
-/* History lists accounts alphabetically, whatever order the entry form is in */
-function accountsByName(){
-  return wAcc.slice().sort((a, b) =>
-    String(a.name || '').localeCompare(String(b.name || ''), 'sv', { sensitivity:'base' }));
-}
+/* ONE order on every page — his own, set with ▲▼ on Accounts and kept in wAcc itself —
+   so a name is always in the same place whichever page he is on. (1.40 made everything
+   alphabetical; he wanted his own order, and asked for it to hold everywhere.) */
+function liveAccounts(){ return wAcc.filter(a => !a.gone); }
 function accountName(id){
   const a = wAcc.find(x => x.id === id);
   return a ? a.name : 'Removed account';
@@ -2222,7 +2220,7 @@ function renderMini(){
       }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
       <div class="mbody" id="mt-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
-  $('miniEdit').addEventListener('click', () => openWealth('entry'));
+  $('miniEdit').addEventListener('click', () => openWealth());
   document.querySelectorAll('[data-tile]').forEach(b =>
     b.addEventListener('click', () => toggleTile(b.dataset.tile)));
 }
@@ -2276,7 +2274,7 @@ async function fetchLinks(){
 }
 
 /* ============ the wealth sheet: New entry · Accounts · History ============ */
-let wView = 'entry';
+let wView = 'history';   /* the sheet always opens on History — look first, then type */
 let wEditDate = null;          /* the ORIGINAL date of the entry being corrected (never changes mid-edit) */
 let wTyped = {};               /* accId -> raw string, survives a date change or a page switch */
 let wDate = null;              /* the date shown in the form */
@@ -2292,7 +2290,7 @@ function openWealth(v){
   wEditDate = null; wTyped = {}; wExact = {}; wDate = null;
   const draft = loadJSON(W_DRAFT_KEY, null);
   if(draft && draft.date && draft.v){ wDate = draft.date; wTyped = draft.v; wExact = (draft.x && typeof draft.x === 'object') ? draft.x : {}; }
-  wOpenTab(v || 'entry');
+  wOpenTab(v || 'history');
   $('ovWealth').classList.add('show');
 }
 function closeWealth(){ $('ovWealth').classList.remove('show'); wEditDate = null; }
@@ -2461,14 +2459,17 @@ function viewAccounts(){
       </div>`;
   }
   const latest = entryDates().length ? wEnt[entryDates()[entryDates().length - 1]] : null;
-  const rows = liveAccounts().map(a => `<div class="arow">
+  const live = liveAccounts();
+  const rows = live.map((a, i) => `<div class="arow">
       <div class="amid"><div class="aname">${esc(a.name)}</div><div class="aurl">${a.url ? esc(a.url.replace(/^https?:\/\//i, '')) : 'no link'}</div></div>
       ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
       <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
+      <button class="rowbtn" data-wup="${a.id}" aria-label="Move ${esc(a.name)} up" ${i === 0 ? 'disabled' : ''}><svg class="hi"><use href="#icon-up"/></svg></button>
+      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move ${esc(a.name)} down" ${i === live.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
     </div>`).join('');
   return `${rows || separateCopyNote() + '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
     <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
-    <p class="dim wnote">Accounts are listed alphabetically everywhere. Deleting one keeps its balances <i>and</i> its name in past entries — it only stops appearing in new ones.</p>`;
+    <p class="dim wnote">▲ ▼ set the order — it is the same on History, New entry and here. A new account starts at the bottom. Deleting one keeps its balances <i>and</i> its name in past entries; it only stops appearing in new ones.</p>`;
 }
 function bindAccounts(){
   if(wAccForm){
@@ -2498,12 +2499,24 @@ function bindAccounts(){
   }
   $('waAdd').addEventListener('click', () => { wAccForm = 'new'; wOpenTab('accounts'); });
   document.querySelectorAll('[data-wedit]').forEach(b => b.addEventListener('click', () => { wAccForm = b.dataset.wedit; wOpenTab('accounts'); }));
+  /* swap with the next LIVE neighbour — a retired account sitting between them in wAcc
+     keeps its own place (it only shows in History) and is simply stepped over */
+  const move = (id, dir) => {
+    const live = liveAccounts();
+    const k = live.findIndex(a => a.id === id), n = k + dir;
+    if(k < 0 || n < 0 || n >= live.length) return;
+    const i = wAcc.indexOf(live[k]), j = wAcc.indexOf(live[n]);
+    [wAcc[i], wAcc[j]] = [wAcc[j], wAcc[i]];
+    saveWealth(); wOpenTab('accounts'); refreshWealthTiles();
+  };
+  document.querySelectorAll('[data-wup]').forEach(b => b.addEventListener('click', () => move(b.dataset.wup, -1)));
+  document.querySelectorAll('[data-wdown]').forEach(b => b.addEventListener('click', () => move(b.dataset.wdown, 1)));
 }
 
 /* ---- History ---- */
 /* ---- History: accounts down the side, the three newest entries across ----
-   Rows are alphabetical and include RETIRED accounts, so a deleted account keeps its
-   place in the past; a new account simply appears in its alphabetical slot. An empty
+   Rows follow his own account order and include RETIRED accounts, so a deleted account
+   keeps its place in the past; a new account appears at the bottom. An empty
    cell is shown as — rather than 0, because "not in this entry" is not "was zero". */
 const HIST_COLS = 3;
 function histRowAccounts(cols){
@@ -2511,7 +2524,7 @@ function histRowAccounts(cols){
   cols.forEach(d => Object.keys((wEnt[d] || {}).v || {}).forEach(id => seen.add(id)));
   /* every account still kept, plus any account (retired, or orphaned by an old
      delete) that actually carries a number in one of these columns */
-  const rows = accountsByName().filter(a => !a.gone || seen.has(a.id));
+  const rows = wAcc.filter(a => !a.gone || seen.has(a.id));   /* his order; retired ones keep their place */
   const known = new Set(wAcc.map(a => a.id));
   [...seen].filter(id => !known.has(id)).forEach(id => rows.push({ id, name:'Removed account' }));
   return rows;
