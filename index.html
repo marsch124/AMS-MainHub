@@ -419,6 +419,13 @@
   .hadj:hover{background:var(--tint);}
   .arow .hadj{margin-left:8px;}
   .htab .dshort{display:none;}
+  /* entries the phone's table has no room for — listed under Earlier entries there instead */
+  .arow.hxrow, h3.hxrow{display:none;}
+  @media (max-width:600px){
+    table.htab .hx{display:none;}
+    .arow.hxrow{display:flex;}
+    h3.hxrow{display:block;}
+  }
   /* on a phone the table has to fit: no year in the heading, tighter cells, and the
      account name may wrap rather than force the column wide */
   @media (max-width:430px){
@@ -1017,7 +1024,7 @@
           <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
-          <li><b>History</b> — the page the sheet opens on. A table: your accounts down the side in <b>your own order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>History</b> — the page the sheet opens on. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -1251,6 +1258,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.48', when:'18 Sep 2026',
+    what:'<b>History reads like a timeline.</b> The table now shows your <b>five most recent</b> entries instead of three, with the oldest on the left and the <b>newest on the right</b>. The word <b>Date</b> above the columns is gone — the dates speak for themselves. On the iPhone, where only three fit, the table shows the three newest and the two before them join the Earlier entries list underneath, so nothing drops out of sight.' },
   { v:'1.47', when:'18 Sep 2026',
     what:'<b>Send to Excel.</b> On the Mac, a green button beside the date on <b>New entry</b> copies the month\'s latest entry into that month\'s row of the budget workbook — one figure per account, in full kronor. It finds each account\'s column by name every time you press it, forgiving capitals, spaces and small typos, and writes nothing if it cannot be sure. You see exactly what will go in before anything is written, a dated copy of the workbook is kept first, and only those account cells change: totals, charts and the rest of the file are left exactly as they are. Typed but not saved? It says <b>Save &amp; send</b> and does both. Afterwards it reads <b>"September sent ✓"</b>. The date field is now only as wide as it needs to be, the notes under it are small and to the right, and the ✎ on the Wealth tile has moved to its right end.' },
   { v:'1.46', when:'18 Sep 2026',
@@ -2715,7 +2724,10 @@ function bindAccounts(){
    Rows follow his own account order and include RETIRED accounts, so a deleted account
    keeps its place in the past; a new account appears at the bottom. An empty
    cell is shown as — rather than 0, because "not in this entry" is not "was zero". */
-const HIST_COLS = 3;
+/* five columns on the Mac, oldest on the left and the newest on the RIGHT, the way a
+   timeline reads; a phone has room for three, so the two oldest columns step down into
+   the Earlier entries list there instead of disappearing */
+const HIST_COLS = 5, HIST_COLS_PHONE = 3;
 function histRowAccounts(cols){
   const seen = new Set();
   cols.forEach(d => Object.keys((wEnt[d] || {}).v || {}).forEach(id => seen.add(id)));
@@ -2727,8 +2739,11 @@ function histRowAccounts(cols){
   return rows;
 }
 function viewHistory(){
-  const ds = entryDates().slice().reverse();
-  const cols = ds.slice(0, HIST_COLS);
+  const ds = entryDates().slice().reverse();                 /* newest first */
+  const newest = ds.slice(0, HIST_COLS);
+  const cols = newest.slice().reverse();                      /* shown oldest → newest */
+  const phoneHidden = cols.slice(0, Math.max(0, cols.length - HIST_COLS_PHONE));   /* the oldest, on a phone */
+  const hx = d => phoneHidden.includes(d) ? ' class="hx"' : '';
   const older = ds.slice(HIST_COLS);
 
   let table = separateCopyNote() + '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
@@ -2737,34 +2752,35 @@ function viewHistory(){
     const anyCarried = cols.some(d => (wEnt[d].c || []).length);
     table = `<div class="htwrap"><table class="htab">
       <thead>
-        <tr><td class="corner"></td><th class="dhead" colspan="${cols.length}">Date</th></tr>
         <tr><th class="ahead">Accounts</th>${cols.map(d =>
-          `<th><span class="dfull">${d}</span><span class="dshort">${d.slice(5)}</span></th>`).join('')}</tr>
+          `<th${hx(d)}><span class="dfull">${d}</span><span class="dshort">${d.slice(5)}</span></th>`).join('')}</tr>
       </thead>
       <tbody>
         ${rows.map(a => `<tr${a.gone ? ' class="retired"' : ''}>
           <th>${esc(a.name)}${a.gone ? '<i> removed</i>' : ''}</th>
           ${cols.map(d => {
             const e = wEnt[d], val = (e.v || {})[a.id];
-            if(typeof val !== 'number') return '<td class="none">—</td>';
-            const carried = (e.c || []).includes(a.id);
-            return `<td${carried ? ' class="carried" title="carried from the entry before"' : ''}>${fmtKr(val)}</td>`;
+            const cls = [phoneHidden.includes(d) ? 'hx' : '', typeof val !== 'number' ? 'none' : '',
+                         typeof val === 'number' && (e.c || []).includes(a.id) ? 'carried' : ''].filter(Boolean).join(' ');
+            const attrs = (cls ? ` class="${cls}"` : '') + (cls.includes('carried') ? ' title="carried from the entry before"' : '');
+            return `<td${attrs}>${typeof val === 'number' ? fmtKr(val) : '—'}</td>`;
           }).join('')}
         </tr>`).join('')}
-        <tr class="tot"><th>TOTAL</th>${cols.map(d => `<td>${fmtKr(entryTotal(wEnt[d]))}</td>`).join('')}</tr>
+        <tr class="tot"><th>TOTAL</th>${cols.map(d => `<td${hx(d)}>${fmtKr(entryTotal(wEnt[d]))}</td>`).join('')}</tr>
       </tbody>
       <tfoot>
         <tr><td class="corner"></td>${cols.map(d =>
-          `<td class="acts"><button class="hadj" data-hedit="${d}">Adjust</button></td>`).join('')}</tr>
+          `<td class="acts${phoneHidden.includes(d) ? ' hx' : ''}"><button class="hadj" data-hedit="${d}">Adjust</button></td>`).join('')}</tr>
       </tfoot>
     </table></div>
     ${anyCarried ? '<p class="wsafe" style="margin-top:8px">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
   }
 
   /* everything older keeps its one-line row, so no entry is ever hidden */
-  const oldRows = older.map(d => {
+  const listed = phoneHidden.slice().reverse().concat(older);   /* newest first */
+  const oldRows = listed.map(d => {
     const e = wEnt[d];
-    return `<div class="arow">
+    return `<div class="arow${phoneHidden.includes(d) ? ' hxrow' : ''}">
       <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${Object.keys(e.v).length} account${Object.keys(e.v).length === 1 ? '' : 's'}</div></div>
       <span class="asum">${fmtKr(entryTotal(e))}</span>
       <button class="hadj" data-hedit="${d}">Adjust</button>
@@ -2782,7 +2798,7 @@ function viewHistory(){
        <button class="btn full" id="wRestoreSnap">Put those entries back</button>`
     : (snap ? `<p class="wsafe">If numbers ever go missing, there is a copy from ${dayLabel(snap.day)} to put back.</p>` : '');
   return `${table}
-    ${older.length ? `<h3 style="margin-top:20px">Earlier entries</h3>${oldRows}` : ''}
+    ${listed.length ? `<h3 style="margin-top:20px"${older.length ? '' : ' class="hxrow"'}>Earlier entries</h3>${oldRows}` : ''}
     ${safe}`;
 }
 function bindHistory(){
