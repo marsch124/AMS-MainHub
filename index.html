@@ -527,16 +527,6 @@
   .vlog p{margin:4px 0 0;}
   .closex{position:sticky; top:0; float:right; margin:-4px -4px 0 0; z-index:2; box-shadow:none; background:var(--bg);}
   .backup-meta{font-size:12.5px; color:var(--ink-dim); margin-top:10px;}
-  /* name it and pick a folder — a browser download can do neither from in here */
-  .saveform{margin:10px 0 4px; padding:14px; border:1px solid var(--line); border-radius:14px;}
-  .saveform label{display:block; font-size:12px; font-weight:700; letter-spacing:.04em;
-                  text-transform:uppercase; color:var(--ink-dim); margin:0 0 5px;}
-  .saveform label ~ label{margin-top:12px;}
-  .saveform input, .saveform select{width:100%; box-sizing:border-box; padding:10px 12px; font:inherit;
-                  font-size:15px; color:var(--ink); background:var(--bg, #fff);
-                  border:1px solid var(--line); border-radius:10px;}
-  .saveform input + input{margin-top:8px;}
-  .saveform .btnrow{margin-top:14px;}
 </style>
 </head>
 <body>
@@ -1010,7 +1000,7 @@
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens a small form: name it what you like and pick where it goes — Downloads, Documents, Desktop, iCloud Drive, your <b>Budgeting</b> folder, or any folder you type. The Finance engine writes it there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
+        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens Apple's own <b>Save</b> window — the same one every Mac app uses. Name the file, browse to any folder, even make a new one, and press Save. The Finance engine writes the backup there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. Next time the window opens in the folder you used last. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
           </div>
         </details>
 
@@ -1159,17 +1149,6 @@
       <div class="foldbody">
         <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b>. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
         <button class="btn full" id="exportBtn">Save a backup file</button>
-        <div class="saveform" id="saveForm" hidden>
-          <label for="saveName">Name</label>
-          <input type="text" id="saveName" autocomplete="off" spellcheck="false" />
-          <label for="saveWhere">Where</label>
-          <select id="saveWhere"></select>
-          <input type="text" id="saveOther" placeholder="~/some/folder" autocomplete="off" spellcheck="false" hidden />
-          <div class="btnrow">
-            <button class="btn" id="saveCancel">Cancel</button>
-            <button class="btn primary" id="saveGo">Save backup</button>
-          </div>
-        </div>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn">Import / restore…</button>
         <input type="file" id="importFile" accept=".json,application/json" style="display:none" />
@@ -1195,6 +1174,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.43', when:'18 Sep 2026',
+    what:'<b>Save a backup file opens Apple\'s own Save window.</b> No more folder list and no typing a folder\'s address: you get the same Save window every Mac app uses — name the file, browse anywhere, make a new folder if you like, and press Save. It opens in the folder you used last. The Finance engine then writes the backup there and checks it on the disk before anything is recorded, so <i>Last backup</i> still only appears when a file really exists. On the iPhone nothing changes: the share sheet\'s <b>Save to Files</b> is Apple\'s own picker there.' },
   { v:'1.42', when:'18 Sep 2026',
     what:'<b>One door on the Mac.</b> There were three ways into this page on the Mac and only one held your numbers: the <b>AMS Main Hub</b> app. The <b>AMS Finance Hub</b> icon in your Dock opened this same page in a box of its own, with no accounts in it, and <b>AMS Finance</b> opened it in a Safari tab — another empty box. The extra app is gone, AMS Finance now opens the AMS Main Hub app, and neither is pinned to the Dock: type <b>AMS Main Hub</b> in Raycast. The guide now says so too.' },
   { v:'1.41', when:'18 Sep 2026',
@@ -2665,8 +2646,10 @@ showMeta();
      neither: it cannot ask where to save from inside an app window, and it never tells
      the page whether the file was written, so Safari could be sitting on an "allow
      downloads?" question while the hub cheerfully records a backup that never happened.
-     A native save panel is not on the table either: the engine runs detached from the
-     login session, so an osascript dialog has nowhere to draw and just hangs.
+     (On 2026-09-17 I wrongly concluded a native Save window could not work from the
+     engine: it did appear — on his screen, where I was not looking — and was simply
+     waiting for him. It now comes from a tiny app launched with `open`, which is
+     brought to the front.)
    - On a phone: the share sheet, where "Save to Files" lives, and navigator.share only
      resolves once he has actually chosen somewhere. A plain download link is inert
      inside an app opened from the Home Screen.
@@ -2681,82 +2664,39 @@ function isHandheld(){
 function suggestedBackupName(){
   return 'ams-mainhub-backup-' + new Date().toISOString().slice(0,10) + '.json';
 }
-function chosenFolder(){
-  const w = $('saveWhere').value;
-  return w === 'other' ? ($('saveOther').value || '').trim() : w;
-}
-/* the fixed places, plus any folder the engine tells us about (the Budgeting folder,
-   for one) — those paths are the engine's to know, never written into this file */
-const SAVE_PLACES = [
-  { label:'Downloads',    path:'~/Downloads' },
-  { label:'Documents',    path:'~/Documents' },
-  { label:'Desktop',      path:'~/Desktop' },
-  { label:'iCloud Drive', path:'~/Library/Mobile Documents/com~apple~CloudDocs' },
-];
-function fillSavePlaces(){
-  const sel = $('saveWhere');
-  const keep = sel.value;
-  const extra = (engineLinks && Array.isArray(engineLinks.folders) ? engineLinks.folders : [])
-    .filter(f => f && f.label && f.path);
-  sel.innerHTML = SAVE_PLACES.concat(extra)
-    .map(f => `<option value="${esc(f.path)}">${esc(f.label)}</option>`).join('')
-    + '<option value="other">Another folder…</option>';
-  if(keep && [...sel.options].some(o => o.value === keep)) sel.value = keep;
-}
-/* the engine writes it where he said and reads the size back, so the note is a fact */
-async function saveBackupHere(replace){
-  const name = ($('saveName').value || '').trim() || suggestedBackupName();
-  const folder = chosenFolder();
-  if(!folder){ showToast('Type a folder, or pick one from the list', null, '', 5000); return; }
-  try{
-    const res = await fetch(ENGINE + '/api/hubbackup?name=' + encodeURIComponent(name)
-      + '&folder=' + encodeURIComponent(folder) + (replace ? '&replace=1' : ''), {
-      method:'POST', cache:'no-store',
-      headers:{ 'Content-Type':'application/json' },
-      body: backupBlob(),
-    });
-    const data = await res.json().catch(() => null);
-    if(res.ok && data && data.ok && data.bytes > 0){
-      stampBackup();
-      $('saveForm').hidden = true;
-      showToast('Saved — ' + data.name + ' in ' + pathName(data.folder || folder) + ' (' + Math.round(data.bytes / 1024) + ' KB)', null, '', 7000);
-      return;
-    }
-    if(data && data.error === 'exists'){
-      if(confirm('There is already a file called ' + data.name + ' in that folder.\n\nReplace it?')) return saveBackupHere(true);
-      showToast('Nothing saved — give it another name', null, '', 5000);
-      return;
-    }
-    if(data && data.error === 'no-such-folder'){ showToast('There is no such folder on this Mac', null, '', 6000); return; }
-    if(data && data.error === 'outside'){ showToast('Pick somewhere inside your home folder or on an attached disk', null, '', 6000); return; }
-    showToast('The engine could not write the backup — nothing saved', null, '', 6000);
-  }catch(e){
-    showToast('The Finance engine is not answering — open AMS Finance from the Dock, then try again', null, '', 7000);
-  }
-}
-
-$('saveWhere').addEventListener('change', () => {
-  const other = $('saveWhere').value === 'other';
-  $('saveOther').hidden = !other;
-  if(other) $('saveOther').focus();
-});
-$('saveCancel').addEventListener('click', () => { $('saveForm').hidden = true; });
-$('saveGo').addEventListener('click', () => saveBackupHere(false));
-
+let savingBackup = false;
 $('exportBtn').addEventListener('click', async () => {
-  /* On the Mac the engine does the writing, so he gets to name the file and choose the
-     folder — neither of which a download link can offer from inside an app window, and
-     a download never reports back, so it could never honestly say a backup happened. */
+  /* On the Mac the Finance engine opens Apple's own Save window — name the file, browse
+     to any folder — then writes the backup there and reads its size back off the disk,
+     so "Last backup" only ever records a file that exists. A web page cannot open that
+     window itself, and a browser download never says whether it was saved. */
   if(FROM_ENGINE){
-    const f = $('saveForm');
-    if(f.hidden){
-      fillSavePlaces();
-      $('saveName').value = suggestedBackupName();
-      f.hidden = false;
-      $('saveName').focus();
-      $('saveName').select();
-    }else{
-      f.hidden = true;
+    if(savingBackup) return;           /* one Save window at a time */
+    savingBackup = true;
+    $('exportBtn').disabled = true;
+    showToast('Choose where to save it in the Save window…', null, '', 60000);
+    try{
+      const res = await fetch(ENGINE + '/api/hubbackup', {
+        method:'POST', cache:'no-store',
+        headers:{ 'Content-Type':'application/json' },
+        body: backupBlob(),
+      });
+      const data = await res.json().catch(() => null);
+      if(res.ok && data && data.ok && data.bytes > 0){
+        stampBackup();
+        showToast('Saved — ' + data.name + ' in ' + pathName(data.folder || '') + ' (' + Math.round(data.bytes / 1024) + ' KB)', null, '', 7000);
+      }else if(data && data.error === 'cancelled'){
+        showToast('Backup cancelled — nothing saved', null, '', 4000);
+      }else if(data && data.error === 'no-save-panel'){
+        showToast('The Save window is missing from AMS Finance — nothing saved', null, '', 7000);
+      }else{
+        showToast('The backup could not be written — nothing saved', null, '', 6000);
+      }
+    }catch(e){
+      showToast('The Finance engine is not answering — open AMS Finance, then try again', null, '', 7000);
+    }finally{
+      savingBackup = false;
+      $('exportBtn').disabled = false;
     }
     return;
   }
@@ -2766,9 +2706,9 @@ $('exportBtn').addEventListener('click', async () => {
   const blob = new Blob([payload], { type:'application/json' });
   const file = new File([blob], name, { type:'application/json' });
 
-  /* a phone: the share sheet, where "Save to Files" lives, and navigator.share only
-     resolves once he has actually chosen somewhere. A plain download link is inert
-     inside an app opened from the Home Screen. */
+  /* a phone: the share sheet, where "Save to Files" — Apple's own file picker — lives,
+     and navigator.share only resolves once he has actually chosen somewhere. A plain
+     download link is inert inside an app opened from the Home Screen. */
   if(isHandheld() && navigator.canShare && navigator.canShare({ files: [file] })){
     try{
       await navigator.share({ files: [file], title: 'AMS Main Hub backup' });
