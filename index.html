@@ -253,6 +253,15 @@
   header .mspark{display:none;}
   header .mdots{margin-top:3px;} header .mdot{width:7px; height:7px;}
   header .mbar{margin-top:4px; height:5px;}
+  /* on the header strip the ✎ sits at the tile's right end: the label's box steps
+     aside (display:contents keeps its colour and type, which inherit through it) so
+     its pieces can be ordered on the strip itself */
+  @media (min-width:601px){
+    header .mlab{display:contents;}
+    header .mlab > span, header .mtog{order:1;}
+    header .mbody{order:2;}
+    header .mpen{order:3; margin-left:auto;}
+  }
   /* a phone: the three tiles share one line, each a small stack — label, number, detail */
   @media (max-width:600px){
     header .mtile{flex:1 1 0; flex-direction:column; align-items:flex-start; gap:1px; padding:6px 9px 7px;}
@@ -345,6 +354,21 @@
   .wtot span{font-size:13px; color:var(--ink-dim); font-weight:600;}
   .wtot b{font-size:24px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
   .wnote{font-size:13px !important; margin:6px 0 0 !important;}
+  /* the date, only as wide as it needs, and Send to Excel on the right of the same row */
+  .wdaterow{display:flex; align-items:stretch; justify-content:space-between; gap:8px;}
+  .wdaterow #wDate{flex:0 0 auto; width:auto;}
+  .wsend{display:flex; align-items:center; gap:9px; flex:0 0 auto; padding:5px 14px; border-radius:12px;
+         border:1px solid #bfe0cc; background:#e7f4ec; color:#1d6b45; font:inherit; cursor:pointer; text-align:left;}
+  .wsend .hi{width:18px; height:18px;}
+  .wsend:hover{border-color:#8fcaa6;}
+  .wsend:disabled{opacity:.6; cursor:default;}
+  .wsendtx{display:flex; flex-direction:column; align-items:flex-start; line-height:1.15;}
+  .wsendtx b{font-size:13.5px; font-weight:700;}
+  .wsendtx small{font-size:10.5px; font-weight:600; opacity:.75;}
+  .wsend.sent small{opacity:1; font-weight:700;}
+  /* the notes under the date: there when wanted, small and out of the way */
+  .whint{font-size:10.5px !important; text-align:right; margin:4px 0 0 !important; line-height:1.35;}
+  .whint:not(.warn){opacity:.75;}
   /* opens the Excel workbook the grey cross-check is read from (Mac + engine only) */
   .wbook{display:flex; align-items:center; gap:9px; width:100%; margin-top:14px; padding:10px 12px;
          border:1px solid var(--line); border-radius:12px; background:var(--card, transparent);
@@ -990,6 +1014,7 @@
         <p>Tap the <b>pencil</b> on the Wealth tile. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
         <ul>
           <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
+          <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
           <li><b>History</b> — the page the sheet opens on. A table: your accounts down the side in <b>your own order</b>, the <b>three most recent</b> entries across the top, and a <b>TOTAL</b> row along the bottom. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the three columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
@@ -1032,7 +1057,7 @@
         <p><b>Two different numbers sit in the Wealth tile, and only one of them is yours.</b></p>
         <ul>
           <li><b>Your entries</b> — the big total, and everything behind it: the balances you type through the pencil, your account names and their order, and the daily safety copies. These live <b>inside this app, on this device</b>, and nowhere else. Not on a server, not in the hub's public code, not in iCloud.</li>
-          <li><b>The small grey workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. The hub never stores it, and your own entry is always the number that counts.</li>
+          <li><b>The small grey workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
         </ul>
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
@@ -1226,6 +1251,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.47', when:'18 Sep 2026',
+    what:'<b>Send to Excel.</b> On the Mac, a green button beside the date on <b>New entry</b> copies the month\'s latest entry into that month\'s row of the budget workbook — one figure per account, in full kronor. It finds each account\'s column by name every time you press it, forgiving capitals, spaces and small typos, and writes nothing if it cannot be sure. You see exactly what will go in before anything is written, a dated copy of the workbook is kept first, and only those account cells change: totals, charts and the rest of the file are left exactly as they are. Typed but not saved? It says <b>Save &amp; send</b> and does both. Afterwards it reads <b>"September sent ✓"</b>. The date field is now only as wide as it needs to be, the notes under it are small and to the right, and the ✎ on the Wealth tile has moved to its right end.' },
   { v:'1.46', when:'18 Sep 2026',
     what:'<b>Much less air: the whole hub fits on one screen on the Mac.</b> Before, it was over two and a half screens tall and only the Finance shelf showed without scrolling. The tiles layout is now like your iPhone\'s home screen — each app a small tile with its icon and name — and point at a tile to read what it does. The three glance tiles (Wealth, Finance, Apps) have moved <b>up into the header</b>, between the name and the buttons, as slim strips. The shelves have thinner frames, smaller headings and tighter spacing, and the page margins are narrower. Arranging still works on every tile: the ▲▼ and palette sit along its bottom. On the iPhone the three glance tiles share one line under the name. The List layout keeps the full detail for when you want it.' },
   { v:'1.45', when:'18 Sep 2026',
@@ -1972,7 +1999,8 @@ const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engin
 const W_ACC_KEY    = 'amshub.wealth.accounts'; /* [{id,name,url}] in his order */
 const W_ENT_KEY    = 'amshub.wealth.entries';  /* { 'YYYY-MM-DD': { v:{accId:kr}, c:[carried accIds] } } */
 const W_DRAFT_KEY  = 'amshub.wealth.draft';    /* what he was typing when he left for the bank app */
-const W_SNAP_KEY   = 'amshub.wealth.snaps';    /* daily safety copies, the fullest one is never dropped */
+const W_SNAP_KEY   = 'amshub.wealth.snaps';
+const W_SENT_KEY   = 'amshub.wealth.sent';     /* { 'YYYY-MM': {at, entryDate, entryAt} } — months sent to Excel */    /* daily safety copies, the fullest one is never dropped */
 const W_LEGACY_KEY = 'amshub.wealth.manual';   /* pre-1.15 one-total-per-month editor */
 const ENGINE = 'http://localhost:7780';
 const RETIREMENT = new Date(2028, 6, 1);       /* 1 July 2028 */
@@ -2378,10 +2406,13 @@ function viewEntry(){
     </div>`;
   }).join('');
   return `<label>Date</label>
-    <input type="date" id="wDate" value="${date}" max="${todayKey()}" />
-    ${existing && date !== wEditDate ? `<p class="dim wnote warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
-    ${wEditDate ? `<p class="dim wnote">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
-    <p class="dim wnote">Thousands: <b>250</b> ⇥ <b>250 000</b>. Five digits or more is taken exactly.</p>
+    <div class="wdaterow">
+      <input type="date" id="wDate" value="${date}" max="${todayKey()}" />
+      ${FROM_ENGINE ? sendButtonHTML(date) : ''}
+    </div>
+    ${existing && date !== wEditDate ? `<p class="dim wnote whint warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
+    ${wEditDate ? `<p class="dim wnote whint">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
+    <p class="dim wnote whint">Thousands: <b>250</b> ⇥ <b>250 000</b>. Five digits or more is taken exactly.</p>
     ${rows}
     <div class="wtot"><span>Total</span><b id="wTotal">—</b></div>
     <p class="dim wnote" id="wSince"></p>
@@ -2435,6 +2466,7 @@ function updateTotalLine(){
   if(f.c.length) bits.push(`${f.c.map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean).join(', ')} carried${f.prev && !f.base ? ' from ' + dayLabel(f.prev.date) : ''}`);
   if(f.prev && f.prev.date === date && !f.base) bits.push('replaces the entry already saved for this date');
   $('wSince').textContent = bits.join(' · ');
+  refreshSendButton();
 }
 function bindEntry(){
   const goAcc = document.querySelector('#wBody [data-wv]');
@@ -2483,22 +2515,129 @@ function bindEntry(){
     closeWealth();
   });
   $('wSave').addEventListener('click', () => {
-    const date = $('wDate').value;
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ alert('Pick a date first.'); return; }
-    if(date > todayKey()){ alert('That date is in the future.'); return; }
-    const f = entryFromForm(date);
-    if(!f.typedAny){ alert('Type at least one balance.'); return; }
-    if(wEditDate && wEditDate !== date && wEnt[date] && !confirm(`There is already an entry for ${dayLabel(date)}. Replace it?`)) return;
-    if(wEditDate && wEditDate !== date) delete wEnt[wEditDate];
-    wEnt[date] = { v:f.v, c:f.c, at:new Date().toISOString() };
-    saveWealth();
-    try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
-    wTyped = {}; wExact = {}; wDate = null; wEditDate = null;
-    refreshWealthTiles();
+    const r = commitEntry();
+    if(!r) return;
+    wDate = null;
     closeWealth();
-    showToast(`Saved — ${fmtKr(entryTotal(f))} kr on ${dayLabel(date)}${f.c.length ? ` (${f.c.length} carried)` : ''}`);
+    showToast(`Saved — ${fmtKr(entryTotal(r.f))} kr on ${dayLabel(r.date)}${r.f.c.length ? ` (${r.f.c.length} carried)` : ''}`);
   });
+  const send = $('wSend');
+  if(send) send.addEventListener('click', sendToExcel);
   updateTotalLine();
+}
+
+/* save what is in the form — for Save entry and for Save & send. Returns {date, f},
+   or null if there was nothing (valid) to save. Leaves the sheet open. */
+function commitEntry(){
+  const date = $('wDate').value;
+  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ alert('Pick a date first.'); return null; }
+  if(date > todayKey()){ alert('That date is in the future.'); return null; }
+  const f = entryFromForm(date);
+  if(!f.typedAny){ alert('Type at least one balance.'); return null; }
+  if(wEditDate && wEditDate !== date && wEnt[date] && !confirm(`There is already an entry for ${dayLabel(date)}. Replace it?`)) return null;
+  if(wEditDate && wEditDate !== date) delete wEnt[wEditDate];
+  wEnt[date] = { v:f.v, c:f.c, at:new Date().toISOString() };
+  saveWealth();
+  try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
+  wTyped = {}; wExact = {}; wDate = date; wEditDate = null;
+  refreshWealthTiles();
+  return { date, f };
+}
+
+/* ---- Send to Excel (Mac only — the Finance engine does the writing) ----
+   The date on New entry picks the month; the month's LATEST entry goes into that
+   month's row of the budget workbook. send_wealth.py in AMS Finance finds each
+   account's column by name every time, writes only those cells, keeps a dated copy
+   first and refuses while Excel has the file open. A dry run comes first so he sees
+   exactly what will be written before anything is. */
+const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+let sendingExcel = false;
+function latestEntryIn(month){
+  const ds = entryDates().filter(d => d.slice(0, 7) === month);
+  return ds.length ? { date: ds[ds.length - 1], e: wEnt[ds[ds.length - 1]] } : null;
+}
+function sendState(date){
+  const month = (date || todayKey()).slice(0, 7);
+  const name = MONTHS_LONG[+month.slice(5, 7) - 1] || month;
+  const unsaved = Object.keys(wTyped).length > 0;
+  const latest = latestEntryIn(month);
+  const sent = loadJSON(W_SENT_KEY, {})[month];
+  /* "sent ✓" only while what was sent is still the month's latest entry, unchanged */
+  const fresh = !!(sent && latest && sent.entryDate === latest.date && sent.entryAt === (latest.e.at || ''));
+  return { month, name, unsaved, latest, fresh };
+}
+function sendButtonHTML(date){
+  const st = sendState(date);
+  return `<button class="wsend${st.fresh && !st.unsaved ? ' sent' : ''}" id="wSend" type="button">
+      <svg class="hi"><use href="#icon-dev-excel"/></svg>
+      <span class="wsendtx"><b id="wSendMain">${st.unsaved ? 'Save &amp; send' : 'Send to Excel'}</b><small id="wSendSub">${
+        st.fresh && !st.unsaved ? esc(st.name) + ' sent ✓' : esc(st.name) + ' → workbook'}</small></span>
+    </button>`;
+}
+function refreshSendButton(){
+  const b = $('wSend');
+  if(!b) return;
+  const st = sendState($('wDate').value);
+  const done = st.fresh && !st.unsaved;
+  b.classList.toggle('sent', done);
+  $('wSendMain').textContent = st.unsaved ? 'Save & send' : 'Send to Excel';
+  $('wSendSub').textContent = done ? st.name + ' sent ✓' : st.name + ' → workbook';
+}
+function sendProblem(r, st){
+  const why = {
+    'open-in-excel': 'The budget workbook is open in Excel. Close it there, then press Send again.',
+    'unmatched': `The workbook has no column for ${(r.unmatched || []).join(', ')}. Check the account names in its header row.`,
+    'no-month-row': `The workbook has no row for ${st.name} ${st.month.slice(0, 4)}.`,
+    'no-header': 'The row with your account names could not be found in the workbook.',
+    'no-workbook': 'The budget workbook could not be found.',
+    'no-sheet': 'The budget sheet could not be found in the workbook.',
+    'verify-failed': 'Something did not check out after writing, so the workbook was left exactly as it was.',
+  }[r && r.error] || 'The workbook could not be written.';
+  alert(`Not sent — nothing was written.\n\n${why}`);
+}
+async function sendToExcel(){
+  if(sendingExcel) return;
+  let date = $('wDate').value || todayKey();
+  if(Object.keys(wTyped).length){          /* typed but not saved: save first, then send */
+    const r = commitEntry();
+    if(!r) return;
+    date = r.date;
+  }
+  const st = sendState(date);
+  if(!st.latest){ showToast(`No entry in ${st.name} yet — nothing to send`, null, '', 5000); return; }
+  /* in his own account order, so the preview reads the way his pages do */
+  const v = st.latest.e.v || {};
+  const ids = wAcc.map(a => a.id).filter(id => typeof v[id] === 'number')
+    .concat(Object.keys(v).filter(id => typeof v[id] === 'number' && !wAcc.some(a => a.id === id)));
+  const accounts = ids.map(id => ({ name: accountName(id), kr: v[id] }));
+  const post = (dryRun) => fetch(ENGINE + '/api/sendwealth', {
+    method:'POST', cache:'no-store', headers:{ 'Content-Type':'application/json' },
+    body: JSON.stringify({ month: st.month, dryRun, accounts }),
+  }).then(res => res.json());
+  sendingExcel = true;
+  const b = $('wSend'); if(b) b.disabled = true;
+  try{
+    const plan = await post(true);
+    if(!plan.ok){ sendProblem(plan, st); return; }
+    const lines = plan.plan.map(p => `${p.name}  →  ${fmtKr(p.kr)} kr` +
+      (typeof p.now === 'number' && Math.round(p.now) !== p.kr ? `   (was ${fmtKr(p.now)})` : '')).join('\n');
+    if(!confirm(`Send ${st.name} ${st.month.slice(0, 4)} to the budget workbook?\n\nYour entry of ${dayLabel(st.latest.date)}:\n\n${lines}\n\nA dated copy of the workbook is kept first.`)){
+      showToast('Not sent — nothing was written', null, '', 4000);
+      return;
+    }
+    const res = await post(false);
+    if(!res.ok){ sendProblem(res, st); return; }
+    const sent = loadJSON(W_SENT_KEY, {});
+    sent[st.month] = { at: new Date().toISOString(), entryDate: st.latest.date, entryAt: st.latest.e.at || '' };
+    storeJSON(W_SENT_KEY, sent);
+    const skipped = (res.skipped || []).length;
+    showToast(`${st.name} sent to Excel ✓` + (skipped ? ` — ${skipped} cell${skipped > 1 ? 's' : ''} held a formula and was left alone` : ''), null, '', 6000);
+  }catch(e){
+    showToast('The Finance engine is not answering — open AMS Finance, then try again', null, '', 7000);
+  }finally{
+    sendingExcel = false;
+    if($('wBody') && wView === 'entry') wOpenTab('entry');   /* redraw with the saved entry and the new state */
+  }
 }
 
 /* ---- Accounts ---- */
@@ -2697,7 +2836,7 @@ $('vlog').innerHTML = VERSIONLOG.map(e =>
 function backupBlob(){
   return JSON.stringify({ app:'AMS Main Hub', kind:'links-backup', savedAt:new Date().toISOString(),
     links: state.links, layout: look, wealthAccounts: wAcc, wealthEntries: wEnt, finlinks: finLinks,
-    wealthSnaps: loadJSON(W_SNAP_KEY, []) }, null, 2);
+    wealthSnaps: loadJSON(W_SNAP_KEY, []), wealthSent: loadJSON(W_SENT_KEY, {}) }, null, 2);
 }
 function stampBackup(){
   try{ localStorage.setItem(META_KEY, new Date().toISOString()); }catch(e){}
@@ -2865,6 +3004,7 @@ $('importFile').addEventListener('change', () => {
       const snaps = data.wealthSnaps.filter(sn => sn && sn.day && sn.entries && typeof sn.entries === 'object');
       if(snaps.length){ storeJSON(W_SNAP_KEY, snaps); snapBack = snaps.length; }
     }
+    if(data.wealthSent && typeof data.wealthSent === 'object' && !Array.isArray(data.wealthSent)) storeJSON(W_SENT_KEY, data.wealthSent);
     const legacyBack = importLegacyTotals(data.wealth);   /* backups from before v1.15 */
     refreshWealthTiles();
     let finBack = 0;
