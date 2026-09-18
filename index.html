@@ -512,6 +512,11 @@
   .sheet h2 .hi{color:var(--accent);}
   .sheet h3{font-size:15px; color:var(--accent); margin:18px 0 6px;}
   .sheet p, .sheet li{font-size:14.5px; line-height:1.55; color:var(--ink);}
+  /* the quiet notes under the History table (carried figures, the safety copy): small and
+     pale — they need .sheet in front, or the rule above wins and prints them full size.
+     The amber warnings share .wsafe but are real news, so they stay readable. */
+  .sheet .wsafe{font-size:11px; line-height:1.45; color:var(--ink-dim); opacity:.75; margin-top:10px;}
+  .sheet .wsafe.warnline{font-size:12.5px; color:#b4680f; font-weight:600; opacity:1;}
   .sheet .dim{color:var(--ink-dim);}
   /* the map of everything, in the guide */
   .mapwrap{overflow-x:auto; margin-top:8px;}
@@ -1259,6 +1264,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.50', when:'18 Sep 2026',
+    what:'The two notes under the History table — about paler figures and the safety copy — are now small and pale, so the table is what you see. (They were always meant to be; a general text rule had been printing them full size.) The amber warnings keep their voice.' },
   { v:'1.49', when:'18 Sep 2026',
     what:'The ✎ on the Wealth tile has lost its white box — it is now just the pen, sitting on the tile\'s own colour. Point at it with the mouse and a faint tint shows it is a button.' },
   { v:'1.48', when:'18 Sep 2026',
