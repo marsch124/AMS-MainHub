@@ -295,10 +295,11 @@
   .mdot{width:9px; height:9px; border-radius:50%; background:rgba(42,36,32,.15);}
   .mpen{
     flex:0 0 auto; width:23px; height:23px; border-radius:8px; border:none;
-    background:rgba(255,255,255,.7); color:var(--ink);
+    background:transparent; color:var(--ink);   /* just the pen, on the tile's own colour */
     display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
   }
   .mpen .hi{width:12px; height:12px;}
+  .mpen:hover{background:rgba(42,36,32,.07);}   /* a faint tint only under the pointer */
   .mpen:active{transform:scale(.92);}
   /* choosing which tiles to show — the toggles only exist in arrange mode */
   .mtog{
@@ -1258,6 +1259,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.49', when:'18 Sep 2026',
+    what:'The ✎ on the Wealth tile has lost its white box — it is now just the pen, sitting on the tile\'s own colour. Point at it with the mouse and a faint tint shows it is a button.' },
   { v:'1.48', when:'18 Sep 2026',
     what:'<b>History reads like a timeline.</b> The table now shows your <b>five most recent</b> entries instead of three, with the oldest on the left and the <b>newest on the right</b>. The word <b>Date</b> above the columns is gone — the dates speak for themselves. On the iPhone, where only three fit, the table shows the three newest and the two before them join the Earlier entries list underneath, so nothing drops out of sight.' },
   { v:'1.47', when:'18 Sep 2026',
