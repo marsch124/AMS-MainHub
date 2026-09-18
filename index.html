@@ -1195,6 +1195,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.41', when:'18 Sep 2026',
+    what:'<b>An empty wealth sheet now tells you why it is empty.</b> Open the hub in a browser tab instead of the AMS Main Hub app and you get a separate copy with nothing in it — every browser tab and every app window keeps its own. That looked exactly like your accounts had vanished. They had not: they were safe in the app all along. Now, when the hub is open in a browser tab and has no accounts, the wealth sheet says so in plain words and points you to the app.' },
   { v:'1.40', when:'17 Sep 2026',
     what:'<b>Accounts are alphabetical everywhere, and the wealth sheet is quieter.</b> <b>New entry</b> now lists your accounts in the same alphabetical order as History, so a name is always in the same place — and because there is no order to keep by hand any more, the ▲▼ arrows and the row numbers are gone from <b>Accounts</b>. The <b>Adjust</b> link in History is much smaller and no longer a filled button, and the <b>×</b> beside it has gone: deleting an entry now happens inside Adjust, next to Cancel, which is where deleting an account already lived. And the line about safety copies no longer describes the machinery — it simply says there is a copy to put back if numbers ever go missing, and speaks up properly only when some actually have.' },
   { v:'1.39', when:'17 Sep 2026',
@@ -2024,6 +2026,15 @@ function dayLabel(d){ const [y, m, dd] = d.split('-').map(Number); return `${dd}
 function todayKey(){ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
 function newAccId(){ return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
 
+/* Opened in an ordinary browser tab rather than the app window? Then this is a separate,
+   empty copy of the hub — every browser tab and every app window keeps its own box. An
+   empty wealth sheet there looks exactly like lost data (it did, 2026-09-18, in a Safari
+   tab left open after the rename), so the empty states say so plainly. */
+function separateCopyNote(){
+  if(IS_STANDALONE) return '';
+  return `<p class="wsafe warnline" style="margin-top:10px">Expecting your accounts? This is the hub open in a browser tab, which keeps its own separate copy. Your accounts and entries are in the <b>AMS Main Hub</b> app — type its name in Raycast.</p>`;
+}
+
 /* The accounts you still keep. A deleted account is RETIRED
    (gone:true) rather than dropped, because an entry only stores {accountId: kronor} —
    throw the account away and its past balances lose their name. Retired ones vanish
@@ -2310,7 +2321,7 @@ $('wealthClose').addEventListener('click', closeWealth);
 function viewEntry(){
   const live = liveAccounts();
   if(!live.length){
-    return `<p class="dim" style="margin:6px 0 0">No accounts yet. Add each one you want to count — a bank, a broker, a fund — and it becomes a row here.</p>
+    return `${separateCopyNote()}<p class="dim" style="margin:6px 0 0">No accounts yet. Add each one you want to count — a bank, a broker, a fund — and it becomes a row here.</p>
       <button class="btn full primary" data-wv="accounts">Add your accounts</button>`;
   }
   const date = wDate || todayKey();
@@ -2472,7 +2483,7 @@ function viewAccounts(){
       ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
       <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
     </div>`).join('');
-  return `${rows || '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
+  return `${rows || separateCopyNote() + '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
     <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
     <p class="dim wnote">Accounts are listed alphabetically everywhere. Deleting one keeps its balances <i>and</i> its name in past entries — it only stops appearing in new ones.</p>`;
 }
@@ -2527,7 +2538,7 @@ function viewHistory(){
   const cols = ds.slice(0, HIST_COLS);
   const older = ds.slice(HIST_COLS);
 
-  let table = '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
+  let table = separateCopyNote() + '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
   if(cols.length){
     const rows = histRowAccounts(cols);
     const anyCarried = cols.some(d => (wEnt[d].c || []).length);
