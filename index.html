@@ -294,11 +294,17 @@
   .mdots{display:flex; gap:5px; margin-top:9px;}
   .mdot{width:9px; height:9px; border-radius:50%; background:rgba(42,36,32,.15);}
   .mpen{
-    flex:0 0 auto; width:23px; height:23px; border-radius:8px; border:none;
+    /* invisible, so it can be a generous target: a big button around a modest pen */
+    flex:0 0 auto; width:42px; height:42px; border-radius:12px; border:none;
     background:transparent; color:var(--ink);   /* just the pen, on the tile's own colour */
     display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
   }
-  .mpen .hi{width:12px; height:12px;}
+  .mpen .hi{width:16px; height:16px;}
+  /* a phone: the pen sits in the tile's label row, so the button tucks into the padding
+     (negative margins) instead of making that row taller */
+  @media (max-width:600px){
+    header .mpen{width:32px; height:32px; border-radius:10px; margin:-6px -5px -6px 0;}
+  }
   .mpen:hover{background:rgba(42,36,32,.07);}   /* a faint tint only under the pointer */
   .mpen:active{transform:scale(.92);}
   /* choosing which tiles to show — the toggles only exist in arrange mode */
@@ -1265,6 +1271,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.52', when:'18 Sep 2026',
+    what:'The ✎ on the Wealth tile is a little larger, and the invisible button around it much larger, so it is easy to hit without adding anything you can see. The tile itself stays the same size.' },
   { v:'1.51', when:'18 Sep 2026',
     what:'The two small notes under the History table now sit tight together, one right under the other, so they take up hardly any room.' },
   { v:'1.50', when:'18 Sep 2026',
