@@ -515,7 +515,8 @@
   /* the quiet notes under the History table (carried figures, the safety copy): small and
      pale — they need .sheet in front, or the rule above wins and prints them full size.
      The amber warnings share .wsafe but are real news, so they stay readable. */
-  .sheet .wsafe{font-size:11px; line-height:1.45; color:var(--ink-dim); opacity:.75; margin-top:10px;}
+  .sheet .wsafe{font-size:11px; line-height:1.3; color:var(--ink-dim); opacity:.75; margin:8px 0 0;}
+  .sheet .wsafe + .wsafe{margin-top:1px;}   /* two notes in a row sit tight together */
   .sheet .wsafe.warnline{font-size:12.5px; color:#b4680f; font-weight:600; opacity:1;}
   .sheet .dim{color:var(--ink-dim);}
   /* the map of everything, in the guide */
@@ -1264,6 +1265,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.51', when:'18 Sep 2026',
+    what:'The two small notes under the History table now sit tight together, one right under the other, so they take up hardly any room.' },
   { v:'1.50', when:'18 Sep 2026',
     what:'The two notes under the History table — about paler figures and the safety copy — are now small and pale, so the table is what you see. (They were always meant to be; a general text rule had been printing them full size.) The amber warnings keep their voice.' },
   { v:'1.49', when:'18 Sep 2026',
@@ -2783,7 +2786,7 @@ function viewHistory(){
           `<td class="acts${phoneHidden.includes(d) ? ' hx' : ''}"><button class="hadj" data-hedit="${d}">Adjust</button></td>`).join('')}</tr>
       </tfoot>
     </table></div>
-    ${anyCarried ? '<p class="wsafe" style="margin-top:8px">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
+    ${anyCarried ? '<p class="wsafe">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
   }
 
   /* everything older keeps its one-line row, so no entry is ever hidden */
