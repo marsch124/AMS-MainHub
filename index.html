@@ -1025,7 +1025,6 @@
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
           <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
           <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
-          <li><b>Watch later</b> — how many videos are waiting in AMS WatchLater, how long they come to altogether, and how many of them fit into five minutes. Answered by that app's own engine here on the Mac, so it fills in when the engine is running and stays quiet otherwise. It asks for those counts and nothing else — no titles and no links ever leave the app.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
           </div>
@@ -1274,6 +1273,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.55', when:'28 Sep 2026',
+    what:'<b>AMS WatchLater is the new app now.</b> Its card opens the WatchLater app on your Mac (the same app as on your iPhone) instead of the old web page, and the WATCH LATER numbers tile is gone — it was fed by the old app\'s engine, which has been switched off.' },
   { v:'1.54', when:'18 Sep 2026',
     what:'The big ✎ on the Wealth tile is grey now, so it stays out of the way of your numbers. It darkens when the pointer is on it.' },
   { v:'1.53', when:'18 Sep 2026',
@@ -1438,9 +1439,10 @@ const FIN_APPS = [
 const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
     store:'On the Mac, inside the app’s own folder', where:['mac'] },
-  { id:'watchlater', name:'AMS WatchLater', sub:'Videos for when you have the time', icon:'playring', dot:'#1a6b56', tint:'#dcefe8', url:'http://localhost:7821',
-    probe:{ url:'http://localhost:7821/health', json:true, pre:'v' },
-    store:'On the Mac, inside the app’s own folder · dated backups', where:['mac'] },
+  /* the native app (Mac + iPhone, TestFlight) since 2026-09-28 — it opens through
+     its own address; the old web app and its engine on 7821 are retired */
+  { id:'watchlater', name:'AMS WatchLater', sub:'Videos, articles and your notes — Mac and iPhone', icon:'playring', dot:'#1a6b56', tint:'#dcefe8', url:'amswatchlater://',
+    native:true, macToo:true, store:'In your iCloud Drive, shared by the Mac and the iPhone', where:['mac'] },
 ];
 const ALL_APPS = () => [...FIN_APPS, ...WEB_APPS, ...MAC_APPS];
 /* any card another card names as its `under` is a front door, and is drawn
@@ -1640,7 +1642,7 @@ const IS_IOS = /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platfo
 function appRow(a, right, sect){
   const eff = lookFor(a);
   if(a.iosUrl && IS_IOS) a = { ...a, url:a.iosUrl, native:true };   /* the app itself on the iPhone, the web page elsewhere */
-  if(a.native && !IS_IOS) a = { ...a, away:true };      /* an iPhone app cannot open on the Mac */
+  if(a.native && !IS_IOS && !a.macToo) a = { ...a, away:true };   /* an iPhone app cannot open on the Mac — unless it is a Mac app too */
   /* a card that leads to others is drawn bigger; a card that lives behind one
      is drawn smaller and quieter — nothing is added to it */
   let cls = 'cardrow', sty = `background:${eff.tint}`;
@@ -1750,7 +1752,7 @@ function renderShelf(){
     /* a Mac tool that announces its version gets a live chip too, the same way
        the Finance Hub card does — the label alone said nothing about whether
        the thing was actually running. */
-    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}<span class="maclbl">MAC ONLY</span>`, 'mac')).join('');
+    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}<span class="maclbl">${a.macToo ? 'MAC + iPHONE' : 'MAC ONLY'}</span>`, 'mac')).join('');
   fillChips();
 
   /* the latest report: ask the engine to open it (it only appears when the engine answered) */
@@ -2065,7 +2067,6 @@ const PANELS = [
   { id:'retire',   label:'RETIREMENT', dot:'#1f9e93', tint:'#d7f2ef' },
   { id:'year',     label:'THE YEAR',   dot:'#3487d6', tint:'#dcebfb' },
   { id:'finmonth', label:'FINANCE',    dot:'#5868c9', tint:'#e2e6fa' },
-  { id:'watch',    label:'WATCH LATER',dot:'#1a6b56', tint:'#dcefe8' },
   { id:'versions', label:'APPS',       dot:'#33a065', tint:'#d9f2e2' },
 ];
 
@@ -2308,24 +2309,6 @@ function renderFinMonth(p){
     <div class="mdots">${dots}</div>`;
 }
 
-let watchCache = null;
-function renderWatch(){
-  if(!watchCache || !watchCache.ok){
-    return `<div class="mbig">—</div><div class="msub">engine not answering</div>`;
-  }
-  const n = watchCache.toWatch, fits = watchCache.fits || {};
-  if(!n) return `<div class="mbig">0</div><div class="msub">nothing waiting</div>`;
-  const h = Math.floor((watchCache.minutes || 0) / 60), m = (watchCache.minutes || 0) % 60;
-  const long = h ? (m ? `${h} h ${m} min` : `${h} h`) : `${m} min`;
-  /* Five minutes is the question worth answering, but "none under 5 min" is a
-     dead end — so it falls through to the shortest slot that does hold something. */
-  const slot = [['5', 'in 5 min'], ['20', 'in 20 min'], ['60', 'in an hour']]
-    .find(([k]) => fits[k] > 0);
-  return `<div class="mbig">${n}</div>
-    <div class="msub">to watch · ${long}</div>
-    <div class="msub">${slot ? `${fits[slot[0]]} fit ${slot[1]}` : 'all of them long'}</div>`;
-}
-
 function renderVersions(){
   const apps = ALL_APPS().filter(a => a.probe);
   const on = apps.filter(a => verCache[a.id]).length;
@@ -2333,7 +2316,7 @@ function renderVersions(){
     <div class="msub">apps answering</div>`;
 }
 
-const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, watch:renderWatch, versions:renderVersions };
+const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
@@ -2374,17 +2357,6 @@ async function fetchFin(){
     renderTile('finmonth');
   }catch(e){ /* engine off or unreachable */ }
 }
-/* AMS WatchLater keeps its own engine on 7821. It hands over counts only —
-   never a title or a link — and only to the hub's own addresses. */
-async function fetchWatch(){
-  try{
-    const res = await fetch('http://localhost:7821/api/stats?vercheck=' + Date.now(), { cache:'no-store' });
-    if(!res.ok) return;
-    watchCache = await res.json();
-    renderTile('watch');
-  }catch(e){ /* engine off, or the hub is being read from the web */ }
-}
-
 /* the dashboard addresses and the newest report — the engine hands these
    over only when the hub is served from its own address (localhost:7780/hub) */
 async function fetchLinks(){
@@ -3130,11 +3102,10 @@ renderMini();
 probeAll();
 fetchWealth();
 fetchFin();
-fetchWatch();
 fetchLinks();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchWatch(); fetchLinks(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 
