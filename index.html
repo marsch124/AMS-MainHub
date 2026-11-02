@@ -840,7 +840,7 @@
   <div class="hpill">
     <button id="custBtn" aria-label="Arrange and recolour"><svg class="hi"><use id="custIconUse" href="#icon-arrange"/></svg><span class="btnlbl" id="custLbl">Arrange</span></button>
     <button id="viewBtn" aria-label="Switch view"><svg class="hi"><use id="viewIconUse" href="#icon-grid"/></svg><span class="btnlbl">View</span></button>
-    <button id="settingsBtn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg><span class="btnlbl">Settings</span></button>
+    <button id="settingsBtn" data-testid="settings-btn" aria-label="Settings"><svg class="hi"><use href="#icon-settings"/></svg><span class="btnlbl">Settings</span></button>
   </div>
 </header>
 <div class="verglance" id="verGlance"></div>
@@ -931,7 +931,7 @@
 </div>
 
 <!-- ============ settings sheet ============ -->
-<div class="overlay" id="ovSettings">
+<div class="overlay" id="ovSettings" data-testid="settings-sheet">
   <div class="sheet">
     <button class="iconbtn closex" id="settingsClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
     <h2><svg class="hi"><use href="#icon-settings"/></svg>Settings <span class="dim" style="font-size:13px; font-weight:400">· v<span id="appVer"></span></span></h2>
@@ -1107,7 +1107,9 @@
           <summary>Tests<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p><b>The hub now tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with a made-up set of wealth accounts and entries, and checks that the things you depend on still work.</p>
-        <p>Two tests to begin with: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up), and that <b>the pencil opens the wealth window on History and Close shuts it again</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
+        <p>Three tests so far: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
+        <p>The backup test is the important one. It doesn’t trust the words on the button: it saves a real file, reads what is inside it, then opens a <b>second, completely empty hub</b> — a fresh device — and restores the file there. Your accounts, every entry and your own links all have to come back. That is exactly the journey from your iPhone to your Mac, and it is the one failure that would cost you something you can’t retype.</p>
+        <p>Over on the Mac side, the two little programs that read and write your budget workbook are tested too, on every push: they must find the wealth block <b>by the words in its header row</b> wherever you move it to, write into the right month and no other, never overwrite a formula, and always take a dated BU copy first.</p>
         <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed. Each test was deliberately broken first to prove it notices — the tile showing the oldest total instead of the newest, your saved entries not being read back, the pencil disconnected, and the window opening on the wrong tab were all caught.</p>
         <p>The tests find every button by a hidden name of its own, never by the words printed on it, so rewording a label can never break them. More will be added one at a time — saving an entry, the backup file, and Send to Excel are next.</p>
           </div>
@@ -1253,15 +1255,15 @@
       </div>
     </details>
 
-    <details class="fold" id="foldData">
+    <details class="fold" id="foldData" data-testid="fold-data">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
         <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b>. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
-        <button class="btn full" id="exportBtn">Save a backup file</button>
+        <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
-        <button class="btn full" id="importBtn">Import / restore…</button>
-        <input type="file" id="importFile" accept=".json,application/json" style="display:none" />
-        <div class="backup-meta" id="backupMeta"></div>
+        <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
+        <input type="file" id="importFile" data-testid="backup-file" accept=".json,application/json" style="display:none" />
+        <div class="backup-meta" id="backupMeta" data-testid="backup-meta"></div>
       </div>
     </details>
 
@@ -1283,6 +1285,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.57', when:'2 Nov 2026',
+    what:'TWO REAL FAULTS FIXED, BOTH FOUND BEFORE THEY COULD BITE — and a third test added. (1) SEND TO EXCEL WOULD HAVE FAILED ON EVERY PRESS. You have never pressed it for real, and it would have stopped with "could not find the month". It finds your six accounts perfectly well — by their column names, so moving the block did not bother it — but your date cells are labelled "this is a number" and the month-finder only accepted date cells with no label at all. Now it accepts both, and it finds September on row 18, October on row 19 and November on row 20 of your sheet. Proved end to end on a COPY of your workbook: six figures written into November, the TOTAL recalculated to the right sum, September untouched, only 2 of the 25 parts of the file changed, all four charts intact, no formula overwritten, a dated BU copy taken first — and Excel itself opened the result cleanly. Your own workbook was never touched. (2) THE QUIET CROSS-CHECK AGAINST THE WORKBOOK WAS DEAD. Under your wealth total the hub was meant to show "workbook 7.69M" whenever your typed figure and the workbook disagree. It was still reading columns AY and AZ, where the block used to live before you moved it to BK/BL/BN-BS, so it read nonsense (it reported the year 1905) and the check simply never appeared — a safety net doing nothing. Both programs now find the block BY THE WORDS IN ITS HEADER ROW, so you can rearrange that spreadsheet whenever you like and nothing breaks. It now reads September as 7,687,000 — which matches your hub to the krona. (3) A NEW TEST: THE BACKUP FILE. It saves a real backup, reads what is inside, then opens a second completely empty hub and restores the file there, checking your accounts, every entry and your own links all come back. Twelve more tests guard the two workbook programs on every push. Every one of these was deliberately broken first to prove it notices — an empty backup, a backup missing your links, a restore that drops your entries, the old hard-coded column, and the old date check: all caught.' },
   { v:'1.56', when:'2 Nov 2026',
     what:'THE HUB NOW TESTS ITSELF, AND A RED TEST PUBLISHES NOTHING. Every time the hub is published, GitHub opens it on its own machines — once at Mac size, once at iPhone size — with a made-up set of wealth accounts and entries, and checks it before anything reaches your devices. Two tests to start: (1) the hub starts up and the Wealth tile shows your NEWEST total, with the pencil there and nothing going wrong during start-up — and a hub with nothing saved shows "—" instead of a made-up number; (2) the pencil opens the wealth window on History, and Close shuts it again. If a test goes red the new version is NOT published and your iPhone keeps the last good one. Each test was deliberately broken first to prove it notices: the oldest total instead of the newest, your saved entries not read back, the pencil disconnected, and the window opening on New entry were all caught. Every button is found by a hidden name of its own, never by the words on it, so rewording a label cannot break a test. Nothing you see in the hub has changed. Next to be covered: saving an entry, the backup file, and Send to Excel.' },
   { v:'1.55', when:'28 Sep 2026',

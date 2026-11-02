@@ -14,6 +14,8 @@ const SEED = {
     '2026-08-01': { v:{ a1:700000, a2:400000 }, c:[] },
     '2026-09-01': { v:{ a1:800000, a2:450000 }, c:[] },
   },
+  /* one link of his own, so a backup has to carry more than wealth */
+  links: [{ id:'l1', name:'Anna recipes', url:'https://example.com/recipes' }],
 };
 const NEWEST_TOTAL_M = '1.25M';
 
@@ -35,6 +37,7 @@ async function openHub(page, seed = SEED){
     if(s){
       localStorage.setItem('amshub.wealth.accounts', JSON.stringify(s.accounts));
       localStorage.setItem('amshub.wealth.entries',  JSON.stringify(s.entries));
+      if(s.links) localStorage.setItem('amshub.v1', JSON.stringify({ links: s.links }));
     }
   }, seed);
   await page.goto('/index.html');
