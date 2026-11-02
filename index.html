@@ -904,16 +904,16 @@
 </div>
 
 <!-- ============ wealth: accounts + dated entries ============ -->
-<div class="overlay" id="ovWealth">
+<div class="overlay" id="ovWealth" data-testid="wealth-sheet">
   <div class="sheet">
-    <button class="iconbtn closex" id="wealthClose" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
+    <button class="iconbtn closex" id="wealthClose" data-testid="wealth-close" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
     <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth</h2>
     <div class="wnav">
-      <button class="wtab" data-wv="history">History</button>
-      <button class="wtab" data-wv="entry">New entry</button>
-      <button class="wtab" data-wv="accounts">Accounts</button>
+      <button class="wtab" data-wv="history" data-testid="wtab-history">History</button>
+      <button class="wtab" data-wv="entry" data-testid="wtab-entry">New entry</button>
+      <button class="wtab" data-wv="accounts" data-testid="wtab-accounts">Accounts</button>
     </div>
-    <div id="wBody"></div>
+    <div id="wBody" data-testid="wealth-body"></div>
   </div>
 </div>
 
@@ -1104,6 +1104,16 @@
         </details>
 
         <details class="sub">
+          <summary>Tests<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
+        <p><b>The hub now tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with a made-up set of wealth accounts and entries, and checks that the things you depend on still work.</p>
+        <p>Two tests to begin with: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up), and that <b>the pencil opens the wealth window on History and Close shuts it again</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
+        <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed. Each test was deliberately broken first to prove it notices — the tile showing the oldest total instead of the newest, your saved entries not being read back, the pencil disconnected, and the window opening on the wrong tab were all caught.</p>
+        <p>The tests find every button by a hidden name of its own, never by the words printed on it, so rewording a label can never break them. More will be added one at a time — saving an entry, the backup file, and Send to Excel are next.</p>
+          </div>
+        </details>
+
+        <details class="sub">
           <summary>Updates<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
@@ -1273,6 +1283,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.56', when:'2 Nov 2026',
+    what:'THE HUB NOW TESTS ITSELF, AND A RED TEST PUBLISHES NOTHING. Every time the hub is published, GitHub opens it on its own machines — once at Mac size, once at iPhone size — with a made-up set of wealth accounts and entries, and checks it before anything reaches your devices. Two tests to start: (1) the hub starts up and the Wealth tile shows your NEWEST total, with the pencil there and nothing going wrong during start-up — and a hub with nothing saved shows "—" instead of a made-up number; (2) the pencil opens the wealth window on History, and Close shuts it again. If a test goes red the new version is NOT published and your iPhone keeps the last good one. Each test was deliberately broken first to prove it notices: the oldest total instead of the newest, your saved entries not read back, the pencil disconnected, and the window opening on New entry were all caught. Every button is found by a hidden name of its own, never by the words on it, so rewording a label cannot break a test. Nothing you see in the hub has changed. Next to be covered: saving an entry, the backup file, and Send to Excel.' },
   { v:'1.55', when:'28 Sep 2026',
     what:'<b>AMS WatchLater is the new app now.</b> Its card opens the WatchLater app on your Mac (the same app as on your iPhone) instead of the old web page, and the WATCH LATER numbers tile is gone — it was fed by the old app\'s engine, which has been switched off.' },
   { v:'1.54', when:'18 Sep 2026',
@@ -2251,7 +2263,7 @@ function wealthSpark(S, known, p, zeroBased){
 function renderWealth(p, zeroBased){
   const S = wealthData();
   const known = S.filter(x => x.value != null);
-  if(!known.length) return `<div class="mbig">—</div><div class="msub">${wAcc.length ? 'no entries yet' : 'tap the pencil to start'}</div>`;
+  if(!known.length) return `<div class="mbig" data-testid="wealth-total" data-have="no">—</div><div class="msub">${wAcc.length ? 'no entries yet' : 'tap the pencil to start'}</div>`;
   const last = known[known.length - 1], prev = known[known.length - 2];
   let sub, check = '';
   const ds = entryDates();
@@ -2269,7 +2281,7 @@ function renderWealth(p, zeroBased){
       ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
       : monthLabel(last.month);
   }
-  return `<div class="mbig">${fmtM(last.value)}</div>
+  return `<div class="mbig" data-testid="wealth-total" data-have="yes">${fmtM(last.value)}</div>
     <div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>${check}
     ${wealthSpark(S, known, p, zeroBased)}`;
 }
@@ -2320,11 +2332,11 @@ const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderR
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
-    <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${p.tint}">
+    <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${p.tint}" data-testid="tile-${p.id}">
       <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
-        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" aria-label="Enter your wealth"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
+        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" data-testid="wealth-pen" aria-label="Enter your wealth"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
       }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
-      <div class="mbody" id="mt-${p.id}">${MINI_RENDER[p.id](p)}</div>
+      <div class="mbody" id="mt-${p.id}" data-testid="tile-body-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
   $('miniEdit').addEventListener('click', () => openWealth());
   document.querySelectorAll('[data-tile]').forEach(b =>
@@ -3104,6 +3116,8 @@ fetchWealth();
 fetchFin();
 fetchLinks();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
+/* start-up is done: tests (and anything else) can now trust what is on screen */
+document.documentElement.dataset.ready = VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
   if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
 });
