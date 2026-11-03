@@ -86,3 +86,18 @@ test('a saved entry goes up, even when another device wrote in between', async (
   await expect.poll(() => Object.keys(box.file.entries).sort().join(), { timeout:10000 }).toBe('2026-09-01,2026-10-01,2026-11-10');
   await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-09-01,2026-10-01,2026-11-10');
 });
+
+/* 2.0.1 — when Dropbox refuses the file, the hub says so and never claims it synced */
+test('a refused upload shows Dropbox\'s reason, not "last synced"', async ({ page }) => {
+  await page.route(/dropboxapi\.com/, route => {
+    const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*' }, u = route.request().url();
+    if(route.request().method() === 'OPTIONS') return route.fulfill({ status:204, headers:cors });
+    if(u.includes('download')) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/not_found/"}' });
+    return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/insufficient_space/.."}' });
+  });
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await expect(page.getByTestId('sync-status')).toContainText('insufficient_space');
+  await expect(page.getByTestId('sync-status')).not.toContainText('last synced');
+});

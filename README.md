@@ -84,7 +84,7 @@ vanished date — so every writer is covered. `syncNow()`: download (rev) →
 `mergeWealth()` (per date the newest of entry/tombstone wins; ties go to the
 Dropbox copy so devices converge; accounts by id, newer `at`, ties to Dropbox) →
 store locally if different → upload with `mode:update:<rev>` unless Dropbox already
-holds the same (`wealthSig()`, order-free); a 409 conflict re-runs, up to 3 times.
+holds the same (`wealthSig()`, order-free); a 409 `path/conflict` re-runs, up to 3 times; since 2.0.1 any other refusal is thrown with Dropbox's `error_summary` and shown as "Not synced — …", and `last` only moves when the file went up or was already equal.
 Runs at start-up, 1.2 s after each save (`syncSoon()`), on return to the page,
 and on Sync now. Links, look and the sent-to-Excel marks are not synced.
 

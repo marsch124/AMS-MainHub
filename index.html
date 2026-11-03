@@ -1409,6 +1409,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.0.1', when:'3 Nov 2026',
+    what:'DROPBOX SYNC NOW SAYS WHEN DROPBOX REFUSES. Before, if Dropbox turned the wealth file down for any reason, the hub still showed "Connected · last synced" — so on 3 Nov the Mac said synced while nothing had arrived in your Dropbox. Now only a clash with another device\'s newer copy is tried again; any other refusal shows in Settings › Dropbox sync as "Not synced — " followed by Dropbox\'s own reason (for example no space or no permission), and "last synced" only moves when the file really went up or was already the same. A NEW CHECK in the sync test plays a Dropbox that refuses the file and makes sure the hub says so; it was seen failing before the fix.' },
   { v:'2.0', when:'3 Nov 2026',
     what:'VERSION 2.0 — ONE WEALTH RECORD ON IPHONE AND MAC, A FORECAST, AND A YEAR REVIEW. (1) DROPBOX SYNC. Before, your iPhone and your Mac each kept their own wealth accounts and entries, and the only way to move them was a backup file. Now Settings has a Dropbox sync section: tap Connect Dropbox, tap Allow on the Dropbox page, copy the code it shows and paste it into the hub — once on each device (on the Mac that means the AMS Finance app; on the iPhone the Home Screen hub). From then on every saved entry, every Adjust, every account you add, rename or remove, and every deleted entry travels to the other device through one small file in your Dropbox (Apps › AMS Main Hub › wealth.json). It syncs when the hub opens, a moment after each change, and when you come back to it; Sync now does it at once, and the section shows when it last synced. The two copies are merged entry by entry: when the same date was changed on both, the later change wins; a date that exists on only one device is kept; a deletion travels too. If both devices saved at the same moment, the second waits for the first and merges with it, so neither overwrites the other. For entries from before 2.0 that differ on the two devices (they carry no time yet), the copy already in Dropbox wins — the daily safety copies on each device still hold the other. Your links, card order and look stay on each device. Disconnect stops the exchange on that device and keeps everything. (2) THE RETIREMENT TILE FORECASTS YOUR WEALTH. Under "days · 1 Jul 2028" it now says where your wealth is heading by then at your pace of the last twelve months, for example "≈ 8.27M kr by then"; on the Mac a pointer over it gives the pace per month. It uses your newest entry against the entry nearest a year before it (or your oldest one), and stays away until your entries are at least two months apart. (3) A YEAR PAGE. The wealth window has a fourth tab, Year: pick a year and see how it went — the change in percent and kronor from the end of the year before (or your first entry that year) to your last entry, each account from start to end with its change (green up, red down, accounts alphabetical, removed ones marked), the TOTAL, and the best and weakest month. A year with only one entry says so. (4) A SYNC ICON, drawn by hand like the others. (5) TWO NEW TESTS: one for the forecast and the Year page, one for Dropbox sync — connecting with a pasted code, merging (the newer change wins, a deletion travels, nothing is lost) and saving while another device wrote in between. Dropbox itself is played by a stand-in, so no test touches your real Dropbox. Both were seen failing (10 times) before 2.0 was built. The tests are now 14 files, run at iPhone and Mac size on every push.' },
   { v:'1.63', when:'3 Nov 2026',
@@ -2690,7 +2692,7 @@ async function dbxToken(form){
   const res = await fetch('https://api.dropboxapi.com/oauth2/token', { method:'POST',
     headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body:new URLSearchParams(form).toString() });
   const j = await res.json().catch(() => ({}));
-  if(!res.ok || !j.access_token) throw new Error(j.error_description || j.error || 'Dropbox said no');
+  if(!res.ok || !j.access_token) throw new Error(j.error_description || j.error || ('Dropbox said no (' + res.status + ')'));
   return j;
 }
 async function dbxConnectFinish(code){
@@ -2723,8 +2725,15 @@ async function dbxUpload(tok, data, rev){
     headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
       'Dropbox-API-Arg':JSON.stringify({ path:DBX_FILE, mode: rev ? { '.tag':'update', update:rev } : { '.tag':'add' }, autorename:false, mute:true }) },
     body: JSON.stringify(data, null, 1) });
-  if(res.status === 409) return 'conflict';
-  if(!res.ok) throw new Error('Dropbox answered ' + res.status);
+  if(res.status === 409){
+    /* only a clash with another device's newer copy is worth another try; any other
+       refusal (no space, no permission …) is said out loud, never taken for a sync */
+    const t = await res.text();
+    if(/path\/conflict/.test(t)) return 'conflict';
+    let why = t; try{ why = JSON.parse(t).error_summary || t; }catch(e){}
+    throw new Error('Dropbox refused the file: ' + String(why).replace(/\/+\.*$/, '').slice(0, 80));
+  }
+  if(!res.ok) throw new Error('Dropbox answered ' + res.status + ' ' + (await res.text().catch(() => '')).slice(0, 80));
   return 'ok';
 }
 /* the file as written by another device — only well-formed parts are taken */
@@ -2769,7 +2778,8 @@ async function syncNow(){
   if(syncBusy){ syncAgain = true; return; }
   syncBusy = true; renderSync();
   try{
-    for(let tries = 0; tries < 3; tries++){
+    let done = false;
+    for(let tries = 0; tries < 3 && !done; tries++){
       const tok = await dbxAccess();
       const got = await dbxDownload(tok);
       const m = mergeWealth(got.data);
@@ -2779,10 +2789,11 @@ async function syncNow(){
         snapWealth(); refreshWealthTiles(); renderTile('retire');
         if($('ovWealth').classList.contains('show') && wView !== 'entry') wOpenTab(wView);
       }
-      if(got.data && wealthSig(m) === wealthSig(cleanRemote(got.data))) break;
+      if(got.data && wealthSig(m) === wealthSig(cleanRemote(got.data))){ done = true; break; }
       const r = await dbxUpload(tok, Object.assign({ app:'AMS Main Hub', savedAt:new Date().toISOString() }, m), got.rev);
-      if(r === 'ok') break;
+      if(r === 'ok') done = true;
     }
+    if(!done) throw new Error('another device kept writing at the same moment');
     dbx.last = new Date().toISOString(); dbx.err = '';
   }catch(e){ dbx.err = String(e && e.message || e); }
   dbxSave(); syncBusy = false; renderSync();
@@ -2812,8 +2823,8 @@ function renderSync(){
     $('syncCancel').addEventListener('click', () => { syncWaiting = false; renderSync(); });
     return;
   }
-  const line = syncBusy ? 'Syncing…' : dbx.err ? `Could not reach Dropbox (${esc(dbx.err)}) — it tries again on the next change or when you come back.` : dbx.last ? `Connected · last synced ${day(dbx.last)}` : 'Connected';
-  sum.textContent = syncBusy ? 'syncing' : dbx.err ? 'not reached' : dbx.last ? day(dbx.last) : 'on';
+  const line = syncBusy ? 'Syncing…' : dbx.err ? `Not synced — ${esc(dbx.err)}. It tries again on the next change, when you come back, or with Sync now.` : dbx.last ? `Connected · last synced ${day(dbx.last)}` : 'Connected';
+  sum.textContent = syncBusy ? 'syncing' : dbx.err ? 'not synced' : dbx.last ? day(dbx.last) : 'on';
   body.innerHTML = about + `<p class="syncline${dbx.err && !syncBusy ? ' err' : ''}" data-testid="sync-status">${line}</p>
     <div class="btnrow"><button class="btn danger" id="syncOff" data-testid="sync-off">Disconnect</button><button class="btn primary" id="syncGo" data-testid="sync-now">Sync now</button></div>`;
   $('syncGo').addEventListener('click', syncNow);
