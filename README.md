@@ -36,6 +36,12 @@ whose workbook figure differs, an amber `workbook …` line
 (`data-testid="hist-mismatch"`, `data-month="YYYY-MM"`, same tip). The
 Earlier entries rows carry the same mark. Months that agree show nothing.
 
+Since 1.60 the mark is a `<button data-hedit>`: tapping it opens that
+entry exactly as Adjust does. And the Wealth pencil carries an amber dot
+(`data-testid="pen-dot"`) whenever **any** month's last entry disagrees
+(`offMonths()`), not only the newest; its `aria-label` and tip give the
+count. `markPen()` runs after every redraw of the Wealth tile.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the

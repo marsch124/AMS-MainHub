@@ -322,6 +322,11 @@
                  align-items:flex-start; justify-content:flex-end; padding:5px 7px 0 0;}   /* pen up in the corner, clear of the number */
     header .mpen .hi{width:30px; height:30px;}
   }
+  /* 1.60: an amber dot on the pen's top-right when any month disagrees with the workbook */
+  .pwrap{position:relative; display:flex;}
+  .pdot{position:absolute; top:-2px; right:-3px; width:11px; height:11px; border-radius:50%;
+        background:var(--warn);}
+  @media (max-width:600px){ .pdot{width:10px; height:10px;} }
   .mpen:hover{background:rgba(42,36,32,.07); color:var(--ink);}   /* a faint tint only under the pointer */
   .mpen:active{transform:scale(.92);}
   /* choosing which tiles to show — the toggles only exist in arrange mode */
@@ -440,7 +445,11 @@
              border-top:2px solid var(--line); border-bottom:none; padding-top:9px;}
   table.htab tfoot td{border-bottom:none; padding-top:10px;}
   /* the month the workbook disagrees with — the tile's amber, under that column's total */
-  .hwarn{font-size:11px; font-weight:800; color:var(--warn); margin-top:2px;}
+  /* a button since 1.60: tapping it opens that month's entry, like Adjust */
+  .hwarn{display:block; margin:2px 0 0 auto; padding:0; border:none; background:none; font:inherit;
+         font-size:11px; font-weight:800; color:var(--warn); cursor:pointer; text-align:right;
+         text-decoration:underline dotted; text-underline-offset:2px;}
+  .amid .hwarn{margin-left:0; text-align:left;}
   table.htab td.acts{text-align:right; white-space:nowrap;}
   /* Adjust / delete, used by the table and by the earlier-entry rows below it */
   /* small and quiet — it is a way back into an entry, not something to reach for */
@@ -1100,13 +1109,13 @@
         <details class="sub">
           <summary>Entering your wealth<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Tap the <b>pencil</b> on the Wealth tile. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
+        <p>Tap the <b>pencil</b> on the Wealth tile. If it carries a small <b>amber dot</b>, at least one month — any month, not only the newest — has a different figure in the budget workbook than your own entry; open History to see which. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
         <ul>
           <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
           <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the workbook cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
-          <li><b>History</b> — the page the sheet opens on. If the budget workbook (on the Mac) has a different figure for a month than your own entry, that month gets a small amber <b>workbook</b> line under its TOTAL, so you see exactly which month is off; a pointer over it says by how much. Months that agree show nothing. With two entries in one month, the mark sits on the last one. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
+          <li><b>History</b> — the page the sheet opens on. If the budget workbook (on the Mac) has a different figure for a month than your own entry, that month gets a small amber <b>workbook</b> line under its TOTAL, so you see exactly which month is off; a pointer over it says by how much. <b>Tap that amber line</b> and the month's entry opens to correct it, just like Adjust. Months that agree show nothing. With two entries in one month, the mark sits on the last one. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, how it moved since the one before, and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
           </div>
@@ -1352,6 +1361,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.60', when:'3 Nov 2026',
+    what:'TWO SHORTCUTS TO A MONTH THAT IS OFF. (1) AN AMBER DOT ON THE WEALTH PENCIL. Before, only the newest month was checked on the tile — if an older month disagreed with the budget workbook you would only find out by opening History and looking. Now the pencil on the Wealth tile carries a small amber dot whenever ANY month disagrees, old or new, so you know before you open anything. On the Mac a pointer over the pencil says how many months differ. When every month agrees there is no dot. (2) TAP THE AMBER MARK TO FIX THAT MONTH. Before, the amber "workbook 1M kr" line in History only told you; to correct the month you had to find Adjust under the same column. Now the amber line itself is a button (it is lightly underlined): tap it and that month\'s entry opens on New entry with its figures filled in, exactly as Adjust does. This works in the table and in the Earlier entries list. (3) A NEW TEST checks the dot appears when only an older month is off, stays away when all agree, is amber, and that tapping the mark opens the right month with the right figures. It was seen failing before the change was built. The tests are now 10 files, run at iPhone and Mac size on every push.' },
   { v:'1.59', when:'3 Nov 2026',
     what:'DAY, NIGHT OR AUTOMATIC — AND HISTORY SHOWS WHICH MONTH IS OFF. (1) YOU CHOOSE THE LOOK. Settings now has a Look row at the very top with three choices: Day, Night and Automatic. Automatic is where you start and does what 1.58 did — the hub follows your iPhone and Mac, switching the moment they do. Day keeps the light paper even when the device goes dark; Night keeps the dark paper even in daylight. The choice takes effect the instant you tap it, the top bar of the iPhone follows along, every tile keeps its own colour either way, and the hub remembers it on that device (iPhone and Mac each keep their own choice). (2) HISTORY MARKS THE MONTH THE WORKBOOK DISAGREES WITH. Before, only the Wealth tile warned, and only about the newest month — so you knew something was off but not where. Now, in the History table, the month whose workbook figure differs from your own entry gets the same amber line under its TOTAL — "workbook 1M kr" — and on the Mac a pointer over it says by how much and which way. Months that agree show nothing. If a month has two entries, the mark sits on the last one, because that is the one the workbook is compared with. Older months in the Earlier entries list are marked the same way. (3) TWO NEW TESTS: one checks that only the disagreeing month is marked, in amber, and that agreeing months stay quiet; the other checks Automatic is the default and follows the device, that Night holds in daylight and Day holds at night, that the tiles follow your choice, and that a saved choice is there from the first moment. Both were seen failing before the change was built. The tests are now 9 files, run at iPhone and Mac size on every push.' },
   { v:'1.58', when:'3 Nov 2026',
@@ -2435,11 +2446,12 @@ function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
     <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${tintOf(p)}" data-testid="tile-${p.id}">
       <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
-        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" data-testid="wealth-pen" aria-label="Enter your wealth"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
+        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" data-testid="wealth-pen" aria-label="Enter your wealth"><span class="pwrap"><svg class="hi"><use href="#icon-pencil"/></svg></span></button>` : ''
       }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
       <div class="mbody" id="mt-${p.id}" data-testid="tile-body-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
   $('miniEdit').addEventListener('click', () => openWealth());
+  markPen();
   document.querySelectorAll('[data-tile]').forEach(b =>
     b.addEventListener('click', () => toggleTile(b.dataset.tile)));
 }
@@ -2447,6 +2459,19 @@ function renderMini(){
 function renderTile(id){
   const p = PANELS.find(x => x.id === id), el = $('mt-' + id);
   if(p && el) el.innerHTML = MINI_RENDER[id](p);
+  if(id === 'wealth') markPen();
+}
+/* the amber dot on the Wealth pencil: some month — any month, not only the newest the
+   tile speaks about — disagrees with the workbook, so look in History (1.60) */
+function markPen(){
+  const pen = $('miniEdit');
+  if(!pen) return;
+  const n = offMonths().length;
+  const dot = pen.querySelector('.pdot');
+  if(n && !dot) pen.querySelector('.pwrap').insertAdjacentHTML('beforeend', '<span class="pdot" data-testid="pen-dot"></span>');
+  if(!n && dot) dot.remove();
+  pen.setAttribute('aria-label', n ? `Enter your wealth — ${n} month${n === 1 ? '' : 's'} differs from your workbook` : 'Enter your wealth');
+  pen.title = n ? `${n} month${n === 1 ? ' differs' : 's differ'} from your workbook — see History` : '';
 }
 
 /* asking the engine (Mac only; elsewhere these quietly fail and the
@@ -2853,13 +2878,20 @@ function histRowAccounts(cols){
 }
 /* the workbook figure for this entry's month, when it disagrees — only for the month's
    LAST entry, the one the tile and the workbook stand for (1.59) */
-function histMismatch(d){
+function monthOff(d){
   const m = d.slice(0, 7);
   const same = entryDates().filter(x => x.slice(0, 7) === m);
-  if(same[same.length - 1] !== d) return '';
+  if(same[same.length - 1] !== d) return null;
   const ev = engineValue(m), nt = entryTotal(wEnt[d]);
-  if(ev == null || ev === nt) return '';
-  return `<div class="hwarn" data-testid="hist-mismatch" data-month="${m}" title="Your workbook says ${fmtM(ev)} — ${fmtM(Math.abs(ev - nt))} ${ev < nt ? 'less' : 'more'} than your own entry">workbook ${fmtM(ev)}</div>`;
+  return ev == null || ev === nt ? null : { m, ev, nt };
+}
+/* every entry that is its month's last and disagrees with the workbook */
+function offMonths(){ return entryDates().filter(d => monthOff(d)); }
+/* tapping the mark opens that entry, exactly like Adjust (1.60) */
+function histMismatch(d){
+  const o = monthOff(d);
+  if(!o) return '';
+  return `<button class="hwarn" data-hedit="${d}" data-testid="hist-mismatch" data-month="${o.m}" title="Your workbook says ${fmtM(o.ev)} — ${fmtM(Math.abs(o.ev - o.nt))} ${o.ev < o.nt ? 'less' : 'more'} than your own entry. Tap to correct it.">workbook ${fmtM(o.ev)}</button>`;
 }
 function viewHistory(){
   const ds = entryDates().slice().reverse();                 /* newest first */
