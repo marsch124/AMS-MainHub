@@ -6,7 +6,8 @@ const { test, expect } = require('@playwright/test');
 const { openHub } = require('./helpers');
 
 const bg = (loc) => loc.evaluate(el => getComputedStyle(el).backgroundColor);
-const light = (rgb) => { const [r, g, b] = rgb.match(/\d+/g).map(Number); return (r * .299 + g * .587 + b * .114) / 255; };
+/* a tile caught mid-redraw has no colour at all ("") — count it as not dark yet, so a poll tries again */
+const light = (rgb) => { const m = rgb.match(/\d+/g); if(!m) return 1; const [r, g, b] = m.map(Number); return (r * .299 + g * .587 + b * .114) / 255; };
 
 test('by day the hub keeps its pale tints', async ({ page }) => {
   await page.emulateMedia({ colorScheme:'light' });
