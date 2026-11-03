@@ -20,16 +20,28 @@ const SEED = {
 const NEWEST_TOTAL_M = '1.25M';
 
 /* Open the hub with that data already in place and nothing reaching out. */
-async function openHub(page, seed = SEED){
+/* engine: optional answers for the Finance engine, by path — e.g.
+   { '/wealth': { ok:true, series:[…] } }. Anything not listed is a 404. */
+async function openHub(page, seed = SEED, { engine = {}, url = '/index.html' } = {}){
   /* the hub asks other AMS apps and the Mac engine for their versions —
-     answer for them, so a test never depends on the network */
+     answer for them, so a test never depends on the network (and never
+     reaches the real engine on the Mac) */
   await page.route('**/*', route => {
-    const url = route.request().url();
-    if(url.startsWith('http://localhost:7780') || url.includes('marsch124.github.io')){
+    const u = new URL(route.request().url());
+    if(u.origin === 'http://localhost:7780'){
+      if(u.pathname in engine) return route.fulfill({ status:200, contentType:'application/json', body:JSON.stringify(engine[u.pathname]) });
       return route.fulfill({ status:404, body:'' });
     }
+    if(u.hostname === 'marsch124.github.io') return route.fulfill({ status:404, body:'' });
     return route.continue();
   });
+  await seedStorage(page, seed);
+  await page.goto(url);
+  /* the page itself says when start-up has finished */
+  await page.locator('html[data-ready]').waitFor({ timeout: 10000 });
+}
+
+async function seedStorage(page, seed){
   await page.addInitScript(s => {
     /* service workers are blocked in playwright.config.js — a worker would
        serve an old copy of the page out of the cache */
@@ -40,9 +52,6 @@ async function openHub(page, seed = SEED){
       if(s.links) localStorage.setItem('amshub.v1', JSON.stringify({ links: s.links }));
     }
   }, seed);
-  await page.goto('/index.html');
-  /* the page itself says when start-up has finished */
-  await page.locator('html[data-ready]').waitFor({ timeout: 10000 });
 }
 
-module.exports = { openHub, SEED, NEWEST_TOTAL_M };
+module.exports = { openHub, seedStorage, SEED, NEWEST_TOTAL_M };

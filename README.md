@@ -8,6 +8,22 @@ never in this public repo).
 
 Live at: https://marsch124.github.io/AMS-MainHub/
 
+## Day and night
+
+The hub follows the device's light or dark setting (`prefers-color-scheme`),
+and switches while open. Night tokens live in one `@media` block at the end
+of the stylesheet. Cards and tiles keep their own colour by night: `tintOf()`
+mixes each one's `dot` colour 76% into the night card (`#26221e`) instead of
+using its pale day `tint`; cards behind a door (`kidTint()`) go 88%. The main
+button is the accent colour by night, never the pale ink.
+
+## The workbook cross-check
+
+On the Mac the engine's `/wealth` series is compared with his own newest
+entry. When they differ, the Wealth tile shows an amber `workbook …` line
+(`data-testid="wealth-mismatch"`); its tip gives the gap and direction. On
+the header strip it replaces the "since" line. When they agree, nothing.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the

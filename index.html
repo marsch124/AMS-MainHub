@@ -7,7 +7,8 @@
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Hub" />
-<meta name="theme-color" content="#faf1e2" />
+<meta name="theme-color" content="#faf1e2" media="(prefers-color-scheme: light)" />
+<meta name="theme-color" content="#1b1815" media="(prefers-color-scheme: dark)" />
 <link rel="manifest" href="manifest.webmanifest" />
 <link rel="apple-touch-icon" href="icons/icon-180.png" />
 <style>
@@ -16,6 +17,8 @@
     --ink:#2a2420; --ink-dim:#97897b;
     --card:#ffffff; --line:rgba(42,36,32,.10);
     --accent:#d96a45; --tint:#fdeadd;
+    --warn:#b4680f;
+    color-scheme:light dark;
   }
   *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
   html,body{margin:0;height:100%;}
@@ -223,7 +226,7 @@
   /* a dashboard card admits how far behind the newest data it is */
   .stalelbl{font-size:10px; font-weight:800; letter-spacing:.08em; padding:4px 8px; border-radius:9px;
             background:rgba(255,255,255,.6); color:var(--ink-dim); white-space:nowrap;}
-  .stalelbl.behind{color:#b4680f; background:#fdecc8;}
+  .stalelbl.behind{color:var(--warn); background:#fdecc8;}
   .verglance{text-align:right; font-size:9px; font-weight:700; letter-spacing:.06em;
              color:var(--ink-dim); padding:1px 10px 0; opacity:.85;}
   .rowbtn{
@@ -288,6 +291,9 @@
   .mbig{font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1.12; font-variant-numeric:tabular-nums;}
   .msub{font-size:10.5px; color:var(--ink-dim); font-weight:600; margin-top:3px; line-height:1.35;}
   .msub a{color:inherit; font-weight:800; text-decoration:none;}
+  .msub.mwarn{color:var(--warn); font-weight:800;}
+  /* on the header strip there is room for one line of detail: the warning takes it */
+  header .mbody:has(.mwarn) .msub:not(.mwarn){display:none;}
   .mspark{width:100%; height:22px; display:block; margin-top:7px;}
   .mbar{height:7px; border-radius:5px; background:rgba(42,36,32,.11); overflow:hidden; margin-top:8px;}
   .mbar > div{height:100%; border-radius:5px;}
@@ -387,7 +393,7 @@
   .wbook span{flex:1;}
   .wbook .hi{width:18px; height:18px; color:var(--ink-dim);}
   .wbook .hi.out{width:15px; height:15px;}
-  .wnote.warn{color:#b4680f;}
+  .wnote.warn{color:var(--warn);}
   .arow{display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line);}
   .arow .anum{flex:0 0 18px; font-size:12px; font-weight:800; color:var(--ink-dim);}
   .arow .amid{flex:1; min-width:0;}
@@ -397,7 +403,7 @@
   .arow .rowbtn{background:rgba(28,32,40,.06);}
   .arow .rowbtn:disabled{opacity:.25;}
   .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
-  .wsafe.warnline{color:#b4680f; font-weight:600;}
+  .wsafe.warnline{color:var(--warn); font-weight:600;}
 
   /* History as a table: accounts down the side, the three newest entries across */
   .htwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:4px;}
@@ -526,7 +532,7 @@
      The amber warnings share .wsafe but are real news, so they stay readable. */
   .sheet .wsafe{font-size:11px; line-height:1.3; color:var(--ink-dim); opacity:.75; margin:8px 0 0;}
   .sheet .wsafe + .wsafe{margin-top:1px;}   /* two notes in a row sit tight together */
-  .sheet .wsafe.warnline{font-size:12.5px; color:#b4680f; font-weight:600; opacity:1;}
+  .sheet .wsafe.warnline{font-size:12.5px; color:var(--warn); font-weight:600; opacity:1;}
   .sheet .dim{color:var(--ink-dim);}
   /* the map of everything, in the guide */
   .mapwrap{overflow-x:auto; margin-top:8px;}
@@ -612,6 +618,41 @@
   .vlog p{margin:4px 0 0;}
   .closex{position:sticky; top:0; float:right; margin:-4px -4px 0 0; z-index:2; box-shadow:none; background:var(--bg);}
   .backup-meta{font-size:12.5px; color:var(--ink-dim); margin-top:10px;}
+
+  /* ---------- night (1.58): the same warm paper, turned down ----------
+     Every card and tile keeps its own colour — tintOf() mixes it into the dark
+     card instead of into white — so each part still reads as itself by night. */
+  @media (prefers-color-scheme: dark){
+    :root{
+      --bg:#1b1815;
+      --ink:#efe6da; --ink-dim:#a39787;
+      --card:#26221e; --line:rgba(239,230,218,.12);
+      --accent:#ec8a64; --tint:#3d2a21;
+      --warn:#f0b35a;
+    }
+    .panel{background:rgba(255,255,255,.025);}
+    .hpill, .wtabs{box-shadow:none;}
+    .hpill button:hover, .wtab:hover{background:#2f2a25;}
+    .hpill button:active, .wtab:active{background:#36302a;}
+    .kindpill, .maclbl, .stalelbl, .rowbtn, .cwhere span{background:rgba(0,0,0,.22);}
+    .stalelbl.behind{background:#4a3412;}
+    .mbar{background:rgba(255,255,255,.12);}
+    .mdot{background:rgba(255,255,255,.18);}
+    .mpen:hover{background:rgba(255,255,255,.08);}
+    .wlink, .arow .rowbtn{background:rgba(255,255,255,.07);}
+    .wlink.none{background:none;}
+    .wsend{border-color:#2f6b4a; background:#173326; color:#8fd6ac;}
+    .wsend:hover{border-color:#4a9a6c;}
+    .sw{border-color:rgba(255,255,255,.10);}
+    .addrow{border-color:rgba(255,255,255,.22);}
+    .overlay{background:rgba(0,0,0,.55);}
+    .sheet{box-shadow:0 18px 50px rgba(0,0,0,.5);}
+    /* the main button stays full colour by night — the ink would turn it pale */
+    .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
+    .btn.danger{color:#ef7a7a; border-color:rgba(239,122,122,.4);}
+    #toast{background:#3a332d; color:var(--ink); box-shadow:0 8px 30px rgba(0,0,0,.5);}
+    .layer{background:var(--bg) !important;}
+  }
 </style>
 </head>
 <body>
@@ -979,6 +1020,7 @@
           <li><b>Tiles</b> — like your iPhone's home screen: each app is a small tile with its icon and name, and every shelf fits on one screen on the Mac. Point at a tile with the mouse to read what it does. The version numbers and the little "where it keeps its data" icons are left off the tiles to save room; the <b>Apps</b> tile at the top tells you whether they all answered.</li>
           <li><b>List</b> — one wider card per app with its description, version and data icons, for when you want the detail.</li>
         </ul>
+        <p><b>Day and night.</b> The hub follows your iPhone and Mac: when they turn dark, so does the hub, straight away and even while it is open. By night the paper is a warm near-black and every card and tile keeps its own colour, turned down, so you find things by colour exactly as by day. The main buttons stay full colour.</p>
         <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
         <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is the front door, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>. In the tiles layout they simply sit beside it as tiles of their own; in the list they hang indented below it on a thin line. On the phone the same idea takes its own shape: the hub is the big card and the three are small rows stepped in from the left, joined by a thin line. Either way they are drawn <b>quieter</b> than everything else — each keeps its own colour, faded most of the way to the paper, and the calm labels lose their pill (only <i>n months behind</i> keeps its voice, because that one is a warning). Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
         <p><b>The latest report away from the Mac.</b> That card is filled in by the Finance engine, which is what knows which note is newest and how to open it. On the iPhone there is nothing to ask, so the card stands with its glyph greyed and <b>MAC ONLY</b> beside it — it keeps its place in the group rather than disappearing, and a tap tells you the report is a Mac errand.</p>
@@ -1037,7 +1079,7 @@
         <ul>
           <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
-          <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the small grey cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
+          <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the workbook cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
           <li><b>History</b> — the page the sheet opens on. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
@@ -1079,7 +1121,7 @@
         <p><b>Two different numbers sit in the Wealth tile, and only one of them is yours.</b></p>
         <ul>
           <li><b>Your entries</b> — the big total, and everything behind it: the balances you type through the pencil, your account names and their order, and the daily safety copies. These live <b>inside this app, on this device</b>, and nowhere else. Not on a server, not in the hub's public code, not in iCloud.</li>
-          <li><b>The small grey workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
+          <li><b>The amber workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. It only appears when the workbook disagrees with your own newest entry: then the Wealth tile shows <b>workbook …</b> in amber under your total, and a pointer over it says by how much and which way. When they agree, nothing shows. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
         </ul>
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
@@ -1277,7 +1319,7 @@
 </div>
 
 <!-- update toast -->
-<div id="toast" hidden><span id="toastMsg"></span><button id="toastAct" hidden></button></div>
+<div id="toast" data-testid="toast" hidden><span id="toastMsg"></span><button id="toastAct" hidden></button></div>
 
 <script>
 (() => {
@@ -1285,6 +1327,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.58', when:'3 Nov 2026',
+    what:'NIGHT, A LOUDER WORKBOOK CHECK, AND THREE NEW TESTS. (1) THE HUB HAS A NIGHT LOOK. It was the only one of your apps that stayed light. It now follows your iPhone and Mac: when they switch to dark, so does the hub — straight away, even while it is open. The paper turns a warm near-black and every card and tile keeps ITS OWN colour, just turned down (Packing still teal, Instructions still pink, the Wealth tile still honey), so you find things by colour exactly as by day. The main buttons stay full colour (Save entry is coral by night), and the day look is unchanged to the last shade. (2) WHEN THE WORKBOOK DISAGREES, THE WEALTH TILE SAYS SO IN AMBER. Before, a different workbook figure showed as a small grey line under your total that was easy to miss: on 3 Nov the workbook read 4.43M against your 7.76M and nothing stood out. Now that line is amber and bold, and on the Mac a pointer over it says by how much and which way ("250k kr less than your own entry"). On the slim header strip it takes the place of the "since" line so it is never cut off. When the two agree, nothing shows at all. (3) THREE NEW TESTS, SO THE HUB IS NOW COVERED END TO END. Saving a wealth entry: typing 900 and 500, the total reading 1 400 000 kr, Save keeping it, the tile and History showing it. Send to Excel: it shows you exactly what it will write first, writes only after your yes, sends the right month with the right figures, and a no writes nothing — played with a stand-in for the Finance engine, so your real workbook is never touched. And the night look itself, plus the amber check. Every one was broken on purpose first and caught: Save not storing, the dry run skipped, a no that still wrote, no night at all, night not switching while open, and no amber line. The tests are now 7 files, run at iPhone and Mac size on every push, and nothing is published unless all pass.' },
   { v:'1.57', when:'2 Nov 2026',
     what:'TWO REAL FAULTS FIXED, BOTH FOUND BEFORE THEY COULD BITE — and a third test added. (1) SEND TO EXCEL WOULD HAVE FAILED ON EVERY PRESS. You have never pressed it for real, and it would have stopped with "could not find the month". It finds your six accounts perfectly well — by their column names, so moving the block did not bother it — but your date cells are labelled "this is a number" and the month-finder only accepted date cells with no label at all. Now it accepts both, and it finds September on row 18, October on row 19 and November on row 20 of your sheet. Proved end to end on a COPY of your workbook: six figures written into November, the TOTAL recalculated to the right sum, September untouched, only 2 of the 25 parts of the file changed, all four charts intact, no formula overwritten, a dated BU copy taken first — and Excel itself opened the result cleanly. Your own workbook was never touched. (2) THE QUIET CROSS-CHECK AGAINST THE WORKBOOK WAS DEAD. Under your wealth total the hub was meant to show "workbook 7.69M" whenever your typed figure and the workbook disagree. It was still reading columns AY and AZ, where the block used to live before you moved it to BK/BL/BN-BS, so it read nonsense (it reported the year 1905) and the check simply never appeared — a safety net doing nothing. Both programs now find the block BY THE WORDS IN ITS HEADER ROW, so you can rearrange that spreadsheet whenever you like and nothing breaks. It now reads September as 7,687,000 — which matches your hub to the krona. (3) A NEW TEST: THE BACKUP FILE. It saves a real backup, reads what is inside, then opens a second completely empty hub and restores the file there, checking your accounts, every entry and your own links all come back. Twelve more tests guard the two workbook programs on every push. Every one of these was deliberately broken first to prove it notices — an empty backup, a backup missing your links, a restore that drops your entries, the old hard-coded column, and the old date check: all caught.' },
   { v:'1.56', when:'2 Nov 2026',
@@ -1527,12 +1571,20 @@ function lookFor(a){
 }
 /* blend a colour towards the paper the shelves sit on */
 const PAPER = [250, 241, 226];   /* --bg */
-function faded(hex, t){
+function faded(hex, t){ return mixInto(hex, PAPER, t); }
+function mixInto(hex, base, t){
   const h = hex.replace('#', '');
   const n = parseInt(h.length === 3 ? h.split('').map(c => c + c).join('') : h, 16);
   const c = [(n >> 16) & 255, (n >> 8) & 255, n & 255];
-  return '#' + c.map((v, i) => Math.round(v + (PAPER[i] - v) * t).toString(16).padStart(2, '0')).join('');
+  return '#' + c.map((v, i) => Math.round(v + (base[i] - v) * t).toString(16).padStart(2, '0')).join('');
 }
+/* night: a card's own colour mixed into the dark card, not into white —
+   by day the hand-picked pale tint is used as it always was */
+const DARK_MQ = window.matchMedia ? matchMedia('(prefers-color-scheme: dark)') : null;
+const isDark = () => !!(DARK_MQ && DARK_MQ.matches);
+const NIGHT = [38, 34, 30];   /* --card at night */
+function tintOf(look){ return isDark() ? mixInto(look.dot, NIGHT, .76) : look.tint; }
+function kidTint(look){ return isDark() ? mixInto(look.dot, NIGHT, .88) : faded(look.tint, .62); }
 /* saved order first (ignoring ids that no longer exist), then any new apps */
 function ordered(list, key){
   const byId = new Map(list.map(a => [a.id, a]));
@@ -1661,7 +1713,7 @@ function appRow(a, right, sect){
   if(a.native && !IS_IOS && !a.macToo) a = { ...a, away:true };   /* an iPhone app cannot open on the Mac — unless it is a Mac app too */
   /* a card that leads to others is drawn bigger; a card that lives behind one
      is drawn smaller and quieter — nothing is added to it */
-  let cls = 'cardrow', sty = `background:${eff.tint}`;
+  let cls = 'cardrow', sty = `background:${tintOf(eff)}`;
   if(PARENT_IDS.has(a.id)) cls += ' parent';
   if(a.under){
     /* a room behind a door should read as LESS than the door, so it steps
@@ -1669,7 +1721,7 @@ function appRow(a, right, sect){
        of the way to the paper, and its badge keeps the full one so the icon
        is still recognisable at a glance */
     cls += ' kid';
-    sty = `background:${faded(eff.tint, .62)}`;
+    sty = `background:${kidTint(eff)}`;
   }
   const mid = `
     <span class="badge" style="color:${eff.dot}"><svg class="hi"><use href="#icon-${a.icon}"/></svg></span>
@@ -1816,7 +1868,7 @@ function renderLinks(){
     /* the address itself stays off the card — it is on the pencil, and in the hover tip */
     return `
     <div class="cardrow" data-id="${esc(l.id)}" title="${esc(l.name)} — ${esc(isPath(l.url) ? shortPath(l.url) : l.url)}"
-         style="background:${cw.tint}; --cardline:${cw.dot}33">
+         style="background:${tintOf(cw)}; --cardline:${cw.dot}33">
       <span class="badge" style="color:${cw.dot}"><svg class="hi"><use href="#${k.icon}"/></svg></span>
       <span class="cmid"><span class="cname">${esc(l.name)}</span><span class="kindpill" style="color:${cw.dot}">${esc(k.word)}</span></span>
       <span class="cright"><button class="rowbtn" data-edit="${esc(l.id)}" aria-label="Edit"><svg class="hi"><use href="#icon-pencil"/></svg></button>${clusterHTML('links', l.id)}</span>
@@ -2027,7 +2079,7 @@ function openPaint(kind, id){
   $('paintName').textContent = 'Colour for ' + item.name;
   const cur = kind === 'link' ? item.color : look.colors[id];
   $('swGrid').innerHTML = COLORWAYS.map(c =>
-    `<button class="sw${c.n === cur ? ' cur' : ''}" data-cw="${c.n}" style="background:${c.tint}" aria-label="${c.n}">
+    `<button class="sw${c.n === cur ? ' cur' : ''}" data-cw="${c.n}" style="background:${tintOf(c)}" aria-label="${c.n}">
        <span class="swdot" style="background:${c.dot}"></span>
      </button>`).join('');
   $('ovPaint').classList.add('show');
@@ -2279,7 +2331,10 @@ function renderWealth(p, zeroBased){
       ? `${nt - entryTotal(pe.e) < 0 ? '−' : '+'}${fmtM(Math.abs(nt - entryTotal(pe.e)))} since ${dayLabel(pe.date)}`
       : `entered ${dayLabel(nd)}`;
     const ev = engineValue(last.month);
-    if(ev != null && ev !== nt && !zeroBased) check = `<div class="msub">workbook ${fmtM(ev)}</div>`;
+    /* the workbook disagrees with his own entry: say so in amber, with how far apart —
+       a wrong number under the total must never sit there quietly (3 Nov 2026) */
+    if(ev != null && ev !== nt && !zeroBased) check =
+      `<div class="msub mwarn" data-testid="wealth-mismatch" title="Your workbook says ${fmtM(ev)} — ${fmtM(Math.abs(ev - nt))} ${ev < nt ? 'less' : 'more'} than your own entry">workbook ${fmtM(ev)}</div>`;
   }else{
     sub = prev
       ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
@@ -2336,7 +2391,7 @@ const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderR
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
-    <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${p.tint}" data-testid="tile-${p.id}">
+    <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${tintOf(p)}" data-testid="tile-${p.id}">
       <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
         p.id === 'wealth' ? `<button class="mpen" id="miniEdit" data-testid="wealth-pen" aria-label="Enter your wealth"><svg class="hi"><use href="#icon-pencil"/></svg></button>` : ''
       }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
@@ -2425,21 +2480,21 @@ function viewEntry(){
     const v = wTyped[a.id];
     return `<div class="wrow">
       <span class="wm">${esc(a.name)}</span>
-      <input type="text" inputmode="numeric" data-wa="${a.id}" value="${esc(v || '')}" placeholder="${last != null ? 'last: ' + fmtKr(last) : (base && typeof base.v[a.id] === 'number' ? 'carried: ' + fmtKr(base.v[a.id]) : '—')}" autocomplete="off" />
+      <input type="text" inputmode="numeric" data-wa="${a.id}" data-testid="entry-${esc(a.id)}" value="${esc(v || '')}" placeholder="${last != null ? 'last: ' + fmtKr(last) : (base && typeof base.v[a.id] === 'number' ? 'carried: ' + fmtKr(base.v[a.id]) : '—')}" autocomplete="off" />
       <span class="wkr">kr</span>
       ${a.url ? `<a class="wlink" href="${esc(a.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.name)}"><svg class="hi"><use href="#icon-linkout"/></svg></a>` : '<span class="wlink none"></span>'}
     </div>`;
   }).join('');
   return `<label>Date</label>
     <div class="wdaterow">
-      <input type="date" id="wDate" value="${date}" max="${todayKey()}" />
+      <input type="date" id="wDate" data-testid="entry-date" value="${date}" max="${todayKey()}" />
       ${FROM_ENGINE ? sendButtonHTML(date) : ''}
     </div>
     ${existing && date !== wEditDate ? `<p class="dim wnote whint warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
     ${wEditDate ? `<p class="dim wnote whint">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
     <p class="dim wnote whint">Thousands: <b>250</b> ⇥ <b>250 000</b>. Five digits or more is taken exactly.</p>
     ${rows}
-    <div class="wtot"><span>Total</span><b id="wTotal">—</b></div>
+    <div class="wtot"><span>Total</span><b id="wTotal" data-testid="entry-total">—</b></div>
     <p class="dim wnote" id="wSince"></p>
     ${FROM_ENGINE ? `<button class="wbook" id="wOpenBook">
       <svg class="hi"><use href="#icon-dev-excel"/></svg>
@@ -2449,7 +2504,7 @@ function viewEntry(){
     <div class="btnrow">
       ${wEditDate ? '<button class="btn danger" id="wDelEntry">Delete</button>' : ''}
       <button class="btn" id="wCancel">Cancel</button>
-      <button class="btn primary" id="wSave">${wEditDate ? 'Save changes' : 'Save entry'}</button>
+      <button class="btn primary" id="wSave" data-testid="entry-save">${wEditDate ? 'Save changes' : 'Save entry'}</button>
     </div>`;
 }
 /* what would be saved right now: typed balances, and the last known one for every empty row.
@@ -2593,7 +2648,7 @@ function sendState(date){
 }
 function sendButtonHTML(date){
   const st = sendState(date);
-  return `<button class="wsend${st.fresh && !st.unsaved ? ' sent' : ''}" id="wSend" type="button">
+  return `<button class="wsend${st.fresh && !st.unsaved ? ' sent' : ''}" id="wSend" data-testid="wealth-send" type="button">
       <svg class="hi"><use href="#icon-dev-excel"/></svg>
       <span class="wsendtx"><b id="wSendMain">${st.unsaved ? 'Save &amp; send' : 'Send to Excel'}</b><small id="wSendSub">${
         st.fresh && !st.unsaved ? esc(st.name) + ' sent ✓' : esc(st.name) + ' → workbook'}</small></span>
@@ -3119,6 +3174,8 @@ probeAll();
 fetchWealth();
 fetchFin();
 fetchLinks();
+/* day ⇄ night while open: redraw the cards and tiles in their other tints */
+if(DARK_MQ && DARK_MQ.addEventListener) DARK_MQ.addEventListener('change', () => { renderShelf(); renderLinks(); renderMini(); });
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 /* start-up is done: tests (and anything else) can now trust what is on screen */
 document.documentElement.dataset.ready = VERSIONLOG[0].v;
