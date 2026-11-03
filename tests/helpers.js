@@ -50,6 +50,7 @@ async function seedStorage(page, seed){
       localStorage.setItem('amshub.wealth.accounts', JSON.stringify(s.accounts));
       localStorage.setItem('amshub.wealth.entries',  JSON.stringify(s.entries));
       if(s.links) localStorage.setItem('amshub.v1', JSON.stringify({ links: s.links }));
+      if(s.theme) localStorage.setItem('amshub.theme', s.theme);
     }
   }, seed);
 }

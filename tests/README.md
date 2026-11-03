@@ -19,6 +19,8 @@ pass just because some other part of the page happens to say the same word.
 | `send-to-excel.spec.js` — Send to Excel asks first, then sends the right month and figures | the dry run is skipped; it writes without a yes; the wrong month or wrong figures are sent; a no still writes |
 | `wealth-mismatch.spec.js` — a workbook that disagrees is flagged in amber, one that agrees stays quiet | the check goes silent or grey again; it shows when the numbers agree |
 | `night-colours.spec.js` — day keeps its pale tints, night is dark with every tile in its own colour | night stops working; tiles go pale or all the same by night; the main button goes pale; switching while open does nothing |
+| `history-mismatch.spec.js` — History marks only the month the workbook disagrees with, in amber | the mark disappears, goes grey, lands on the wrong month, or shows when the numbers agree |
+| `look-choice.spec.js` — Day / Night / Automatic in Settings | Automatic stops being the default or stops following the device; Night or Day does not hold; the tiles ignore the choice; a saved choice is not there from the start |
 | `backup-round-trip.spec.js` — the backup file contains his data and brings it back | the backup file is written empty or incomplete (no entries, no links); the restore silently drops something; the file cannot stand on its own on a fresh device |
 
 Each one was **seen failing** before it was kept: the oldest total instead of
@@ -26,7 +28,7 @@ the newest, the saved entries not read back, the pen disconnected, the window
 opening on New entry, a backup written without the entries, a backup written
 without the links, a restore that drops the entries, Save not storing, Send to
 Excel skipping its dry run, a no that still writes, no night look, night not
-switching while open, and a silent workbook check — all thirteen were caught.
+switching while open, a silent workbook check, no History mark, and no Look choice — all fifteen were caught.
 
 The backup and Send to Excel tests run at Mac size only (Send to Excel exists
 only on the Mac; the test plays the Finance engine itself, so the real
