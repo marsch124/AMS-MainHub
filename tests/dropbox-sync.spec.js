@@ -101,3 +101,50 @@ test('a refused upload shows Dropbox\'s reason, not "last synced"', async ({ pag
   await expect(page.getByTestId('sync-status')).toContainText('insufficient_space');
   await expect(page.getByTestId('sync-status')).not.toContainText('last synced');
 });
+
+/* 2.1 — a connection Dropbox no longer accepts asks to connect again */
+test('a connection Dropbox has withdrawn says "Connect Dropbox again"', async ({ page }) => {
+  await page.route(/dropboxapi\.com/, route => {
+    const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*' };
+    if(route.request().method() === 'OPTIONS') return route.fulfill({ status:204, headers:cors });
+    return route.fulfill({ status:400, headers:cors, contentType:'application/json', body:'{"error":"invalid_grant","error_description":"refresh token is invalid or revoked"}' });
+  });
+  await openHub(page, { accounts:ACC, extra:{ 'amshub.dropbox': JSON.stringify({ refresh:'RT', access:'AT', exp: 0 }) },
+    entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await expect(page.getByTestId('sync-status')).toContainText('Connect Dropbox again');
+});
+
+/* 2.1 — an upload Dropbox does not confirm with a revision is not counted as synced */
+test('an unconfirmed upload is not called synced', async ({ page }) => {
+  await page.route(/dropboxapi\.com/, route => {
+    const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*' }, u = route.request().url();
+    if(route.request().method() === 'OPTIONS') return route.fulfill({ status:204, headers:cors });
+    if(u.includes('download')) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/not_found/"}' });
+    return route.fulfill({ status:200, headers:cors, contentType:'text/html', body:'<html>sign in</html>' });
+  });
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await expect(page.getByTestId('sync-status')).toContainText('Not synced');
+});
+
+/* 2.1 — an entry put back from the safety copy stays, even though Dropbox
+   remembers it as deleted: putting it back counts as the newest change */
+test('an entry put back is not deleted again by the sync', async ({ page }) => {
+  const box = { rev:1, file:{ accounts:ACC, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[], at:'2026-10-02T10:00:00.000Z' } },
+    deleted:{ '2026-07-01':'2026-10-05T10:00:00.000Z', '2026-08-01':'2026-10-05T10:00:00.000Z' } } };
+  await fakeDropbox(page, box);
+  const old = { '2026-07-01':{ v:{ a1:600000, a2:400000 }, c:[], at:'2026-07-01T10:00:00.000Z' },
+                '2026-08-01':{ v:{ a1:700000, a2:400000 }, c:[], at:'2026-08-01T10:00:00.000Z' } };
+  await openHub(page, { accounts:ACC, extra:{ ...CONNECTED,
+    'amshub.wealth.snaps':JSON.stringify([{ day:'2026-09-02', n:3, accounts:ACC, entries:{ ...old, '2026-10-01':box.file.entries['2026-10-01'] } }]) },
+    entries:{ '2026-10-01':box.file.entries['2026-10-01'] } });
+  await expect.poll(() => box.uploads).toBeGreaterThanOrEqual(0);
+  page.on('dialog', d => d.accept());
+  await page.getByTestId('wealth-pen').click();
+  await page.locator('#wRestoreSnap').click();
+  await expect.poll(() => Object.keys(box.file.entries).sort().join(), { timeout:10000 }).toBe('2026-07-01,2026-08-01,2026-10-01');
+  await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-07-01,2026-08-01,2026-10-01');
+});

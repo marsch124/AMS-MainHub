@@ -97,6 +97,23 @@ entry before the year (else its first), end = its last entry; accounts
 alphabetical; month changes from each month's last entry against the one before;
 best/worst (`year-best` / `year-worst`); one entry → `year-single`.
 
+## 2.1 — hardening
+
+- **Restore adds, never replaces.** `putBackWealth(accs, ents)` is shared by Import / restore and
+  History's "Put those entries back": an account id or entry date already here is left alone; a
+  missing one is added with `at = now`, so it beats any Dropbox tombstone (`deleted[d]`) and the
+  sync does not delete it again. Nothing missing from the backup is tombstoned any more (before,
+  `wEnt = ents; saveWealth()` made `stampWealth()` note every newer date as deleted and the sync
+  spread that). The restore alert adds "N dates already here kept as they are". A backup's
+  `wealthSnaps` are merged into this device's by day (the fuller `n` wins) instead of replacing them.
+- **Refused storage is reported.** `storeJSON()` returns true/false; `saveWealth()` alerts
+  "This device could not keep that change …" when the accounts or entries did not store.
+- **Dropbox.** `dbxToken()` turns `invalid_grant` on a refresh into "Dropbox no longer accepts this
+  connection — tap Disconnect, then Connect Dropbox again". `dbxUpload()` only returns `'ok'` when the
+  200 answer is JSON carrying a `rev` (Dropbox's receipt); otherwise "Dropbox did not confirm the file
+  was stored".
+- Tests: `restore-keeps.spec.js` (new) and three more in `dropbox-sync.spec.js`; all six seen failing first.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the

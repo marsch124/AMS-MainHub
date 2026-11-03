@@ -1159,7 +1159,7 @@
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
         <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
-        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device.</p>
+        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
         </details>
@@ -1218,7 +1218,7 @@
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens Apple's own <b>Save</b> window — the same one every Mac app uses. Name the file, browse to any folder, even make a new one, and press Save. The Finance engine writes the backup there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. Next time the window opens in the folder you used last. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
+        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens Apple's own <b>Save</b> window — the same one every Mac app uses. Name the file, browse to any folder, even make a new one, and press Save. The Finance engine writes the backup there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. Next time the window opens in the folder you used last. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. A restore <b>adds</b> to what is here and never takes anything away: wealth dates missing on this device come back, dates and accounts already here stay as they are — so an old backup can never wipe newer entries, here or (through Dropbox) on your other device. The same goes for <b>Put those entries back</b> under History. If this device ever refuses to store a saved entry (its storage full or blocked), the hub tells you straight away so you can save a backup file. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
           </div>
         </details>
 
@@ -1409,6 +1409,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.1', when:'3 Nov 2026',
+    what:'HARDENING — PUTTING DATA BACK CAN NO LONGER LOSE ANY, AND DROPBOX TROUBLE IS SAID PLAINLY. (1) A RESTORE NOW ADDS, IT NEVER REPLACES. Before, Import / restore swapped this device\'s wealth for the backup\'s, so every entry newer than the backup was dropped — and with Dropbox sync on, that drop travelled to your other device as a deletion, so one old backup could have wiped your latest months on the iPhone and the Mac at once. Now a restore only brings back the dates missing here; dates and accounts already here stay exactly as they are, and the message says how many came back and how many were kept. The backup\'s safety copies are added to this device\'s own instead of replacing them. (2) "PUT THOSE ENTRIES BACK" WORKS THE SAME WAY, AND STICKS. Before, it replaced everything with the safety copy (dropping anything newer), and with Dropbox on, an entry put back could be deleted again at the next sync because Dropbox still remembered the old deletion. Now it adds only the missing entries, and putting one back counts as the newest change, so it stays on both devices. (3) A SAVE THE DEVICE REFUSES IS SAID OUT LOUD. If the device\'s storage is full or blocked, a saved entry used to vanish in silence the next time the hub opened; now a message tells you at once, while your figures are still on screen, and asks you to save a backup file. (4) DROPBOX: A WITHDRAWN CONNECTION SAYS "CONNECT DROPBOX AGAIN" instead of a technical code, and an upload only counts as synced when Dropbox hands back its receipt for the file — anything else shows "Not synced". (5) SIX NEW CHECKS, all seen failing before the fixes: a new test file for restoring and putting back (15 test files now), and three more in the sync test.' },
   { v:'2.0.1', when:'3 Nov 2026',
     what:'DROPBOX SYNC NOW SAYS WHEN DROPBOX REFUSES. Before, if Dropbox turned the wealth file down for any reason, the hub still showed "Connected · last synced" — so on 3 Nov the Mac said synced while nothing had arrived in your Dropbox. Now only a clash with another device\'s newer copy is tried again; any other refusal shows in Settings › Dropbox sync as "Not synced — " followed by Dropbox\'s own reason (for example no space or no permission), and "last synced" only moves when the file really went up or was already the same. A NEW CHECK in the sync test plays a Dropbox that refuses the file and makes sure the hub says so; it was seen failing before the fix.' },
   { v:'2.0', when:'3 Nov 2026',
@@ -2227,7 +2229,7 @@ function loadJSON(key, fallback){
   try{ const v = JSON.parse(localStorage.getItem(key) || 'null'); return v == null ? fallback : v; }
   catch(e){ return fallback; }
 }
-function storeJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){} }
+function storeJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); return true; }catch(e){ return false; } }
 function monthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
 function monthLabel(m){
   const [y, mo] = m.split('-').map(Number);
@@ -2289,7 +2291,26 @@ let wAcc = loadJSON(W_ACC_KEY, []);
 let wEnt = loadJSON(W_ENT_KEY, {});
 if(!Array.isArray(wAcc)) wAcc = [];
 if(!wEnt || typeof wEnt !== 'object' || Array.isArray(wEnt)) wEnt = {};
-function saveWealth(){ stampWealth(); storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); snapWealth(); syncSoon(); }
+function saveWealth(){
+  stampWealth();
+  const kept = storeJSON(W_ACC_KEY, wAcc) & storeJSON(W_ENT_KEY, wEnt);
+  /* 2.1: a device that refuses to store (full, or blocked) used to lose the change in
+     silence the next time the hub opened — now it says so while the figures are on screen */
+  if(!kept) alert('This device could not keep that change — its storage is full or blocked. Your figures are still on screen: save a backup file now (Settings › Your data) so nothing is lost.');
+  snapWealth(); syncSoon();
+}
+/* 2.1: a backup or a safety copy is ADDED to what is here, never swapped in for it.
+   Dates missing here come back, counted as changed now — so a deletion note in Dropbox
+   does not take them away again; dates already here, and accounts already here, stay. */
+function putBackWealth(accs, ents){
+  const now = new Date().toISOString();
+  const have = new Set(wAcc.map(a => a.id));
+  accs.forEach(a => { if(!have.has(a.id)) wAcc.push(Object.assign({}, a, { at:now })); });
+  let back = 0;
+  Object.keys(ents).forEach(d => { if(!wEnt[d]){ wEnt[d] = Object.assign({}, ents[d], { at:now }); back++; } });
+  saveWealth();
+  return back;
+}
 /* 2.0: every change carries the moment it was made, and a deleted entry leaves a note
    of when — so two devices can be merged entry by entry and the newer change wins.
    Done here, by comparing with what was stored, so every writer is covered. */
@@ -2692,6 +2713,8 @@ async function dbxToken(form){
   const res = await fetch('https://api.dropboxapi.com/oauth2/token', { method:'POST',
     headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body:new URLSearchParams(form).toString() });
   const j = await res.json().catch(() => ({}));
+  /* 2.1: a connection Dropbox has withdrawn (revoked, or the app removed) never mends itself */
+  if(j.error === 'invalid_grant' && form.grant_type === 'refresh_token') throw new Error('Dropbox no longer accepts this connection — tap Disconnect, then Connect Dropbox again');
   if(!res.ok || !j.access_token) throw new Error(j.error_description || j.error || ('Dropbox said no (' + res.status + ')'));
   return j;
 }
@@ -2734,6 +2757,9 @@ async function dbxUpload(tok, data, rev){
     throw new Error('Dropbox refused the file: ' + String(why).replace(/\/+\.*$/, '').slice(0, 80));
   }
   if(!res.ok) throw new Error('Dropbox answered ' + res.status + ' ' + (await res.text().catch(() => '')).slice(0, 80));
+  /* 2.1: only Dropbox's own receipt — the file's new revision — counts as stored */
+  const meta = await res.json().catch(() => null);
+  if(!meta || !meta.rev) throw new Error('Dropbox did not confirm the file was stored');
   return 'ok';
 }
 /* the file as written by another device — only well-formed parts are taken */
@@ -3342,11 +3368,10 @@ function bindHistory(){
   if(r) r.addEventListener('click', () => {
     const snap = fullestSnap();
     if(!snap) return;
-    if(!confirm(`Replace what is here now with the safety copy from ${dayLabel(snap.day)} (${snap.n} entries)?`)) return;
-    wAcc = Array.isArray(snap.accounts) ? snap.accounts : wAcc;
-    wEnt = snap.entries && typeof snap.entries === 'object' ? snap.entries : wEnt;
-    saveWealth(); refreshWealthTiles(); wOpenTab('history');
-    showToast('Safety copy put back ✅');
+    if(!confirm(`Put back the entries missing here from the safety copy of ${dayLabel(snap.day)}? Entries here now stay as they are.`)) return;
+    const back = putBackWealth(Array.isArray(snap.accounts) ? snap.accounts : [], snap.entries && typeof snap.entries === 'object' ? snap.entries : {});
+    refreshWealthTiles(); wOpenTab('history');
+    showToast(`${back} entr${back === 1 ? 'y' : 'ies'} put back ✅`);
   });
 }
 
@@ -3525,7 +3550,7 @@ $('importFile').addEventListener('change', () => {
       saveLook(); renderShelf();
       layoutBack = true;
     }
-    let accBack = 0, entBack = 0;
+    let accBack = 0, entBack = 0, entKept = 0;
     if(Array.isArray(data.wealthAccounts) && data.wealthEntries && typeof data.wealthEntries === 'object' && !Array.isArray(data.wealthEntries)){
       const accs = data.wealthAccounts.filter(a => a && typeof a.id === 'string' && a.name)
         .map(a => ({ id:a.id, name:String(a.name).slice(0, 30), url: typeof a.url === 'string' ? a.url : '',
@@ -3539,8 +3564,10 @@ $('importFile').addEventListener('change', () => {
         if(Object.keys(v).length){ ents[d] = { v, c: Array.isArray(e.c) ? e.c.filter(x => typeof x === 'string') : [] }; }
       });
       if(accs.length || Object.keys(ents).length){
-        wAcc = accs; wEnt = ents; saveWealth();
-        accBack = accs.length; entBack = Object.keys(ents).length;
+        const accHere = wAcc.length;
+        entKept = Object.keys(ents).filter(d => wEnt[d]).length;
+        entBack = putBackWealth(accs, ents);
+        accBack = wAcc.length - accHere;
       }
     }
     /* the safety copies ride along from v1.32 — an older backup simply has none, and
@@ -3548,7 +3575,13 @@ $('importFile').addEventListener('change', () => {
     let snapBack = 0;
     if(Array.isArray(data.wealthSnaps)){
       const snaps = data.wealthSnaps.filter(sn => sn && sn.day && sn.entries && typeof sn.entries === 'object');
-      if(snaps.length){ storeJSON(W_SNAP_KEY, snaps); snapBack = snaps.length; }
+      /* 2.1: added to this device's own safety copies, the fuller one kept for a day */
+      if(snaps.length){
+        const byDay = new Map(loadJSON(W_SNAP_KEY, []).filter(sn => sn && sn.day).map(sn => [sn.day, sn]));
+        snaps.forEach(sn => { const h = byDay.get(sn.day); if(!h || (sn.n || 0) > (h.n || 0)) byDay.set(sn.day, sn); });
+        storeJSON(W_SNAP_KEY, [...byDay.values()].sort((a, b) => a.day < b.day ? -1 : 1));
+        snapBack = snaps.length;
+      }
     }
     if(data.wealthSent && typeof data.wealthSent === 'object' && !Array.isArray(data.wealthSent)) storeJSON(W_SENT_KEY, data.wealthSent);
     const legacyBack = importLegacyTotals(data.wealth);   /* backups from before v1.15 */
@@ -3566,6 +3599,7 @@ $('importFile').addEventListener('change', () => {
     alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
       (layoutBack ? '\nCard order and colours restored too.' : '') +
       (accBack || entBack ? `\n${accBack} account${accBack===1?'':'s'} and ${entBack} wealth entr${entBack===1?'y':'ies'} restored.` : '') +
+      (entKept ? `\n${entKept} date${entKept===1?'':'s'} already here kept as they are.` : '') +
       (legacyBack ? `\n${legacyBack} older month total${legacyBack===1?'':'s'} moved into an account called Earlier totals.` : '') +
       (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : '') +
       (snapBack ? `\n${snapBack} safety cop${snapBack===1?'y':'ies'} came back too.` : ''));
