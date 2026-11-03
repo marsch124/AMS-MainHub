@@ -25,6 +25,8 @@ pass just because some other part of the page happens to say the same word.
 | `mismatch-shortcuts.spec.js` — pen dot when any month is off; tapping a History mark opens that month | the dot misses an older month, shows when all agree, or the mark opens the wrong month |
 | `tile-shortcuts.spec.js` — tapping the tile's amber line opens the newest entry; the dot shows the count | the line stops opening the entry, opens the wrong one, or the dot loses its number |
 | `year-growth-reminder.spec.js` — this year's growth (kronor in the tip; last year's result 1–7 Jan); the monthly reminder from the 8th | the tip loses the kronor; early January shows nothing or stays past the 7th; growth compares with the wrong entry, misses the before-1-January fallback, or shows the wrong sign; the reminder shows before the 8th, does not open New entry, or stays after saving |
+| `forecast-year.spec.js` — the forecast on the Retirement tile; the Year page | the forecast is wrong or shows from entries under two months apart; Year gets the start, end, an account, the best or weakest month wrong, or makes something up for a one-entry year |
+| `dropbox-sync.spec.js` — connecting, merging, saving against another device (Dropbox played by a stand-in) | the code is not traded or nothing goes up; an older change beats a newer one; a deletion does not travel; an entry is lost; an upload overwrites a copy another device wrote in between |
 
 Each one was **seen failing** before it was kept: the oldest total instead of
 the newest, the saved entries not read back, the pen disconnected, the window

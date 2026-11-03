@@ -70,6 +70,33 @@ is from last year, `yearGrowth()` shows last year's result ("+14% in
 (else that year's first entry). From the 8th it is gone until a January
 entry exists.
 
+## 2.0 — Dropbox sync, forecast, Year
+
+**Sync.** `DBX_KEY` is the hub's Dropbox app key (App folder access, public by
+design: PKCE, no secret). Connect = PKCE "code" flow *without* a redirect URI:
+`dbxConnectStart()` opens the authorize page, he pastes the code shown,
+`dbxConnectFinish()` trades it (with the verifier) for a refresh token, kept in
+`amshub.dropbox` on that device only. The file is `/wealth.json` in the app folder:
+`{ app, savedAt, accounts, entries, deleted }`. `saveWealth()` now calls
+`stampWealth()`, which compares with what was stored and gives every changed entry
+and account an `at`, and writes a tombstone into `amshub.wealth.deleted` for each
+vanished date — so every writer is covered. `syncNow()`: download (rev) →
+`mergeWealth()` (per date the newest of entry/tombstone wins; ties go to the
+Dropbox copy so devices converge; accounts by id, newer `at`, ties to Dropbox) →
+store locally if different → upload with `mode:update:<rev>` unless Dropbox already
+holds the same (`wealthSig()`, order-free); a 409 conflict re-runs, up to 3 times.
+Runs at start-up, 1.2 s after each save (`syncSoon()`), on return to the page,
+and on Sync now. Links, look and the sent-to-Excel marks are not synced.
+
+**Forecast.** `wealthForecast()` → `retire-forecast` on the Retirement tile:
+newest entry vs the first entry on/after a year before it (else the oldest),
+linear to `RETIREMENT`; none under 60 days of span.
+
+**Year.** Fourth wealth tab `year` (`viewYear()` / `yearReview(y)`): start = last
+entry before the year (else its first), end = its last entry; accounts
+alphabetical; month changes from each month's last entry against the one before;
+best/worst (`year-best` / `year-worst`); one entry → `year-single`.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the

@@ -312,7 +312,24 @@
   button.mremind{display:block; padding:0; border:none; background:none; font-family:inherit; cursor:pointer;
                  text-align:left; font-weight:800; white-space:normal; text-decoration:underline dotted;
                  text-underline-offset:2px; position:relative; z-index:2;}
-  header .msub.mgrow, header button.mremind{white-space:normal; overflow:visible;}
+  header .msub.mgrow, header button.mremind, header .msub.mfore{white-space:normal; overflow:visible;}
+  /* 2.0: the forecast on the Retirement tile */
+  .msub.mfore{color:var(--ink); font-weight:800;}
+  /* 2.0: the year review */
+  .yrnav{margin:4px 0 10px;}
+  .yhead{font-size:22px; font-weight:800; letter-spacing:-.01em; margin:4px 0 0;}
+  .yhead span{font-size:15px; color:var(--ink-dim); font-weight:700;}
+  .ysub{font-size:13px; color:var(--ink-dim); margin:2px 0 10px;}
+  table.htab td.up{color:#2f8f57;} table.htab td.down{color:#c4553c;}
+  html[data-look="night"] table.htab td.up{color:#6fcf97;} html[data-look="night"] table.htab td.down{color:#f0907a;}
+  .ymonths{display:flex; gap:8px; margin-top:10px;}
+  .ymonths div{flex:1; border-radius:12px; padding:8px 10px; background:var(--bg); border:1px solid var(--line); font-size:13px;}
+  .ymonths b{display:block; font-size:10.5px; letter-spacing:.08em; color:var(--ink-dim);}
+  /* 2.0: Dropbox sync in Settings */
+  .syncsum{margin-left:auto; font-size:12px; font-weight:700; color:var(--ink-dim);}
+  .syncsum + .chev{margin-left:8px !important;}
+  .syncline{font-size:14px; margin:8px 0 0;}
+  .syncline.err{color:var(--warn); font-weight:700;}
   html[data-look="night"] .pdot{color:#1b1815;}   /* dark figure on the light night amber */
   /* on the header strip there is room for one line of detail: the warning takes it */
   header .mbody:has(.mwarn) .msub:not(.mwarn):not(.mremind){display:none;}
@@ -738,6 +755,12 @@
     <path d="M8.6 10.5c1.1 1.2 2.2 2.3 3.5 3.4 1.2-1.1 2.3-2.3 3.4-3.5"/>
     <path d="M4.8 14.9c-.2 1.7-.2 3.3 0 4.9 4.8.3 9.6.3 14.4 0 .2-1.6.2-3.2 0-4.8"/>
   </symbol>
+  <symbol id="icon-sync" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19.4 10.6c-.6-3.6-3.7-6.3-7.4-6.2-2.6.1-4.8 1.4-6.1 3.5"/>
+    <path d="M5.6 4.4c-.1 1.2 0 2.4.2 3.6 1.2.1 2.4 0 3.6-.3"/>
+    <path d="M4.6 13.4c.6 3.6 3.7 6.3 7.4 6.2 2.6-.1 4.8-1.4 6.1-3.5"/>
+    <path d="M18.4 19.6c.1-1.2 0-2.4-.2-3.6-1.2-.1-2.4 0-3.6.3"/>
+  </symbol>
   <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12.3 3.9c4.5.1 8 3.7 7.8 8.1-.2 4.4-3.7 7.9-8.1 7.9-4.4-.1-7.9-3.6-7.9-8"/>
     <path d="M4.2 8.9C4.7 7 5.8 5.5 7.3 4.3"/>
@@ -993,6 +1016,7 @@
       <button class="wtab" data-wv="history" data-testid="wtab-history">History</button>
       <button class="wtab" data-wv="entry" data-testid="wtab-entry">New entry</button>
       <button class="wtab" data-wv="accounts" data-testid="wtab-accounts">Accounts</button>
+      <button class="wtab" data-wv="year" data-testid="wtab-year">Year</button>
     </div>
     <div id="wBody" data-testid="wealth-body"></div>
   </div>
@@ -1133,6 +1157,9 @@
           <li><b>History</b> — the page the sheet opens on. If the budget workbook (on the Mac) has a different figure for a month than your own entry, that month gets a small amber <b>workbook</b> line under its TOTAL, so you see exactly which month is off; a pointer over it says by how much. <b>Tap that amber line</b> and the month's entry opens to correct it, just like Adjust. Months that agree show nothing. With two entries in one month, the mark sits on the last one. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
+        <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
+        <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
+        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
         </details>
@@ -1199,7 +1226,7 @@
           <summary>Tests<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p><b>The hub now tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with a made-up set of wealth accounts and entries, and checks that the things you depend on still work.</p>
-        <p>Twelve test files now, each run at iPhone and Mac size. Among them: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
+        <p>Fourteen test files now, each run at iPhone and Mac size. Among them: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
         <p>The backup test is the important one. It doesn’t trust the words on the button: it saves a real file, reads what is inside it, then opens a <b>second, completely empty hub</b> — a fresh device — and restores the file there. Your accounts, every entry and your own links all have to come back. That is exactly the journey from your iPhone to your Mac, and it is the one failure that would cost you something you can’t retype.</p>
         <p>Over on the Mac side, the two little programs that read and write your budget workbook are tested too, on every push: they must find the wealth block <b>by the words in its header row</b> wherever you move it to, write into the right month and no other, never overwrite a formula, and always take a dated BU copy first.</p>
         <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed. Each test was deliberately broken first to prove it notices — the tile showing the oldest total instead of the newest, your saved entries not being read back, the pencil disconnected, and the window opening on the wrong tab were all caught.</p>
@@ -1347,10 +1374,15 @@
       </div>
     </details>
 
+    <details class="fold" id="foldSync" data-testid="fold-sync">
+      <summary><svg class="hi"><use href="#icon-sync"/></svg>Dropbox sync<span class="syncsum" id="syncSum" data-testid="sync-summary"></span><svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+      <div class="foldbody" id="syncBody" data-testid="sync-body"></div>
+    </details>
+
     <details class="fold" id="foldData" data-testid="fold-data">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b>. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
+        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
@@ -1377,6 +1409,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.0', when:'3 Nov 2026',
+    what:'VERSION 2.0 — ONE WEALTH RECORD ON IPHONE AND MAC, A FORECAST, AND A YEAR REVIEW. (1) DROPBOX SYNC. Before, your iPhone and your Mac each kept their own wealth accounts and entries, and the only way to move them was a backup file. Now Settings has a Dropbox sync section: tap Connect Dropbox, tap Allow on the Dropbox page, copy the code it shows and paste it into the hub — once on each device (on the Mac that means the AMS Finance app; on the iPhone the Home Screen hub). From then on every saved entry, every Adjust, every account you add, rename or remove, and every deleted entry travels to the other device through one small file in your Dropbox (Apps › AMS Main Hub › wealth.json). It syncs when the hub opens, a moment after each change, and when you come back to it; Sync now does it at once, and the section shows when it last synced. The two copies are merged entry by entry: when the same date was changed on both, the later change wins; a date that exists on only one device is kept; a deletion travels too. If both devices saved at the same moment, the second waits for the first and merges with it, so neither overwrites the other. For entries from before 2.0 that differ on the two devices (they carry no time yet), the copy already in Dropbox wins — the daily safety copies on each device still hold the other. Your links, card order and look stay on each device. Disconnect stops the exchange on that device and keeps everything. (2) THE RETIREMENT TILE FORECASTS YOUR WEALTH. Under "days · 1 Jul 2028" it now says where your wealth is heading by then at your pace of the last twelve months, for example "≈ 8.27M kr by then"; on the Mac a pointer over it gives the pace per month. It uses your newest entry against the entry nearest a year before it (or your oldest one), and stays away until your entries are at least two months apart. (3) A YEAR PAGE. The wealth window has a fourth tab, Year: pick a year and see how it went — the change in percent and kronor from the end of the year before (or your first entry that year) to your last entry, each account from start to end with its change (green up, red down, accounts alphabetical, removed ones marked), the TOTAL, and the best and weakest month. A year with only one entry says so. (4) A SYNC ICON, drawn by hand like the others. (5) TWO NEW TESTS: one for the forecast and the Year page, one for Dropbox sync — connecting with a pasted code, merging (the newer change wins, a deletion travels, nothing is lost) and saving while another device wrote in between. Dropbox itself is played by a stand-in, so no test touches your real Dropbox. Both were seen failing (10 times) before 2.0 was built. The tests are now 14 files, run at iPhone and Mac size on every push.' },
   { v:'1.63', when:'3 Nov 2026',
     what:'THE GROWTH LINE TELLS YOU MORE. (1) THE AMOUNT IN KRONOR. Before, on the Mac a pointer over "+9.8% since Jan" only named the entry it compared with. Now it gives the growth in kronor as well, for example "+650k kr since 31 Jan 2026". (2) LAST YEAR\'S RESULT IN EARLY JANUARY. Before, from 1 January until you typed your first entry of the new year, the growth line simply vanished (there was nothing from the new year to measure). Now, from the 1st to the 7th of January, the tile shows how the whole of last year went, for example "+14% in 2026" — your last entry of that year against your last entry from the year before (or, if there is none, the first entry of that year). From the 8th it gives way to the monthly reminder, and as soon as you save a January entry the tile shows the new year\'s growth again. (3) THE TEST grew by three checks: the kronor in the pointer tip, last year\'s result in the first week of January, and that it is gone from the 8th. The first two were seen failing (4 times) before the change was built. Still 12 test files, run at iPhone and Mac size on every push.' },
   { v:'1.62', when:'3 Nov 2026',
@@ -2253,7 +2287,26 @@ let wAcc = loadJSON(W_ACC_KEY, []);
 let wEnt = loadJSON(W_ENT_KEY, {});
 if(!Array.isArray(wAcc)) wAcc = [];
 if(!wEnt || typeof wEnt !== 'object' || Array.isArray(wEnt)) wEnt = {};
-function saveWealth(){ storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); snapWealth(); }
+function saveWealth(){ stampWealth(); storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); snapWealth(); syncSoon(); }
+/* 2.0: every change carries the moment it was made, and a deleted entry leaves a note
+   of when — so two devices can be merged entry by entry and the newer change wins.
+   Done here, by comparing with what was stored, so every writer is covered. */
+const W_DEL_KEY = 'amshub.wealth.deleted';   /* { 'YYYY-MM-DD': when it was deleted } */
+function stampWealth(){
+  const now = new Date().toISOString();
+  const oldE = loadJSON(W_ENT_KEY, {}) || {}, oldA = loadJSON(W_ACC_KEY, []) || [];
+  const del = loadJSON(W_DEL_KEY, {}) || {};
+  const same = (a, b) => JSON.stringify({ v:a.v, c:a.c || [] }) === JSON.stringify({ v:b.v, c:b.c || [] });
+  Object.keys(oldE).forEach(d => { if(!wEnt[d]) del[d] = now; });
+  Object.keys(wEnt).forEach(d => {
+    const e = wEnt[d], o = oldE[d];
+    if(!o || !same(o, e)){ if(!e.at || (o && o.at === e.at)) e.at = now; delete del[d]; }
+  });
+  const om = new Map(oldA.map(a => [a.id, a]));
+  const bare = x => JSON.stringify(Object.assign({}, x, { at:undefined }));
+  wAcc.forEach(a => { const o = om.get(a.id); if(!o || bare(o) !== bare(a)) a.at = now; });
+  storeJSON(W_DEL_KEY, del);
+}
 function fmtKr(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
 function parseKr(s){ const d = String(s == null ? '' : s).replace(/[^\d]/g, ''); return d ? parseInt(d, 10) : null; }
 /* He types THOUSANDS: 250 becomes 250 000. Five digits or more is taken exactly, so an
@@ -2426,6 +2479,25 @@ function renderWealth(p, zeroBased){
     ${grow || `<div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>`}${check}${remind}
     ${wealthSpark(S, known, p, zeroBased)}`;
 }
+/* 2.0: where the wealth is heading by retirement, at the pace of the last twelve months
+   (the newest entry against the entry closest to a year before it, or the oldest one) */
+function wealthForecast(){
+  const ds = entryDates();
+  if(ds.length < 2) return null;
+  const day = d => { const [y, m, dd] = d.split('-').map(Number); return new Date(y, m - 1, dd); };
+  const nd = ds[ds.length - 1], ndt = day(nd);
+  const yearAgo = new Date(ndt.getFullYear() - 1, ndt.getMonth(), ndt.getDate());
+  const from = ds.find(d => day(d) >= yearAgo && d !== nd) || ds[0];
+  const span = (ndt - day(from)) / 86400000;
+  if(span < 60) return null;                       /* under two months says too little */
+  const ahead = (RETIREMENT - ndt) / 86400000;
+  if(ahead <= 0) return null;
+  const nt = entryTotal(wEnt[nd]), perDay = (nt - entryTotal(wEnt[from])) / span;
+  const value = Math.max(0, Math.round(nt + perDay * ahead));
+  const perMonth = Math.round(perDay * 30.44);
+  return { value, tip: `At your pace since ${dayLabel(from)} ${from.slice(0, 4)}: ${perMonth < 0 ? '−' : '+'}${fmtM(Math.abs(perMonth))} a month` };
+}
+
 /* this year's growth (1.62): the newest entry against the first entry of this year —
    or, with nothing else from this year, the last entry from before 1 January.
    1.63: in the first week of January, before a January entry, last year's result */
@@ -2465,8 +2537,9 @@ function renderRetire(){
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const days = Math.max(0, Math.round((RETIREMENT - today) / 86400000));
+  const f = wealthForecast();
   return `<div class="mbig">${days.toLocaleString('en-GB')}</div>
-    <div class="msub">days · 1 Jul 2028</div>`;
+    <div class="msub">days · 1 Jul 2028</div>${f ? `<div class="msub mfore" data-testid="retire-forecast" title="${f.tip}">≈ ${fmtM(f.value)} by then</div>` : ''}`;
 }
 
 function renderYear(p){
@@ -2579,8 +2652,8 @@ function wOpenTab(v){
   wView = v;
   document.querySelectorAll('.wtab[data-wv]').forEach(b => b.classList.toggle('cur', b.dataset.wv === v));
   const body = $('wBody');
-  body.innerHTML = v === 'entry' ? viewEntry() : v === 'accounts' ? viewAccounts() : viewHistory();
-  if(v === 'entry') bindEntry(); else if(v === 'accounts') bindAccounts(); else bindHistory();
+  body.innerHTML = v === 'entry' ? viewEntry() : v === 'accounts' ? viewAccounts() : v === 'year' ? viewYear() : viewHistory();
+  if(v === 'entry') bindEntry(); else if(v === 'accounts') bindAccounts(); else if(v === 'year') bindYear(); else bindHistory();
 }
 function openWealth(v){
   wEditDate = null; wTyped = {}; wExact = {}; wDate = null;
@@ -2589,6 +2662,167 @@ function openWealth(v){
   wOpenTab(v || 'history');
   $('ovWealth').classList.add('show');
 }
+/* ============ Dropbox sync (2.0) ============
+   One small file, Apps/<app>/wealth.json in his own Dropbox, holds the accounts, the
+   entries and the deletion notes. Each device merges it with its own copy entry by
+   entry (the newer change wins), stores the result and writes it back — refusing to
+   overwrite a copy another device wrote in between (Dropbox's rev), then trying again.
+   The connection: the PKCE "code" flow without a return address — Dropbox shows a code,
+   he pastes it once per device. That works the same in Safari, in the Home Screen app
+   and in the Mac app, which keep separate storage. */
+const DBX_KEY = 'lepa5isroxmhvw5';                       /* the hub's Dropbox app key (public by design) */
+const DBX_STORE = 'amshub.dropbox';       /* { refresh, access, exp, last, err, verifier } */
+const DBX_FILE = '/wealth.json';
+let dbx = loadJSON(DBX_STORE, {}) || {};
+let syncBusy = false, syncAgain = false, syncTimer = null, syncWaiting = false;
+function dbxSave(){ storeJSON(DBX_STORE, dbx); }
+function dbxOn(){ return !!(DBX_KEY && dbx.refresh); }
+function syncSoon(){ if(!dbxOn()) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 1200); }
+const b64url = buf => btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+async function dbxConnectStart(){
+  const verifier = b64url(crypto.getRandomValues(new Uint8Array(48)));
+  const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
+  dbx.verifier = verifier; dbxSave();
+  syncWaiting = true; renderSync();
+  window.open(`https://www.dropbox.com/oauth2/authorize?client_id=${DBX_KEY}&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&token_access_type=offline`, '_blank');
+}
+async function dbxToken(form){
+  const res = await fetch('https://api.dropboxapi.com/oauth2/token', { method:'POST',
+    headers:{ 'Content-Type':'application/x-www-form-urlencoded' }, body:new URLSearchParams(form).toString() });
+  const j = await res.json().catch(() => ({}));
+  if(!res.ok || !j.access_token) throw new Error(j.error_description || j.error || 'Dropbox said no');
+  return j;
+}
+async function dbxConnectFinish(code){
+  try{
+    const j = await dbxToken({ grant_type:'authorization_code', code:code.trim(), client_id:DBX_KEY, code_verifier:dbx.verifier || '' });
+    dbx = { refresh:j.refresh_token, access:j.access_token, exp:Date.now() + (j.expires_in || 14400) * 1000 };
+    dbxSave(); syncWaiting = false;
+    await syncNow();
+    showToast('Dropbox connected');
+  }catch(e){ alert('That code did not work — ' + e.message + '. Tap Connect Dropbox again for a fresh one.'); }
+  renderSync();
+}
+async function dbxAccess(){
+  if(dbx.access && dbx.exp > Date.now() + 60000) return dbx.access;
+  const j = await dbxToken({ grant_type:'refresh_token', refresh_token:dbx.refresh, client_id:DBX_KEY });
+  dbx.access = j.access_token; dbx.exp = Date.now() + (j.expires_in || 14400) * 1000; dbxSave();
+  return dbx.access;
+}
+async function dbxDownload(tok){
+  const res = await fetch('https://content.dropboxapi.com/2/files/download', { method:'POST',
+    headers:{ Authorization:'Bearer ' + tok, 'Dropbox-API-Arg':JSON.stringify({ path:DBX_FILE }) } });
+  if(res.status === 409){ const t = await res.text(); if(/not_found/.test(t)) return { data:null, rev:null }; throw new Error('Dropbox could not read the file'); }
+  if(!res.ok) throw new Error('Dropbox answered ' + res.status);
+  let rev = null;
+  try{ rev = JSON.parse(res.headers.get('Dropbox-API-Result') || '{}').rev || null; }catch(e){}
+  return { data: await res.json(), rev };
+}
+async function dbxUpload(tok, data, rev){
+  const res = await fetch('https://content.dropboxapi.com/2/files/upload', { method:'POST',
+    headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
+      'Dropbox-API-Arg':JSON.stringify({ path:DBX_FILE, mode: rev ? { '.tag':'update', update:rev } : { '.tag':'add' }, autorename:false, mute:true }) },
+    body: JSON.stringify(data, null, 1) });
+  if(res.status === 409) return 'conflict';
+  if(!res.ok) throw new Error('Dropbox answered ' + res.status);
+  return 'ok';
+}
+/* the file as written by another device — only well-formed parts are taken */
+function cleanRemote(r){
+  const out = { accounts:[], entries:{}, deleted:{} };
+  if(!r || typeof r !== 'object') return out;
+  if(Array.isArray(r.accounts)) out.accounts = r.accounts.filter(a => a && typeof a.id === 'string' && a.name);
+  if(r.entries && typeof r.entries === 'object') Object.keys(r.entries).forEach(d => {
+    const e = r.entries[d];
+    if(/^\d{4}-\d{2}-\d{2}$/.test(d) && e && e.v && typeof e.v === 'object') out.entries[d] = e;
+  });
+  if(r.deleted && typeof r.deleted === 'object') Object.keys(r.deleted).forEach(d => {
+    if(/^\d{4}-\d{2}-\d{2}$/.test(d) && typeof r.deleted[d] === 'string') out.deleted[d] = r.deleted[d];
+  });
+  return out;
+}
+function mergeWealth(remote){
+  const R = cleanRemote(remote), ld = loadJSON(W_DEL_KEY, {}) || {};
+  const ts = x => (x && x.at) || '';
+  const accounts = [], rm = new Map(R.accounts.map(a => [a.id, a]));
+  wAcc.forEach(a => { const r = rm.get(a.id); accounts.push(r && ts(r) >= ts(a) ? r : a); rm.delete(a.id); });
+  rm.forEach(r => accounts.push(r));
+  const entries = {}, deleted = {};
+  const dates = [...new Set(Object.keys(wEnt).concat(Object.keys(R.entries), Object.keys(ld), Object.keys(R.deleted)))].sort();
+  dates.forEach(d => {
+    const le = wEnt[d], re = R.entries[d];
+    const dd = [ld[d] || '', R.deleted[d] || ''].sort().pop();
+    /* a tie (two copies from before 2.0, neither dated) goes to the copy already in
+       Dropbox, so the two devices settle on one version instead of taking turns */
+    const live = !le ? re : !re ? le : (ts(re) >= ts(le) ? re : le);
+    if(live && (!dd || ts(live) > dd)) entries[d] = live; else if(dd) deleted[d] = dd;
+  });
+  return { accounts, entries, deleted };
+}
+/* the same content, whatever order it was written in */
+function wealthSig(x){
+  const sortObj = o => Object.keys(o || {}).sort().reduce((a, k) => (a[k] = o[k], a), {});
+  return JSON.stringify({ a:(x.accounts || []).slice().sort((p, q) => p.id < q.id ? -1 : 1), e:sortObj(x.entries), d:sortObj(x.deleted) });
+}
+async function syncNow(){
+  if(!dbxOn()) return;
+  if(syncBusy){ syncAgain = true; return; }
+  syncBusy = true; renderSync();
+  try{
+    for(let tries = 0; tries < 3; tries++){
+      const tok = await dbxAccess();
+      const got = await dbxDownload(tok);
+      const m = mergeWealth(got.data);
+      if(wealthSig(m) !== wealthSig({ accounts:wAcc, entries:wEnt, deleted:loadJSON(W_DEL_KEY, {}) })){
+        wAcc = m.accounts; wEnt = m.entries;
+        storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); storeJSON(W_DEL_KEY, m.deleted);
+        snapWealth(); refreshWealthTiles(); renderTile('retire');
+        if($('ovWealth').classList.contains('show') && wView !== 'entry') wOpenTab(wView);
+      }
+      if(got.data && wealthSig(m) === wealthSig(cleanRemote(got.data))) break;
+      const r = await dbxUpload(tok, Object.assign({ app:'AMS Main Hub', savedAt:new Date().toISOString() }, m), got.rev);
+      if(r === 'ok') break;
+    }
+    dbx.last = new Date().toISOString(); dbx.err = '';
+  }catch(e){ dbx.err = String(e && e.message || e); }
+  dbxSave(); syncBusy = false; renderSync();
+  if(syncAgain){ syncAgain = false; syncSoon(); }
+}
+function renderSync(){
+  const body = $('syncBody'), sum = $('syncSum');
+  if(!body) return;
+  const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  const day = iso => { const d = new Date(iso), t = new Date(); return d.toDateString() === t.toDateString() ? hm(iso) : `${d.getDate()} ${MON3[d.getMonth()]} ${hm(iso)}`; };
+  const about = '<p class="dim" style="margin-top:8px">Your wealth accounts and entries, the same on iPhone and Mac — through one small file in your Dropbox (Apps › AMS Main Hub). Connect once on each device.</p>';
+  if(!DBX_KEY){ body.innerHTML = about + '<p class="syncline">Not ready yet.</p>'; sum.textContent = ''; return; }
+  if(!dbx.refresh && !syncWaiting){
+    sum.textContent = 'off';
+    body.innerHTML = about + '<button class="btn full primary" id="syncConnect" data-testid="sync-connect">Connect Dropbox</button>';
+    $('syncConnect').addEventListener('click', dbxConnectStart);
+    return;
+  }
+  if(!dbx.refresh){
+    sum.textContent = 'connecting';
+    body.innerHTML = `<p style="margin-top:8px">Dropbox opened in a new window. Tap <b>Allow</b>, copy the code it shows, come back here and paste it.</p>
+      <input type="text" id="syncCode" data-testid="sync-code" placeholder="Paste the code from Dropbox" autocomplete="off" autocapitalize="off" spellcheck="false">
+      <div class="btnrow"><button class="btn" id="syncCancel" data-testid="sync-cancel">Cancel</button><button class="btn primary" id="syncFinish" data-testid="sync-finish">Connect</button></div>`;
+    const go = () => { const c = $('syncCode').value; if(c.trim()) dbxConnectFinish(c); };
+    $('syncFinish').addEventListener('click', go);
+    $('syncCode').addEventListener('keydown', ev => { if(ev.key === 'Enter') go(); if(ev.key === 'Escape'){ ev.stopPropagation(); syncWaiting = false; renderSync(); } });
+    $('syncCancel').addEventListener('click', () => { syncWaiting = false; renderSync(); });
+    return;
+  }
+  const line = syncBusy ? 'Syncing…' : dbx.err ? `Could not reach Dropbox (${esc(dbx.err)}) — it tries again on the next change or when you come back.` : dbx.last ? `Connected · last synced ${day(dbx.last)}` : 'Connected';
+  sum.textContent = syncBusy ? 'syncing' : dbx.err ? 'not reached' : dbx.last ? day(dbx.last) : 'on';
+  body.innerHTML = about + `<p class="syncline${dbx.err && !syncBusy ? ' err' : ''}" data-testid="sync-status">${line}</p>
+    <div class="btnrow"><button class="btn danger" id="syncOff" data-testid="sync-off">Disconnect</button><button class="btn primary" id="syncGo" data-testid="sync-now">Sync now</button></div>`;
+  $('syncGo').addEventListener('click', syncNow);
+  $('syncOff').addEventListener('click', () => {
+    if(!confirm('Stop syncing on this device? Everything stays here and in Dropbox; this device just stops exchanging changes.')) return;
+    dbx = {}; dbxSave(); renderSync();
+  });
+}
+
 /* the tile's amber line: straight to that month's entry (1.61) */
 document.addEventListener('click', ev => {
   if(ev.target.closest('[data-tremind]')){ ev.stopPropagation(); openWealth('entry'); return; }
@@ -2598,7 +2832,7 @@ document.addEventListener('click', ev => {
   openWealth('history'); editEntry(b.dataset.tedit);
 });
 function closeWealth(){ $('ovWealth').classList.remove('show'); wEditDate = null; }
-function refreshWealthTiles(){ renderTile('wealth'); renderTile('wealth0'); }
+function refreshWealthTiles(){ renderTile('wealth'); renderTile('wealth0'); renderTile('retire'); }
 document.querySelectorAll('.wtab[data-wv]').forEach(b => b.addEventListener('click', () => wOpenTab(b.dataset.wv)));
 $('wealthClose').addEventListener('click', closeWealth);
 
@@ -2964,6 +3198,63 @@ function histMismatch(d){
   if(!o) return '';
   return `<button class="hwarn" data-hedit="${d}" data-testid="hist-mismatch" data-month="${o.m}" title="Your workbook says ${fmtM(o.ev)} — ${fmtM(Math.abs(o.ev - o.nt))} ${o.ev < o.nt ? 'less' : 'more'} than your own entry. Tap to correct it.">workbook ${fmtM(o.ev)}</button>`;
 }
+/* ---- Year (2.0): how one year went — start, end, each account, best and weakest month ---- */
+let wYear = null;
+function entryYears(){ return [...new Set(entryDates().map(d => d.slice(0, 4)))].sort().reverse(); }
+function yearReview(y){
+  const ds = entryDates(), inY = ds.filter(d => d.slice(0, 4) === y);
+  if(!inY.length) return null;
+  const before = ds.filter(d => d < y + '-01-01');
+  const start = before.length ? before[before.length - 1] : inY[0], end = inY[inY.length - 1];
+  if(start === end) return { start, end, single:true };
+  const se = wEnt[start], ee = wEnt[end], st = entryTotal(se), et = entryTotal(ee);
+  const ids = [...new Set(Object.keys(se.v).concat(Object.keys(ee.v)))];
+  const name = id => { const a = wAcc.find(x => x.id === id); return a ? a.name : '?'; };
+  const accounts = ids.map(id => ({ id, name:name(id), gone: !!(wAcc.find(x => x.id === id) || {}).gone,
+      a: typeof se.v[id] === 'number' ? se.v[id] : 0, b: typeof ee.v[id] === 'number' ? ee.v[id] : 0 }))
+    .sort((p, q) => p.name.localeCompare(q.name, 'sv'));
+  /* each month's last entry against the month before it (or the starting entry) */
+  const ends = [];
+  inY.forEach(d => { const m = d.slice(0, 7); if(ends.length && ends[ends.length - 1].slice(0, 7) === m) ends[ends.length - 1] = d; else ends.push(d); });
+  const months = [];
+  let prev = before.length ? start : null;
+  ends.forEach(d => { if(prev && prev !== d) months.push({ m:d.slice(5, 7), ch: entryTotal(wEnt[d]) - entryTotal(wEnt[prev]) }); prev = d; });
+  const best = months.length ? months.reduce((p, q) => q.ch > p.ch ? q : p) : null;
+  const worst = months.length > 1 ? months.reduce((p, q) => q.ch < p.ch ? q : p) : null;
+  return { start, end, st, et, accounts, best, worst };
+}
+function viewYear(){
+  const ys = entryYears();
+  if(!ys.length) return '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
+  if(!wYear || !ys.includes(wYear)) wYear = ys[0];
+  const r = yearReview(wYear);
+  const nav = ys.length > 1 ? `<div class="wnav yrnav">${ys.slice(0, 6).map(y =>
+    `<button class="wtab${y === wYear ? ' cur' : ''}" data-year="${y}" data-testid="year-pick-${y}">${y}</button>`).join('')}</div>` : '';
+  if(r.single) return nav + `<p class="dim" style="margin:6px 0 0" data-testid="year-single">Only one entry so far — ${dayLabel(r.end)} ${r.end.slice(0, 4)}. The review needs a second one to compare with.</p>`;
+  const sg = n => n === 0 ? '0' : (n < 0 ? '−' : '+') + fmtKr(Math.abs(n));
+  const pc = r.st ? (r.et - r.st) / r.st * 100 : 0, a = Math.abs(pc);
+  const pcs = (pc < 0 ? '−' : '+') + (a >= 10 || Math.round(a * 10) % 10 === 0 ? Math.round(a) : a.toFixed(1)) + '%';
+  const cls = n => n > 0 ? ' class="up"' : n < 0 ? ' class="down"' : '';
+  const mon = x => MON3[+x.m - 1];
+  return nav + `<div class="yhead" data-testid="year-total">${pcs} <span>${sg(r.et - r.st)} kr</span></div>
+    <div class="ysub">${dayLabel(r.start)} ${r.start.slice(0, 4)} → ${dayLabel(r.end)} ${r.end.slice(0, 4)}</div>
+    <div class="htwrap"><table class="htab" data-testid="year-table">
+      <thead><tr><th class="ahead">Accounts</th><th>Start</th><th>End</th><th>Change</th></tr></thead>
+      <tbody>
+        ${r.accounts.map(x => `<tr${x.gone ? ' class="retired"' : ''} data-testid="year-row-${x.id}"><th>${esc(x.name)}${x.gone ? '<i> removed</i>' : ''}</th>
+          <td>${fmtKr(x.a)}</td><td>${fmtKr(x.b)}</td><td${cls(x.b - x.a)}>${sg(x.b - x.a)}</td></tr>`).join('')}
+        <tr class="tot"><th>TOTAL</th><td>${fmtKr(r.st)}</td><td>${fmtKr(r.et)}</td><td${cls(r.et - r.st)}>${sg(r.et - r.st)}</td></tr>
+      </tbody>
+    </table></div>
+    ${r.best ? `<div class="ymonths">
+      <div data-testid="year-best"><b>BEST MONTH</b>${mon(r.best)} ${sg(r.best.ch)} kr</div>
+      ${r.worst ? `<div data-testid="year-worst"><b>WEAKEST MONTH</b>${mon(r.worst)} ${sg(r.worst.ch)} kr</div>` : ''}
+    </div>` : ''}`;
+}
+function bindYear(){
+  document.querySelectorAll('[data-year]').forEach(b => b.addEventListener('click', () => { wYear = b.dataset.year; wOpenTab('year'); }));
+}
+
 function viewHistory(){
   const ds = entryDates().slice().reverse();                 /* newest first */
   const newest = ds.slice(0, HIST_COLS);
@@ -3341,9 +3632,10 @@ document.querySelectorAll('[data-look-pick]').forEach(b => b.addEventListener('c
 applyTheme();
 $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 /* start-up is done: tests (and anything else) can now trust what is on screen */
+renderSync(); syncNow();
 document.documentElement.dataset.ready = VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ renderMini(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); syncSoon(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 

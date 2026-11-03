@@ -33,7 +33,8 @@ async function openHub(page, seed = SEED, { engine = {}, url = '/index.html' } =
       return route.fulfill({ status:404, body:'' });
     }
     if(u.hostname === 'marsch124.github.io') return route.fulfill({ status:404, body:'' });
-    return route.continue();
+    /* fallback, not continue: a test may have its own stand-in (Dropbox) registered first */
+    return route.fallback();
   });
   await seedStorage(page, seed);
   await page.goto(url);
@@ -51,6 +52,8 @@ async function seedStorage(page, seed){
       localStorage.setItem('amshub.wealth.entries',  JSON.stringify(s.entries));
       if(s.links) localStorage.setItem('amshub.v1', JSON.stringify({ links: s.links }));
       if(s.theme) localStorage.setItem('amshub.theme', s.theme);
+      /* any other stored value a test needs from the start, e.g. a Dropbox connection */
+      if(s.extra) Object.keys(s.extra).forEach(k => localStorage.setItem(k, s.extra[k]));
     }
   }, seed);
 }
