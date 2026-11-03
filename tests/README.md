@@ -22,6 +22,8 @@ pass just because some other part of the page happens to say the same word.
 | `history-mismatch.spec.js` — History marks only the month the workbook disagrees with, in amber | the mark disappears, goes grey, lands on the wrong month, or shows when the numbers agree |
 | `look-choice.spec.js` — Day / Night / Automatic in Settings | Automatic stops being the default or stops following the device; Night or Day does not hold; the tiles ignore the choice; a saved choice is not there from the start |
 | `backup-round-trip.spec.js` — the backup file contains his data and brings it back | the backup file is written empty or incomplete (no entries, no links); the restore silently drops something; the file cannot stand on its own on a fresh device |
+| `mismatch-shortcuts.spec.js` — pen dot when any month is off; tapping a History mark opens that month | the dot misses an older month, shows when all agree, or the mark opens the wrong month |
+| `tile-shortcuts.spec.js` — tapping the tile's amber line opens the newest entry; the dot shows the count | the line stops opening the entry, opens the wrong one, or the dot loses its number |
 
 Each one was **seen failing** before it was kept: the oldest total instead of
 the newest, the saved entries not read back, the pen disconnected, the window

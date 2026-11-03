@@ -300,6 +300,14 @@
   .msub{font-size:10.5px; color:var(--ink-dim); font-weight:600; margin-top:3px; line-height:1.35;}
   .msub a{color:inherit; font-weight:800; text-decoration:none;}
   .msub.mwarn{color:var(--warn); font-weight:800;}
+  /* a button since 1.61: tapping it opens that month's entry */
+  button.mwarn{display:block; padding:0; border:none; background:none; font-family:inherit; cursor:pointer;
+               text-align:left; text-decoration:underline dotted; text-underline-offset:2px;
+               position:relative; z-index:2;}   /* above the pen's big invisible target */
+  @media (max-width:600px){   /* "wor…" on a phone, as before */
+    button.mwarn{width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+  }
+  html[data-look="night"] .pdot{color:#1b1815;}   /* dark figure on the light night amber */
   /* on the header strip there is room for one line of detail: the warning takes it */
   header .mbody:has(.mwarn) .msub:not(.mwarn){display:none;}
   .mspark{width:100%; height:22px; display:block; margin-top:7px;}
@@ -324,9 +332,10 @@
   }
   /* 1.60: an amber dot on the pen's top-right when any month disagrees with the workbook */
   .pwrap{position:relative; display:flex;}
-  .pdot{position:absolute; top:-2px; right:-3px; width:11px; height:11px; border-radius:50%;
-        background:var(--warn);}
-  @media (max-width:600px){ .pdot{width:10px; height:10px;} }
+  /* 1.61: the dot carries how many months are off */
+  .pdot{position:absolute; top:-5px; right:-7px; min-width:16px; height:16px; padding:0 4px; box-sizing:border-box;
+        border-radius:8px; background:var(--warn); color:#fff; font-size:10.5px; font-weight:800; line-height:16px;
+        text-align:center; font-variant-numeric:tabular-nums;}
   .mpen:hover{background:rgba(42,36,32,.07); color:var(--ink);}   /* a faint tint only under the pointer */
   .mpen:active{transform:scale(.92);}
   /* choosing which tiles to show — the toggles only exist in arrange mode */
@@ -1109,7 +1118,7 @@
         <details class="sub">
           <summary>Entering your wealth<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Tap the <b>pencil</b> on the Wealth tile. If it carries a small <b>amber dot</b>, at least one month — any month, not only the newest — has a different figure in the budget workbook than your own entry; open History to see which. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
+        <p>Tap the <b>pencil</b> on the Wealth tile. If it carries a small <b>amber dot with a number</b>, that many months — any month, not only the newest — have a different figure in the budget workbook than your own entry; open History to see which, and tap a month's amber line there to correct it. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
         <ul>
           <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
           <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
@@ -1155,7 +1164,7 @@
         <p><b>Two different numbers sit in the Wealth tile, and only one of them is yours.</b></p>
         <ul>
           <li><b>Your entries</b> — the big total, and everything behind it: the balances you type through the pencil, your account names and their order, and the daily safety copies. These live <b>inside this app, on this device</b>, and nowhere else. Not on a server, not in the hub's public code, not in iCloud.</li>
-          <li><b>The amber workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. It only appears when the workbook disagrees with your own newest entry: then the Wealth tile shows <b>workbook …</b> in amber under your total, and a pointer over it says by how much and which way. When they agree, nothing shows. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
+          <li><b>The amber workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. It only appears when the workbook disagrees with your own newest entry: then the Wealth tile shows <b>workbook …</b> in amber under your total, and a pointer over it says by how much and which way. <b>Tap that line</b> and your newest entry opens with its figures filled in, ready to correct. When they agree, nothing shows. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
         </ul>
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
@@ -1183,7 +1192,7 @@
           <summary>Tests<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p><b>The hub now tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with a made-up set of wealth accounts and entries, and checks that the things you depend on still work.</p>
-        <p>Three tests so far: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
+        <p>Eleven test files now, each run at iPhone and Mac size. Among them: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
         <p>The backup test is the important one. It doesn’t trust the words on the button: it saves a real file, reads what is inside it, then opens a <b>second, completely empty hub</b> — a fresh device — and restores the file there. Your accounts, every entry and your own links all have to come back. That is exactly the journey from your iPhone to your Mac, and it is the one failure that would cost you something you can’t retype.</p>
         <p>Over on the Mac side, the two little programs that read and write your budget workbook are tested too, on every push: they must find the wealth block <b>by the words in its header row</b> wherever you move it to, write into the right month and no other, never overwrite a formula, and always take a dated BU copy first.</p>
         <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed. Each test was deliberately broken first to prove it notices — the tile showing the oldest total instead of the newest, your saved entries not being read back, the pencil disconnected, and the window opening on the wrong tab were all caught.</p>
@@ -1361,6 +1370,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.61', when:'3 Nov 2026',
+    what:'THE LAST TWO AMBER SHORTCUTS — THE WORKBOOK CHECK IS NOW COMPLETE. (1) TAP THE AMBER LINE ON THE WEALTH TILE. Before, the amber "workbook 1.20M kr" line under your total only told you; to fix it you opened the pencil, then History, then that month. Now the line itself is a button (lightly underlined): tap it and your newest entry opens on New entry with its figures filled in, ready to correct — one tap instead of three. On the iPhone the line stays short ("wor…") as before, and is still tappable. (2) THE PENCIL DOT SHOWS HOW MANY MONTHS ARE OFF. Before, the amber dot on the pencil only said "something is off". Now it carries the number — 1, 2, 3 … — so you know at a glance how much there is to check. It is a little larger to fit the figure: white on amber by day, dark on amber by night. When every month agrees there is still no dot. (3) A NEW TEST checks that tapping the tile\'s line opens the right month with the right figures, and that the dot shows the right count. It was seen failing (4 times) before the change was built. The tests are now 11 files, run at iPhone and Mac size on every push.' },
   { v:'1.60', when:'3 Nov 2026',
     what:'TWO SHORTCUTS TO A MONTH THAT IS OFF. (1) AN AMBER DOT ON THE WEALTH PENCIL. Before, only the newest month was checked on the tile — if an older month disagreed with the budget workbook you would only find out by opening History and looking. Now the pencil on the Wealth tile carries a small amber dot whenever ANY month disagrees, old or new, so you know before you open anything. On the Mac a pointer over the pencil says how many months differ. When every month agrees there is no dot. (2) TAP THE AMBER MARK TO FIX THAT MONTH. Before, the amber "workbook 1M kr" line in History only told you; to correct the month you had to find Adjust under the same column. Now the amber line itself is a button (it is lightly underlined): tap it and that month\'s entry opens on New entry with its figures filled in, exactly as Adjust does. This works in the table and in the Earlier entries list. (3) A NEW TEST checks the dot appears when only an older month is off, stays away when all agree, is amber, and that tapping the mark opens the right month with the right figures. It was seen failing before the change was built. The tests are now 10 files, run at iPhone and Mac size on every push.' },
   { v:'1.59', when:'3 Nov 2026',
@@ -2387,7 +2398,7 @@ function renderWealth(p, zeroBased){
     /* the workbook disagrees with his own entry: say so in amber, with how far apart —
        a wrong number under the total must never sit there quietly (3 Nov 2026) */
     if(ev != null && ev !== nt && !zeroBased) check =
-      `<div class="msub mwarn" data-testid="wealth-mismatch" title="Your workbook says ${fmtM(ev)} — ${fmtM(Math.abs(ev - nt))} ${ev < nt ? 'less' : 'more'} than your own entry">workbook ${fmtM(ev)}</div>`;
+      `<button class="msub mwarn" data-tedit="${nd}" data-testid="wealth-mismatch" title="Your workbook says ${fmtM(ev)} — ${fmtM(Math.abs(ev - nt))} ${ev < nt ? 'less' : 'more'} than your own entry. Tap to correct it.">workbook ${fmtM(ev)}</button>`;
   }else{
     sub = prev
       ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
@@ -2467,8 +2478,9 @@ function markPen(){
   const pen = $('miniEdit');
   if(!pen) return;
   const n = offMonths().length;
-  const dot = pen.querySelector('.pdot');
-  if(n && !dot) pen.querySelector('.pwrap').insertAdjacentHTML('beforeend', '<span class="pdot" data-testid="pen-dot"></span>');
+  let dot = pen.querySelector('.pdot');
+  if(n && !dot){ pen.querySelector('.pwrap').insertAdjacentHTML('beforeend', '<span class="pdot" data-testid="pen-dot"></span>'); dot = pen.querySelector('.pdot'); }
+  if(n) dot.textContent = n;
   if(!n && dot) dot.remove();
   pen.setAttribute('aria-label', n ? `Enter your wealth — ${n} month${n === 1 ? '' : 's'} differs from your workbook` : 'Enter your wealth');
   pen.title = n ? `${n} month${n === 1 ? ' differs' : 's differ'} from your workbook — see History` : '';
@@ -2526,6 +2538,13 @@ function openWealth(v){
   wOpenTab(v || 'history');
   $('ovWealth').classList.add('show');
 }
+/* the tile's amber line: straight to that month's entry (1.61) */
+document.addEventListener('click', ev => {
+  const b = ev.target.closest('[data-tedit]');
+  if(!b || !wEnt[b.dataset.tedit]) return;
+  ev.stopPropagation();
+  openWealth('history'); editEntry(b.dataset.tedit);
+});
 function closeWealth(){ $('ovWealth').classList.remove('show'); wEditDate = null; }
 function refreshWealthTiles(){ renderTile('wealth'); renderTile('wealth0'); }
 document.querySelectorAll('.wtab[data-wv]').forEach(b => b.addEventListener('click', () => wOpenTab(b.dataset.wv)));
@@ -2956,13 +2975,15 @@ function viewHistory(){
     ${listed.length ? `<h3 style="margin-top:20px"${older.length ? '' : ' class="hxrow"'}>Earlier entries</h3>${oldRows}` : ''}
     ${safe}`;
 }
+/* open one entry on New entry with its figures filled in — Adjust, the amber marks (1.60, 1.61) */
+function editEntry(d){
+  wEditDate = d; wDate = d; wTyped = {}; wExact = {};
+  const e = wEnt[d];
+  liveAccounts().forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
+  wOpenTab('entry');
+}
 function bindHistory(){
-  document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => {
-    wEditDate = b.dataset.hedit; wDate = wEditDate; wTyped = {}; wExact = {};
-    const e = wEnt[wEditDate];
-    liveAccounts().forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
-    wOpenTab('entry');
-  }));
+  document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => editEntry(b.dataset.hedit)));
   const r = $('wRestoreSnap');
   if(r) r.addEventListener('click', () => {
     const snap = fullestSnap();

@@ -42,6 +42,14 @@ entry exactly as Adjust does. And the Wealth pencil carries an amber dot
 (`offMonths()`), not only the newest; its `aria-label` and tip give the
 count. `markPen()` runs after every redraw of the Wealth tile.
 
+Since 1.61 the tile's amber line is a `<button data-tedit="YYYY-MM-DD">`
+(the newest entry); one document-level click listener opens the sheet and
+calls `editEntry(d)` — the same function Adjust and the History marks use.
+It sits above the pen's big invisible target (`z-index:2`); on a phone it
+is cut short with an ellipsis. The pen dot now holds the count of
+`offMonths()` (white figure by day, `#1b1815` by night, 16px pill).
+This closes the amber workbook-check work.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the
