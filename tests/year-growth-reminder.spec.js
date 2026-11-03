@@ -45,3 +45,30 @@ test('from the 8th the missing month is named; tapping opens New entry; saving c
   await page.getByTestId('entry-save').click();
   await expect(page.getByTestId('wealth-reminder')).toHaveCount(0);
 });
+
+/* 1.63 — the pointer tip gives the growth in kronor too */
+test('the growth line\'s tip gives the change in kronor', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2026-11-03T09:00:00'));
+  /* Feb 1.00M · Oct 1.12M → +120k kr since 28 Feb 2026 */
+  await openHub(page, { accounts:ACC, entries:{
+    '2026-02-28': e(600000, 400000), '2026-10-31': e(700000, 420000) } });
+  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-growth'))
+    .toHaveAttribute('title', '+120k kr since 28 Feb 2026');
+});
+
+/* 1.63 — in the first week of January, before a January entry, last year's result */
+test('in the first days of January the tile shows last year\'s growth', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2027-01-05T09:00:00'));
+  /* 31 Dec 2025 1.00M · 31 Mar 2026 1.05M · 31 Dec 2026 1.14M → +14% in 2026 */
+  await openHub(page, { accounts:ACC, entries:{
+    '2025-12-31': e(500000, 500000), '2026-03-31': e(550000, 500000), '2026-12-31': e(640000, 500000) } });
+  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-growth')).toHaveText('+14% in 2026');
+});
+
+test('from the 8th of January last year\'s growth is gone', async ({ page }) => {
+  await page.clock.setFixedTime(new Date('2027-01-08T09:00:00'));
+  await openHub(page, { accounts:ACC, entries:{
+    '2025-12-31': e(500000, 500000), '2026-12-31': e(640000, 500000) } });
+  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-total')).toBeVisible();
+  await expect(page.getByTestId('wealth-growth')).toHaveCount(0);
+});

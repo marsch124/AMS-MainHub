@@ -1132,7 +1132,7 @@
           <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
           <li><b>History</b> — the page the sheet opens on. If the budget workbook (on the Mac) has a different figure for a month than your own entry, that month gets a small amber <b>workbook</b> line under its TOTAL, so you see exactly which month is off; a pointer over it says by how much. <b>Tap that amber line</b> and the month's entry opens to correct it, just like Adjust. Months that agree show nothing. With two entries in one month, the mark sits on the last one. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
         </ul>
-        <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
+        <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
         </details>
@@ -1377,6 +1377,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'1.63', when:'3 Nov 2026',
+    what:'THE GROWTH LINE TELLS YOU MORE. (1) THE AMOUNT IN KRONOR. Before, on the Mac a pointer over "+9.8% since Jan" only named the entry it compared with. Now it gives the growth in kronor as well, for example "+650k kr since 31 Jan 2026". (2) LAST YEAR\'S RESULT IN EARLY JANUARY. Before, from 1 January until you typed your first entry of the new year, the growth line simply vanished (there was nothing from the new year to measure). Now, from the 1st to the 7th of January, the tile shows how the whole of last year went, for example "+14% in 2026" — your last entry of that year against your last entry from the year before (or, if there is none, the first entry of that year). From the 8th it gives way to the monthly reminder, and as soon as you save a January entry the tile shows the new year\'s growth again. (3) THE TEST grew by three checks: the kronor in the pointer tip, last year\'s result in the first week of January, and that it is gone from the 8th. The first two were seen failing (4 times) before the change was built. Still 12 test files, run at iPhone and Mac size on every push.' },
   { v:'1.62', when:'3 Nov 2026',
     what:'THIS YEAR\'S GROWTH, AND A MONTHLY NUDGE TO TYPE IN YOUR WEALTH. (1) THE WEALTH TILE SHOWS THIS YEAR\'S GROWTH. Before, the line under your total said how much it moved since the entry before ("+137k since 31 Oct"). Now that line says how much it has grown this year, in percent — for example "+9.8% since Jan". It compares your newest entry with your FIRST entry of this year. If this year has no other entry yet (only the newest one), it compares with your last entry from before 1 January, and still says "since Jan". A fall shows with a minus ("−5% since Jan"). Under 10% it shows one decimal (9.8%), from 10% whole numbers (12%). On the Mac a pointer over it names the entry it compares with. The Wealth · 0 tile is unchanged, and the amber workbook line still takes the place of this line when the workbook disagrees. (2) A GENTLE REMINDER ONCE A MONTH. From the 8th of each month, if you have no entry for that month yet, the Wealth tile shows a quiet line in its own honey colour (not amber — nothing is wrong): "Nov not entered yet". Tap it and the wealth window opens straight on New entry, dated today. As soon as you save an entry for that month the line disappears. Before the 8th it never shows. (3) A NEW TEST checks the growth from the first entry of this year, the fallback to before 1 January, that there is no reminder before the 8th, and that the reminder shows from the 8th, opens New entry and goes away after saving. It was seen failing (6 times) before the change was built. The tests are now 12 files, run at iPhone and Mac size on every push.' },
   { v:'1.61', when:'3 Nov 2026',
@@ -2416,7 +2418,7 @@ function renderWealth(p, zeroBased){
   let grow = '', remind = '';
   if(!zeroBased){
     const g = yearGrowth();
-    if(g) grow = `<div class="msub mgrow" data-testid="wealth-growth" title="Your newest entry against ${dayLabel(g.from)} ${g.from.slice(0, 4)}">${g.text}</div>`;
+    if(g) grow = `<div class="msub mgrow" data-testid="wealth-growth" title="${g.tip}">${g.text}</div>`;
     const r = missingMonth();
     if(r) remind = `<button class="msub mremind" data-tremind="1" data-testid="wealth-reminder" style="color:${p.dot}" title="Tap to type in this month's wealth">${r} not entered yet</button>`;
   }
@@ -2425,24 +2427,29 @@ function renderWealth(p, zeroBased){
     ${wealthSpark(S, known, p, zeroBased)}`;
 }
 /* this year's growth (1.62): the newest entry against the first entry of this year —
-   or, with nothing else from this year, the last entry from before 1 January */
+   or, with nothing else from this year, the last entry from before 1 January.
+   1.63: in the first week of January, before a January entry, last year's result */
 function yearGrowth(){
   const ds = entryDates();
   if(!ds.length) return null;
-  const nd = ds[ds.length - 1], y = String(new Date().getFullYear());
-  if(nd.slice(0, 4) !== y) return null;
+  const now = new Date(), nd = ds[ds.length - 1];
+  let y = String(now.getFullYear()), lastYear = false;
+  if(nd.slice(0, 4) !== y){
+    if(now.getMonth() !== 0 || now.getDate() >= 8 || nd.slice(0, 4) !== String(now.getFullYear() - 1)) return null;
+    y = nd.slice(0, 4); lastYear = true;
+  }
   const inYear = ds.filter(d => d.slice(0, 4) === y && d !== nd);
   const before = ds.filter(d => d < y + '-01-01');
-  const from = inYear.length ? inYear[0] : before[before.length - 1];
+  /* last year in full: measured from the end of the year before, when there is one */
+  const from = lastYear ? (before[before.length - 1] || inYear[0]) : (inYear.length ? inYear[0] : before[before.length - 1]);
   if(!from) return null;
   const bt = entryTotal(wEnt[from]), nt = entryTotal(wEnt[nd]);
   if(!bt) return null;
-  const pc = (nt - bt) / bt * 100, a = Math.abs(pc);
+  const pc = (nt - bt) / bt * 100, a = Math.abs(pc), sign = pc < 0 ? '−' : '+';
   const num = a >= 10 || Math.round(a * 10) % 10 === 0 ? String(Math.round(a)) : a.toFixed(1);
-  const since = from.slice(0, 4) === y
-    ? MON3[+from.slice(5, 7) - 1]
-    : 'Jan';
-  return { from, text: `${pc < 0 ? '−' : '+'}${num}% since ${since}` };
+  const since = lastYear ? `in ${y}` : from.slice(0, 4) === y ? `since ${MON3[+from.slice(5, 7) - 1]}` : 'since Jan';
+  return { from, text: `${sign}${num}% ${since}`,
+           tip: `${nt - bt < 0 ? '−' : '+'}${fmtM(Math.abs(nt - bt))} since ${dayLabel(from)} ${from.slice(0, 4)}` };
 }
 /* the monthly reminder (1.62): from the 8th, a month with no entry yet is named on the tile */
 function missingMonth(){

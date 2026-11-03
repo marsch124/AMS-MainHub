@@ -63,6 +63,13 @@ From the 8th of a month with no entry yet, a honey `<button data-tremind>`
 yet"; tapping it opens the sheet on New entry (dated today). Saving an
 entry for that month redraws the tile and the line is gone.
 
+Since 1.63 the growth line's `title` gives the change in kronor
+("+650k kr since 31 Jan 2026"). From 1 to 7 January, when the newest entry
+is from last year, `yearGrowth()` shows last year's result ("+14% in
+2026"): that year's last entry against the last entry before it began
+(else that year's first entry). From the 8th it is gone until a January
+entry exists.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the
