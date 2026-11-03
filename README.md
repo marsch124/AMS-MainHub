@@ -50,6 +50,19 @@ is cut short with an ellipsis. The pen dot now holds the count of
 `offMonths()` (white figure by day, `#1b1815` by night, 16px pill).
 This closes the amber workbook-check work.
 
+Since 1.62 the tile's grey line under the total shows **this year's growth**
+(`data-testid="wealth-growth"`, `yearGrowth()`): newest entry against the
+first entry dated this calendar year; if the newest is the only one this
+year, against the last entry before 1 January ("since Jan"). Under 10% one
+decimal, else whole; "−" for a fall; no line if the newest entry is from an
+earlier year or there is nothing to compare with. It takes the place of the
+old "+… since <date>" line (the Wealth · 0 tile keeps "all of it, from
+zero"); the amber workbook line still overrides it on the header strip.
+From the 8th of a month with no entry yet, a honey `<button data-tremind>`
+(`data-testid="wealth-reminder"`, `missingMonth()`) reads "Nov not entered
+yet"; tapping it opens the sheet on New entry (dated today). Saving an
+entry for that month redraws the tile and the line is gone.
+
 ## How the version chips work
 
 All the AMS web apps live on the same domain (`marsch124.github.io`), so the

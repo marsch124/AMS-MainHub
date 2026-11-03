@@ -24,6 +24,7 @@ pass just because some other part of the page happens to say the same word.
 | `backup-round-trip.spec.js` — the backup file contains his data and brings it back | the backup file is written empty or incomplete (no entries, no links); the restore silently drops something; the file cannot stand on its own on a fresh device |
 | `mismatch-shortcuts.spec.js` — pen dot when any month is off; tapping a History mark opens that month | the dot misses an older month, shows when all agree, or the mark opens the wrong month |
 | `tile-shortcuts.spec.js` — tapping the tile's amber line opens the newest entry; the dot shows the count | the line stops opening the entry, opens the wrong one, or the dot loses its number |
+| `year-growth-reminder.spec.js` — this year's growth; the monthly reminder from the 8th | growth compares with the wrong entry, misses the before-1-January fallback, or shows the wrong sign; the reminder shows before the 8th, does not open New entry, or stays after saving |
 
 Each one was **seen failing** before it was kept: the oldest total instead of
 the newest, the saved entries not read back, the pen disconnected, the window
