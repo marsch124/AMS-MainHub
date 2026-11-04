@@ -148,3 +148,24 @@ test('an entry put back is not deleted again by the sync', async ({ page }) => {
   await expect.poll(() => Object.keys(box.file.entries).sort().join(), { timeout:10000 }).toBe('2026-07-01,2026-08-01,2026-10-01');
   await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-07-01,2026-08-01,2026-10-01');
 });
+
+/* 2.1.1 — on the iPhone the hub can restart while he is in Dropbox fetching the code;
+   coming back, it must still be waiting for that code, not show Connect again */
+test('the hub still waits for the code after it restarts', async ({ page, browser }) => {
+  await page.addInitScript(() => { window.open = () => null; });
+  await openHub(page);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await page.getByTestId('sync-connect').click();
+  await expect(page.getByTestId('sync-code')).toBeVisible();
+  const stored = await page.evaluate(() => localStorage.getItem('amshub.dropbox'));
+  /* the same device, started afresh, with what was stored */
+  const ctx = await browser.newContext({ ...test.info().project.use, serviceWorkers:'block' });
+  const p2 = await ctx.newPage();
+  await openHub(p2, { accounts:[], entries:{}, extra:{ 'amshub.dropbox': stored } });
+  await p2.getByTestId('settings-btn').click();
+  await p2.getByTestId('fold-sync').locator('summary').click();
+  await expect(p2.getByTestId('sync-code')).toBeVisible();
+  await expect(p2.getByTestId('sync-connect')).toHaveCount(0);
+  await ctx.close();
+});

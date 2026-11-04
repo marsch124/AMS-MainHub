@@ -1159,7 +1159,7 @@
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
         <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
-        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>.</p>
+        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
         </details>
@@ -1409,6 +1409,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.1.1', when:'4 Nov 2026',
+    what:'CONNECTING DROPBOX ON THE IPHONE NO LONGER LOSES ITS PLACE. Before, after you tapped Connect Dropbox and went to Dropbox to fetch the code, the iPhone sometimes started the hub afresh — and coming back, Settings › Dropbox sync showed "off" and the Connect Dropbox button again, with no box to paste the code into. Now the hub remembers it is waiting: come back, open Settings › Dropbox sync, and the paste box is there, still matching the code Dropbox showed you. Cancel (or Escape on the Mac) gives up on that code. A NEW CHECK in the sync test starts the hub afresh in the middle of connecting and makes sure the paste box is still there; it was seen failing before the fix.' },
   { v:'2.1', when:'3 Nov 2026',
     what:'HARDENING — PUTTING DATA BACK CAN NO LONGER LOSE ANY, AND DROPBOX TROUBLE IS SAID PLAINLY. (1) A RESTORE NOW ADDS, IT NEVER REPLACES. Before, Import / restore swapped this device\'s wealth for the backup\'s, so every entry newer than the backup was dropped — and with Dropbox sync on, that drop travelled to your other device as a deletion, so one old backup could have wiped your latest months on the iPhone and the Mac at once. Now a restore only brings back the dates missing here; dates and accounts already here stay exactly as they are, and the message says how many came back and how many were kept. The backup\'s safety copies are added to this device\'s own instead of replacing them. (2) "PUT THOSE ENTRIES BACK" WORKS THE SAME WAY, AND STICKS. Before, it replaced everything with the safety copy (dropping anything newer), and with Dropbox on, an entry put back could be deleted again at the next sync because Dropbox still remembered the old deletion. Now it adds only the missing entries, and putting one back counts as the newest change, so it stays on both devices. (3) A SAVE THE DEVICE REFUSES IS SAID OUT LOUD. If the device\'s storage is full or blocked, a saved entry used to vanish in silence the next time the hub opened; now a message tells you at once, while your figures are still on screen, and asks you to save a backup file. (4) DROPBOX: A WITHDRAWN CONNECTION SAYS "CONNECT DROPBOX AGAIN" instead of a technical code, and an upload only counts as synced when Dropbox hands back its receipt for the file — anything else shows "Not synced". (5) SIX NEW CHECKS, all seen failing before the fixes: a new test file for restoring and putting back (15 test files now), and three more in the sync test.' },
   { v:'2.0.1', when:'3 Nov 2026',
@@ -2697,7 +2699,9 @@ const DBX_KEY = 'lepa5isroxmhvw5';                       /* the hub's Dropbox ap
 const DBX_STORE = 'amshub.dropbox';       /* { refresh, access, exp, last, err, verifier } */
 const DBX_FILE = '/wealth.json';
 let dbx = loadJSON(DBX_STORE, {}) || {};
-let syncBusy = false, syncAgain = false, syncTimer = null, syncWaiting = false;
+/* waiting for the pasted code survives a restart (2.1.1): on the iPhone the hub is often
+   started afresh while he is in Dropbox fetching the code */
+let syncBusy = false, syncAgain = false, syncTimer = null, syncWaiting = !!(dbx.verifier && !dbx.refresh);
 function dbxSave(){ storeJSON(DBX_STORE, dbx); }
 function dbxOn(){ return !!(DBX_KEY && dbx.refresh); }
 function syncSoon(){ if(!dbxOn()) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 1200); }
@@ -2845,8 +2849,8 @@ function renderSync(){
       <div class="btnrow"><button class="btn" id="syncCancel" data-testid="sync-cancel">Cancel</button><button class="btn primary" id="syncFinish" data-testid="sync-finish">Connect</button></div>`;
     const go = () => { const c = $('syncCode').value; if(c.trim()) dbxConnectFinish(c); };
     $('syncFinish').addEventListener('click', go);
-    $('syncCode').addEventListener('keydown', ev => { if(ev.key === 'Enter') go(); if(ev.key === 'Escape'){ ev.stopPropagation(); syncWaiting = false; renderSync(); } });
-    $('syncCancel').addEventListener('click', () => { syncWaiting = false; renderSync(); });
+    $('syncCode').addEventListener('keydown', ev => { if(ev.key === 'Enter') go(); if(ev.key === 'Escape'){ ev.stopPropagation(); syncWaiting = false; delete dbx.verifier; dbxSave(); renderSync(); } });
+    $('syncCancel').addEventListener('click', () => { syncWaiting = false; delete dbx.verifier; dbxSave(); renderSync(); });
     return;
   }
   const line = syncBusy ? 'Syncing…' : dbx.err ? `Not synced — ${esc(dbx.err)}. It tries again on the next change, when you come back, or with Sync now.` : dbx.last ? `Connected · last synced ${day(dbx.last)}` : 'Connected';
