@@ -327,6 +327,14 @@
   header .msub.mgrow, header button.mremind, header .msub.mfore{white-space:normal; overflow:visible;}
   /* 2.0: the forecast on the Retirement tile */
   .msub.mfore{color:var(--ink); font-weight:800;}
+  /* 2.3: on a phone the forecast is the number alone, on one line */
+  @media (max-width:600px){ header .msub.mfore{white-space:nowrap; display:block;} .mfore .fby{display:none;} }
+  /* 2.3: the list of Dropbox backups under Restore from Dropbox */
+  .dbxlist{margin:2px 0 8px;}
+  .dbxlist .btn{margin:4px 0;}
+  .dbxlist .dbxrow{display:flex; justify-content:space-between; gap:8px; text-align:left; padding-top:8px; padding-bottom:8px;}
+  .dbxlist .dbxrow span{color:var(--ink-dim); font-weight:600;}
+  .dbxlist p{margin:6px 0;}
   /* 2.0: the year review */
   .yrnav{margin:4px 0 10px;}
   .yhead{font-size:22px; font-weight:800; letter-spacing:-.01em; margin:4px 0 0;}
@@ -1193,7 +1201,7 @@
         </ul>
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
-        <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
+        <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then” on the Mac; on the iPhone it is just “≈ 8.27M kr”, on one line. It needs entries at least two months apart.</p>
         <p><b>The top tiles.</b> They sit three across in two even rows, on the iPhone and on the Mac, so every number is on one line. While Dropbox sync is on, a small sync mark sits beside WEALTH in the tile’s own colour — amber if it is not getting through (Settings › Dropbox sync then says why).</p>
         <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>. Once connected, the section has one line of three icon buttons: the coloured <b>circling arrows</b> sync now, the red <b>broken link</b> disconnects this device (it asks first, and keeps everything), and the <b>arrow in a circle</b> checks for an app update. On the Mac, rest the pointer on a button to see its name.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
@@ -1239,6 +1247,7 @@
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
         <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty. Since 2.0 <b>Dropbox sync</b> carries your wealth accounts and entries across by itself, and since 2.2 Dropbox also keeps <b>a full backup every day</b> (Apps › AMS Main Hub › backups — the newest 30), so a fresh install that connects Dropbox gets everything back; the backup file under <b>Your data</b> stays the bridge for links, look and dashboard addresses, and for a device without Dropbox. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
+        <p><b>Bringing a Dropbox backup back (2.3).</b> While Dropbox is connected, Settings › Your data has <b>Restore from Dropbox…</b>. Tap it and the newest seven daily backups appear, newest first — the day, and how long ago (Today, Yesterday, 3 days ago). Tap a day, say OK, and it comes back: wealth accounts and entries missing here are added, and nothing on this device is deleted (a date that is already here keeps what you have); your links, card order and colours become the ones in that backup. Cancel closes the list. No Files app needed — Import / restore… is still there for a backup file you saved yourself.</p>
           </div>
         </details>
 
@@ -1422,6 +1431,8 @@
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
+        <button class="btn full" id="dbxRestoreBtn" data-testid="dropbox-restore" hidden>Restore from Dropbox…</button>
+        <div class="dbxlist" id="dbxRestoreList" data-testid="dropbox-restore-list" hidden></div>
         <p class="dim" id="dropboxBackupLine" data-testid="dropbox-backup-line" hidden></p>
         <input type="file" id="importFile" data-testid="backup-file" accept=".json,application/json" style="display:none" />
         <div class="backup-meta" id="backupMeta" data-testid="backup-meta"></div>
@@ -1446,6 +1457,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.3', when:'4 Nov 2026',
+    what:'THE FORECAST ON ONE LINE, AND RESTORE FROM DROPBOX. (1) RETIREMENT TILE ON THE IPHONE. Before, the forecast read "≈ 8.27M kr by then" and on the iPhone it broke over two lines. Now on the iPhone it says just "≈ 8.27M kr", on one line; the Mac still says "by then". (2) RESTORE FROM DROPBOX. Before, bringing back one of the daily Dropbox backups meant finding the file in the Files app or Dropbox and opening it through Import / restore. Now, while Dropbox is connected, Settings › Your data has a Restore from Dropbox… button. It lists the newest seven daily backups, newest first, each with its day and how long ago (Today, Yesterday, 3 days ago). Tap one, confirm, and it is restored the same safe way as a backup file: wealth accounts and entries missing on this device are added, nothing here is deleted, a date already here keeps what you have; links, card order and colours become the backup\'s. Cancel closes the list. Without Dropbox the button is not shown. Import / restore… stays for files you saved yourself. (3) TESTS. New: the forecast is one line on the iPhone and keeps "by then" on the Mac; the Dropbox list shows exactly the newest seven backups in order and ignores other files; a picked backup adds its entries and keeps the ones here; the button is absent without Dropbox. All seen failing before the change was built. Still 17 test files, run at iPhone and Mac size on every push.' },
   { v:'2.2', when:'4 Nov 2026',
     what:'A TIDY TOP AREA, A SYNC MARK, AND DROPBOX AS YOUR DAILY BACKUP. (1) THE TILES AT THE TOP, REDONE. Before, on the iPhone all six tiles were squeezed into one row: about 60 points each, so names were cut ("RETIREM", "WEALTH · 0" on two lines), the numbers broke over two lines ("7.76M / kr"), details ended in "…", and the pencil sat on top of the word WEALTH. On the Mac five tiles shared a row and the sixth (Apps) sat alone on a full-width row below. Now both show three tiles across in two even rows — on the iPhone each tile is about three times as wide. Every number fits on one line, the names fit, details get up to two lines, and the iPhone pencil is a small pen at the end of the WEALTH row, beside the name instead of on it (its tap area is still generous). On the iPhone the Finance tile now says "on the Mac" instead of "engine not answering", because that tile is only ever filled on the Mac. (2) A SYNC MARK ON THE WEALTH TILE. While Dropbox sync is on, a small hand-drawn sync mark sits beside WEALTH in the tile\'s own colour; on the Mac a pointer over the name says when it last synced. If sync is not getting through, the mark turns amber, and Settings › Dropbox sync says why. Without Dropbox there is no mark. (3) DROPBOX KEEPS A BACKUP EVERY DAY. Before, a backup only existed when you saved a backup file yourself. Now, once a day, after the first successful sync, each connected device puts a full backup — the same file as Save a backup file, with accounts, entries, links and look — into your Dropbox at Apps › AMS Main Hub › backups, named by the date (hub-backup-2026-11-04.json). The newest 30 are kept and older ones are removed; nothing else in that folder is ever touched. Settings › Your data shows the last one ("Dropbox keeps a backup every day — last: today 08:40") or, if it failed, why — a failed backup never stops the sync and is tried again on the next one. To bring one back, open it from the Files app or Dropbox and use Import / restore. (4) TESTS. A new test checks the top area at iPhone size (three across, two rows, nothing cut off, the pen never on the name), and the sync test now checks the sync mark (on, absent, amber) and the daily backup (it goes up with your data, only once a day, only the oldest beyond 30 are removed, the line in Your data). All were seen failing before the change was built. The tests are now 17 files, run at iPhone and Mac size on every push.' },
   { v:'2.1.3', when:'4 Nov 2026',
@@ -2607,7 +2620,7 @@ function renderRetire(){
   const days = Math.max(0, Math.round((RETIREMENT - today) / 86400000));
   const f = wealthForecast();
   return `<div class="mbig">${days.toLocaleString('en-GB')}</div>
-    <div class="msub">days · 1 Jul 2028</div>${f ? `<div class="msub mfore" data-testid="retire-forecast" title="${f.tip}">≈ ${fmtM(f.value)} by then</div>` : ''}`;
+    <div class="msub">days · 1 Jul 2028</div>${f ? `<div class="msub mfore" data-testid="retire-forecast" title="${f.tip}">≈ ${fmtM(f.value)}<span class="fby"> by then</span></div>` : ''}`;
 }
 
 function renderYear(p){
@@ -2942,6 +2955,8 @@ function renderBackupLine(){
   const el = $('dropboxBackupLine');
   if(!el) return;
   el.hidden = !dbxOn();
+  if($('dbxRestoreBtn')) $('dbxRestoreBtn').hidden = !dbxOn();
+  if(!dbxOn() && $('dbxRestoreList')) $('dbxRestoreList').hidden = true;
   if(!dbxOn()) return;
   const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
   const when = iso => { const d = new Date(iso); return d.toDateString() === new Date().toDateString() ? 'today ' + hm(iso) : d.getDate() + ' ' + MON3[d.getMonth()] + ' ' + hm(iso); };
@@ -3656,6 +3671,12 @@ $('importFile').addEventListener('change', () => {
     let data;
     try{ data = JSON.parse(reader.result); }
     catch(e){ alert('That file isn’t a valid backup — nothing was changed.'); return; }
+    restoreFrom(data);
+  };
+  reader.readAsText(file);
+});
+/* one restore for both ways in: a file from this device, or a daily backup in Dropbox */
+function restoreFrom(data){
     const links = data && Array.isArray(data.links) ? data.links.filter(l => l && l.name && l.url) : null;
     if(!links){ alert('That file isn’t an AMS Main Hub backup — nothing was changed.'); return; }
     state.links = links.map((l, i) => ({ id: l.id || 'l' + Date.now().toString(36) + i, name:String(l.name), url:String(l.url),
@@ -3732,8 +3753,56 @@ $('importFile').addEventListener('change', () => {
       (legacyBack ? `\n${legacyBack} older month total${legacyBack===1?'':'s'} moved into an account called Earlier totals.` : '') +
       (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : '') +
       (snapBack ? `\n${snapBack} safety cop${snapBack===1?'y':'ies'} came back too.` : ''));
-  };
-  reader.readAsText(file);
+}
+
+/* 2.3: Restore from Dropbox — the newest daily backups, one tap each, no Files app */
+const DBX_RESTORE_SHOW = 7;
+const WDAY3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+function backupDayLabel(name){
+  const m = name.match(/(\d{4})-(\d{2})-(\d{2})/);
+  const d = new Date(+m[1], +m[2] - 1, +m[3]);
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  const ago = Math.round((today - d) / 86400000);
+  return { day: WDAY3[d.getDay()] + ' ' + d.getDate() + ' ' + MON3[d.getMonth()] + (d.getFullYear() !== today.getFullYear() ? ' ' + d.getFullYear() : ''),
+           when: ago === 0 ? 'Today' : ago === 1 ? 'Yesterday' : ago + ' days ago' };
+}
+function closeDbxRestore(){ $('dbxRestoreList').hidden = true; $('dbxRestoreList').innerHTML = ''; }
+$('dbxRestoreBtn').addEventListener('click', async () => {
+  const box = $('dbxRestoreList');
+  if(!box.hidden){ closeDbxRestore(); return; }
+  box.hidden = false;
+  box.innerHTML = '<p class="dim">Looking in Dropbox…</p>';
+  try{
+    const tok = await dbxAccess();
+    let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
+    let all = list.entries || [];
+    while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
+    const mine = all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || ''))
+      .sort((a, b) => a.name < b.name ? 1 : -1).slice(0, DBX_RESTORE_SHOW);
+    if(box.hidden) return;
+    box.innerHTML = (mine.length ? '<p class="dim">Pick a day. Restoring adds what is missing here — no entry on this device is deleted.</p>'
+        : '<p class="dim">No daily backups in Dropbox yet — the first is made after the next sync.</p>') +
+      mine.map(f => { const l = backupDayLabel(f.name);
+        return `<button class="btn full dbxrow" data-testid="dropbox-backup-item" data-path="${esc(f.path_lower)}" data-day="${esc(l.day)}"><b>${esc(l.day)}</b><span>${l.when}</span></button>`; }).join('') +
+      '<button class="btn full" data-testid="dropbox-restore-cancel" data-dbx-cancel>Cancel</button>';
+  }catch(e){
+    box.innerHTML = '<p class="dim">Could not reach Dropbox — ' + esc(String(e && e.message || e)) + '</p><button class="btn full" data-testid="dropbox-restore-cancel" data-dbx-cancel>Cancel</button>';
+  }
+});
+$('dbxRestoreList').addEventListener('click', async ev => {
+  if(ev.target.closest('[data-dbx-cancel]')){ closeDbxRestore(); return; }
+  const b = ev.target.closest('[data-path]');
+  if(!b) return;
+  if(!confirm(`Restore the backup from ${b.dataset.day}?\n\nWealth accounts and entries that are missing here are added — nothing on this device is deleted. Your links, card order and colours become the ones in that backup.`)) return;
+  try{
+    const tok = await dbxAccess();
+    const res = await fetch('https://content.dropboxapi.com/2/files/download', { method:'POST',
+      headers:{ Authorization:'Bearer ' + tok, 'Dropbox-API-Arg':JSON.stringify({ path:b.dataset.path }) } });
+    if(!res.ok) throw new Error('Dropbox answered ' + res.status);
+    const data = JSON.parse(await res.text());
+    closeDbxRestore();
+    restoreFrom(data);
+  }catch(e){ alert('That backup could not be read — nothing was changed. (' + String(e && e.message || e) + ')'); }
 });
 
 /* ============ self-update check (same pattern as AMS Tracking) ============ */

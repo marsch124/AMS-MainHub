@@ -12,6 +12,17 @@ test('the Retirement tile says where the wealth is heading at the pace of the la
   await expect(page.getByTestId('tile-retire').getByTestId('retire-forecast')).toHaveText('≈ 1.32M kr by then');
 });
 
+/* 2.3 — on the iPhone the forecast drops "by then" so it fits on one line; the Mac keeps it */
+test('the forecast fits on one line on the iPhone, and keeps "by then" on the Mac', async ({ page }, info) => {
+  await page.clock.setFixedTime(new Date('2026-11-03T09:00:00'));
+  await openHub(page, { accounts:ACC, entries:{ '2025-11-01': e(500000, 500000), '2026-11-01': e(620000, 500000) } });
+  const f = page.getByTestId('tile-retire').getByTestId('retire-forecast');
+  const phone = info.project.name === 'iphone';
+  await expect(f).toHaveText(phone ? '≈ 1.32M kr' : '≈ 1.32M kr by then', { useInnerText:true });
+  const lines = await f.evaluate(el => Math.round(el.getBoundingClientRect().height / parseFloat(getComputedStyle(el).lineHeight)));
+  expect(lines).toBe(1);
+});
+
 test('no forecast from entries less than two months apart', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-03T09:00:00'));
   await openHub(page, { accounts:ACC, entries:{ '2026-10-01': e(500000, 500000), '2026-11-01': e(620000, 500000) } });

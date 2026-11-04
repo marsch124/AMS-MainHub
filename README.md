@@ -93,6 +93,16 @@ and on Sync now. Links, look and the sent-to-Excel marks are not synced.
 (overwrite), then lists `/backups` and `delete_v2`s all but the newest 30 files
 named `hub-backup-YYYY-MM-DD.json`. State in `amshub.dropbox`: `backupDay`,
 `backupAt`, `backupErr`; `renderBackupLine()` → `dropbox-backup-line` in Your data.
+
+**Restore from Dropbox (2.3).** `#dbxRestoreBtn` (`dropbox-restore`, shown only while
+`dbxOn()`) lists `/backups`, keeps names matching `DBX_BACKUP_NAME`, sorts newest
+first and shows `DBX_RESTORE_SHOW` = 7 as `dropbox-backup-item` buttons (`data-path`,
+label "Mon 9 Nov" + Today / Yesterday / N days ago) plus `dropbox-restore-cancel`.
+A tap confirms, downloads that file and hands it to `restoreFrom(data)` — the same
+function Import / restore uses, so wealth is put back with `putBackWealth()` (adds only).
+
+**Forecast (2.3).** "by then" is `<span class="fby">`, hidden at ≤600px; the phone
+forecast is `white-space:nowrap`, one line.
 **Sync mark (2.2).** `markSync()` (from `markPen()` and `renderSync()`) puts
 `svg.msync[data-testid=wealth-synced][data-state=ok|err]` in the Wealth tile's name.
 

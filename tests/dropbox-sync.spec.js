@@ -30,6 +30,11 @@ async function fakeDropbox(page, box){
       return route.fulfill({ status:200, headers:cors, contentType:'application/json', body:'{"metadata":{}}' });
     }
     if(u.pathname === '/2/files/download'){
+      const want = JSON.parse(req.headers()['dropbox-api-arg']).path;
+      if(want.startsWith('/backups/')){
+        if(!box.backups[want]) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/not_found/"}' });
+        return route.fulfill({ status:200, headers:cors, contentType:'application/json', body:box.backups[want] });
+      }
       box.downloads++;
       if(!box.file) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/not_found/"}' });
       const out = { status:200, headers:{ ...cors, 'Dropbox-API-Result':JSON.stringify({ rev:'r' + box.rev }) },
@@ -296,4 +301,58 @@ test('backup: the line is not there while Dropbox is not connected', async ({ pa
   await page.getByTestId('settings-btn').click();
   await page.getByTestId('fold-data').locator('summary').click();
   await expect(page.getByTestId('dropbox-backup-line')).toBeHidden();
+});
+
+/* 2.3 — Restore from Dropbox: the last few daily backups, picked right in Your data */
+const backupOf = ents => JSON.stringify({ links:[{ id:'l1', name:'Mail', url:'https://mail.example' }],
+  wealthAccounts:ACC, wealthEntries:ents });
+
+test('restore from Dropbox: the newest 7 backups are listed, newest first, nothing else', async ({ page }) => {
+  await fixToday(page);
+  const old = [];
+  for(let i = 1; i <= 9; i++) old.push('hub-backup-2026-11-0' + i + '.json');
+  old.push('notes.txt', 'hub-backup-final.json');
+  const box = { oldBackups: old };
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups)).toContain(todayName);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await page.getByTestId('dropbox-restore').click();
+  const items = page.getByTestId('dropbox-backup-item');
+  await expect(items).toHaveCount(7);
+  await expect(items.first()).toHaveAttribute('data-path', todayName);
+  await expect(items.first()).toContainText('Today');
+  await expect(items.nth(1)).toContainText('Mon 9 Nov');
+  await expect(items.last()).toHaveAttribute('data-path', '/backups/hub-backup-2026-11-04.json');
+  await page.getByTestId('dropbox-restore-cancel').click();
+  await expect(page.getByTestId('dropbox-restore-list')).toBeHidden();
+});
+
+test('restore from Dropbox: a picked backup adds its entries, and what is here stays', async ({ page }) => {
+  await fixToday(page);
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups)).toContain(todayName);
+  box.backups['/backups/hub-backup-2026-11-08.json'] = backupOf({ '2026-09-01':{ v:{ a1:400000, a2:400000 }, c:[] },
+                                                                 '2026-10-01':{ v:{ a1:1, a2:1 }, c:[] } });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await page.getByTestId('dropbox-restore').click();
+  const dialogs = [];
+  page.on('dialog', d => { dialogs.push(d.message()); d.accept(); });
+  await page.locator('[data-testid="dropbox-backup-item"][data-path="/backups/hub-backup-2026-11-08.json"]').click();
+  await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-09-01,2026-10-01');
+  expect((await localEntries(page))['2026-10-01'].v.a1).toBe(500000);
+  expect(dialogs[0]).toContain('Sun 8 Nov');
+  await expect.poll(() => dialogs.join('|')).toContain('Backup restored');
+});
+
+test('restore from Dropbox: not offered while Dropbox is not connected', async ({ page }) => {
+  await openHub(page);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await expect(page.getByTestId('backup-restore')).toBeVisible();
+  await expect(page.getByTestId('dropbox-restore')).toBeHidden();
 });
