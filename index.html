@@ -1399,10 +1399,11 @@
     <details class="fold" id="foldData" data-testid="fold-data">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
+        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Once Dropbox is connected it also keeps a backup of everything here, every day — the newest 30. Without it, save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
+        <p class="dim" id="dropboxBackupLine" data-testid="dropbox-backup-line" hidden></p>
         <input type="file" id="importFile" data-testid="backup-file" accept=".json,application/json" style="display:none" />
         <div class="backup-meta" id="backupMeta" data-testid="backup-meta"></div>
       </div>
@@ -2796,6 +2797,48 @@ async function dbxUpload(tok, data, rev){
   if(!meta || !meta.rev) throw new Error('Dropbox did not confirm the file was stored');
   return 'ok';
 }
+/* 2.2: Dropbox is also the automatic backup — once a day, after a good sync, the same
+   full backup as "Save a backup file" goes to Apps/<app>/backups/hub-backup-YYYY-MM-DD.json,
+   and only the newest 30 such files are kept. Only files with exactly that name are ever
+   listed for deleting; anything else in the folder is left alone. */
+const DBX_BACKUP_DIR = '/backups';
+const DBX_BACKUP_NAME = /^hub-backup-\d{4}-\d{2}-\d{2}\.json$/;
+const DBX_BACKUP_KEEP = 30;
+function localDay(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+async function dbxApi(tok, path, body){
+  const res = await fetch('https://api.dropboxapi.com/2/files/' + path, { method:'POST',
+    headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+  if(!res.ok){
+    let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
+    throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
+  }
+  return res.json().catch(() => ({}));
+}
+async function dbxBackup(tok){
+  const now = new Date(), day = localDay(now);
+  if(dbx.backupDay === day) return;                 /* once a day on this device */
+  try{
+    const name = 'hub-backup-' + day + '.json';
+    const res = await fetch('https://content.dropboxapi.com/2/files/upload', { method:'POST',
+      headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
+        'Dropbox-API-Arg':JSON.stringify({ path:DBX_BACKUP_DIR + '/' + name, mode:{ '.tag':'overwrite' }, autorename:false, mute:true }) },
+      body: backupBlob() });
+    if(!res.ok){
+      let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
+      throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
+    }
+    dbx.backupDay = day; dbx.backupAt = now.toISOString(); dbx.backupErr = '';
+    dbxSave();
+    /* tidy up: a failure here is not a failed backup — the file is already safe */
+    let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
+    let all = list.entries || [];
+    while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
+    const mine = all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || '')).sort((a, b) => a.name < b.name ? -1 : 1);
+    for(const f of mine.slice(0, Math.max(0, mine.length - DBX_BACKUP_KEEP))) await dbxApi(tok, 'delete_v2', { path:f.path_lower });
+  }catch(e){
+    if(dbx.backupDay !== day) dbx.backupErr = String(e && e.message || e);
+  }
+}
 /* the file as written by another device — only well-formed parts are taken */
 function cleanRemote(r){
   const out = { accounts:[], entries:{}, deleted:{} };
@@ -2855,11 +2898,24 @@ async function syncNow(){
     }
     if(!done) throw new Error('another device kept writing at the same moment');
     dbx.last = new Date().toISOString(); dbx.err = '';
+    await dbxBackup(await dbxAccess());
   }catch(e){ dbx.err = String(e && e.message || e); }
   dbxSave(); syncBusy = false; renderSync();
   if(syncAgain){ syncAgain = false; syncSoon(); }
 }
+/* the line under the backup buttons in Your data: when Dropbox last kept a backup */
+function renderBackupLine(){
+  const el = $('dropboxBackupLine');
+  if(!el) return;
+  el.hidden = !dbxOn();
+  if(!dbxOn()) return;
+  const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  const when = iso => { const d = new Date(iso); return d.toDateString() === new Date().toDateString() ? 'today ' + hm(iso) : d.getDate() + ' ' + MON3[d.getMonth()] + ' ' + hm(iso); };
+  el.textContent = dbx.backupErr ? 'Dropbox could not keep today\'s backup — ' + dbx.backupErr + '. It tries again on the next sync.'
+    : 'Dropbox keeps a backup every day — last: ' + (dbx.backupAt ? when(dbx.backupAt) : 'not yet');
+}
 function renderSync(){
+  renderBackupLine();
   /* 2.1.2: while connected, the update icon sits in the sync row instead of the wide button */
   if($('updateBtn')) $('updateBtn').hidden = !!(DBX_KEY && dbx.refresh);
   const body = $('syncBody'), sum = $('syncSum');
