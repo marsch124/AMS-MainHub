@@ -8,7 +8,10 @@ const ACC = [{ id:'a1', name:'ISK', url:'' }, { id:'a2', name:'Avanza', url:'' }
 const CONNECTED = { 'amshub.dropbox': JSON.stringify({ refresh:'RT', access:'AT', exp: Date.now() + 3600e3 }) };
 
 async function fakeDropbox(page, box){
-  box.rev = box.rev || 0; box.uploads = 0;
+  box.rev = box.rev || 0; box.uploads = 0; box.downloads = 0;
+  /* the /backups folder: path -> file text; names listed in box.oldBackups start out there */
+  box.backups = {}; box.deleted = [];
+  (box.oldBackups || []).forEach(n => { box.backups['/backups/' + n] = '{}'; });
   const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*',
                  'Access-Control-Expose-Headers':'Dropbox-API-Result' };
   await page.route(/dropboxapi\.com/, async route => {
@@ -17,7 +20,17 @@ async function fakeDropbox(page, box){
     if(u.pathname === '/oauth2/token')
       return route.fulfill({ status:200, headers:cors, contentType:'application/json',
         body:JSON.stringify({ access_token:'AT', refresh_token:'RT', expires_in:14400 }) });
+    if(u.pathname === '/2/files/list_folder'){
+      const entries = Object.keys(box.backups).map(p => ({ '.tag':'file', name:p.split('/').pop(), path_lower:p.toLowerCase() }));
+      return route.fulfill({ status:200, headers:cors, contentType:'application/json', body:JSON.stringify({ entries, has_more:false, cursor:'c' }) });
+    }
+    if(u.pathname === '/2/files/delete_v2'){
+      const p = JSON.parse(req.postData()).path;
+      box.deleted.push(p); delete box.backups[p];
+      return route.fulfill({ status:200, headers:cors, contentType:'application/json', body:'{"metadata":{}}' });
+    }
     if(u.pathname === '/2/files/download'){
+      box.downloads++;
       if(!box.file) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/not_found/"}' });
       const out = { status:200, headers:{ ...cors, 'Dropbox-API-Result':JSON.stringify({ rev:'r' + box.rev }) },
                     contentType:'application/json', body:JSON.stringify(box.file) };
@@ -27,6 +40,11 @@ async function fakeDropbox(page, box){
     }
     if(u.pathname === '/2/files/upload'){
       const arg = JSON.parse(req.headers()['dropbox-api-arg']);
+      if(arg.path !== '/wealth.json'){
+        if(box.failBackup) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/insufficient_space/.."}' });
+        box.backups[arg.path] = req.postData();
+        return route.fulfill({ status:200, headers:cors, contentType:'application/json', body:'{"rev":"b1"}' });
+      }
       const stale = arg.mode['.tag'] === 'update' ? arg.mode.update !== 'r' + box.rev : !!box.file;
       if(stale) return route.fulfill({ status:409, headers:cors, body:'{"error_summary":"path/conflict/file/"}' });
       box.file = JSON.parse(req.postData()); box.rev++; box.uploads++;
@@ -201,4 +219,81 @@ test('the synced mark turns amber when Dropbox refuses', async ({ page }) => {
   });
   await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
   await expect(page.getByTestId('tile-wealth').getByTestId('wealth-synced')).toHaveAttribute('data-state', 'err');
+});
+
+/* 2.2 — Dropbox is the automatic backup: one full backup file a day, the newest 30 kept */
+const todayName = '/backups/hub-backup-2026-11-10.json';
+const fixToday = page => page.clock.setFixedTime(new Date('2026-11-10T09:00:00'));
+const ONE = { '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } };
+
+test('backup: after the start-up sync a backup for today goes up, with accounts and entries inside', async ({ page }) => {
+  await fixToday(page);
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups).join()).toBe(todayName);
+  const b = JSON.parse(box.backups[todayName]);
+  expect(b.wealthAccounts.map(a => a.id)).toEqual(['a1', 'a2']);
+  expect(Object.keys(b.wealthEntries)).toEqual(['2026-10-01']);
+});
+
+test('backup: a second sync on the same day uploads no second backup', async ({ page }) => {
+  await fixToday(page);
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups).length).toBe(1);
+  const first = box.backups[todayName], seen = box.downloads;
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await page.getByTestId('sync-now').click();
+  await expect.poll(() => box.downloads).toBeGreaterThan(seen);
+  await expect(page.getByTestId('sync-status')).toContainText('last synced');
+  expect(Object.keys(box.backups)).toEqual([todayName]);
+  expect(box.backups[todayName]).toBe(first);
+});
+
+test('backup: with 32 backups in the folder the oldest 2 go, and nothing else is touched', async ({ page }) => {
+  await fixToday(page);
+  const old = [];
+  for(let i = 1; i <= 31; i++) old.push('hub-backup-2026-10-' + String(i).padStart(2, '0') + '.json');   /* 31 old + today = 32 */
+  old.push('notes.txt', 'hub-backup-final.json');
+  const box = { oldBackups: old };
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => box.deleted.length).toBe(2);
+  expect(box.deleted.sort()).toEqual(['/backups/hub-backup-2026-10-01.json', '/backups/hub-backup-2026-10-02.json']);
+  expect(Object.keys(box.backups)).toContain('/backups/notes.txt');
+  expect(Object.keys(box.backups)).toContain('/backups/hub-backup-final.json');
+  expect(Object.keys(box.backups)).toContain(todayName);
+});
+
+test('backup: the Your data line shows when the last backup was made', async ({ page }) => {
+  await fixToday(page);
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await expect(page.getByTestId('dropbox-backup-line')).toContainText('Dropbox keeps a backup every day');
+  await expect(page.getByTestId('dropbox-backup-line')).toContainText('last: today 09:00');
+});
+
+test('backup: a refused backup never breaks the sync, and the line says why', async ({ page }) => {
+  await fixToday(page);
+  const box = { failBackup:true };
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-sync').locator('summary').click();
+  await expect(page.getByTestId('sync-status')).toContainText('last synced');
+  await page.getByTestId('fold-data').locator('summary').click();
+  await expect(page.getByTestId('dropbox-backup-line')).toContainText('insufficient_space');
+});
+
+test('backup: the line is not there while Dropbox is not connected', async ({ page }) => {
+  await openHub(page);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await expect(page.getByTestId('dropbox-backup-line')).toBeHidden();
 });

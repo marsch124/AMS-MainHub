@@ -1194,6 +1194,7 @@
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
         <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
+        <p><b>The top tiles.</b> They sit three across in two even rows, on the iPhone and on the Mac, so every number is on one line. While Dropbox sync is on, a small sync mark sits beside WEALTH in the tile’s own colour — amber if it is not getting through (Settings › Dropbox sync then says why).</p>
         <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>. Once connected, the section has one line of three icon buttons: the coloured <b>circling arrows</b> sync now, the red <b>broken link</b> disconnects this device (it asks first, and keeps everything), and the <b>arrow in a circle</b> checks for an app update. On the Mac, rest the pointer on a button to see its name.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
@@ -1237,7 +1238,7 @@
         </ul>
         <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
-        <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty, and the backup file under <b>Your data</b> is the only bridge across. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
+        <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty. Since 2.0 <b>Dropbox sync</b> carries your wealth accounts and entries across by itself, and since 2.2 Dropbox also keeps <b>a full backup every day</b> (Apps › AMS Main Hub › backups — the newest 30), so a fresh install that connects Dropbox gets everything back; the backup file under <b>Your data</b> stays the bridge for links, look and dashboard addresses, and for a device without Dropbox. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
           </div>
         </details>
 
@@ -1417,10 +1418,11 @@
     <details class="fold" id="foldData" data-testid="fold-data">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
+        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Once Dropbox is connected it also keeps a backup of everything here, every day — the newest 30. Without it, save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
+        <p class="dim" id="dropboxBackupLine" data-testid="dropbox-backup-line" hidden></p>
         <input type="file" id="importFile" data-testid="backup-file" accept=".json,application/json" style="display:none" />
         <div class="backup-meta" id="backupMeta" data-testid="backup-meta"></div>
       </div>
@@ -1444,6 +1446,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.2', when:'4 Nov 2026',
+    what:'A TIDY TOP AREA, A SYNC MARK, AND DROPBOX AS YOUR DAILY BACKUP. (1) THE TILES AT THE TOP, REDONE. Before, on the iPhone all six tiles were squeezed into one row: about 60 points each, so names were cut ("RETIREM", "WEALTH · 0" on two lines), the numbers broke over two lines ("7.76M / kr"), details ended in "…", and the pencil sat on top of the word WEALTH. On the Mac five tiles shared a row and the sixth (Apps) sat alone on a full-width row below. Now both show three tiles across in two even rows — on the iPhone each tile is about three times as wide. Every number fits on one line, the names fit, details get up to two lines, and the iPhone pencil is a small pen at the end of the WEALTH row, beside the name instead of on it (its tap area is still generous). On the iPhone the Finance tile now says "on the Mac" instead of "engine not answering", because that tile is only ever filled on the Mac. (2) A SYNC MARK ON THE WEALTH TILE. While Dropbox sync is on, a small hand-drawn sync mark sits beside WEALTH in the tile\'s own colour; on the Mac a pointer over the name says when it last synced. If sync is not getting through, the mark turns amber, and Settings › Dropbox sync says why. Without Dropbox there is no mark. (3) DROPBOX KEEPS A BACKUP EVERY DAY. Before, a backup only existed when you saved a backup file yourself. Now, once a day, after the first successful sync, each connected device puts a full backup — the same file as Save a backup file, with accounts, entries, links and look — into your Dropbox at Apps › AMS Main Hub › backups, named by the date (hub-backup-2026-11-04.json). The newest 30 are kept and older ones are removed; nothing else in that folder is ever touched. Settings › Your data shows the last one ("Dropbox keeps a backup every day — last: today 08:40") or, if it failed, why — a failed backup never stops the sync and is tried again on the next one. To bring one back, open it from the Files app or Dropbox and use Import / restore. (4) TESTS. A new test checks the top area at iPhone size (three across, two rows, nothing cut off, the pen never on the name), and the sync test now checks the sync mark (on, absent, amber) and the daily backup (it goes up with your data, only once a day, only the oldest beyond 30 are removed, the line in Your data). All were seen failing before the change was built. The tests are now 16 files, run at iPhone and Mac size on every push.' },
   { v:'2.1.3', when:'4 Nov 2026',
     what:'CONNECT DROPBOX OPENS ON THE IPHONE. Before, tapping Connect Dropbox in the Home Screen hub did nothing: the hub opened the Dropbox page a split second after your tap (it first works out a secret code for the connection), and the iPhone quietly blocks pages that open with a delay. On the Mac it worked, which is why it was not caught. Now the Dropbox page is prepared the moment the Dropbox sync section opens, and Connect Dropbox is a plain link, so the iPhone opens it straight away. After Allow, Dropbox shows the code; come back to the hub and paste it into the box under Dropbox sync. THE SYNC TEST now checks that Connect Dropbox is a ready-made link to Dropbox (it was seen failing before the change).' },
   { v:'2.1.2', when:'4 Nov 2026',
@@ -2827,6 +2831,48 @@ async function dbxUpload(tok, data, rev){
   if(!meta || !meta.rev) throw new Error('Dropbox did not confirm the file was stored');
   return 'ok';
 }
+/* 2.2: Dropbox is also the automatic backup — once a day, after a good sync, the same
+   full backup as "Save a backup file" goes to Apps/<app>/backups/hub-backup-YYYY-MM-DD.json,
+   and only the newest 30 such files are kept. Only files with exactly that name are ever
+   listed for deleting; anything else in the folder is left alone. */
+const DBX_BACKUP_DIR = '/backups';
+const DBX_BACKUP_NAME = /^hub-backup-\d{4}-\d{2}-\d{2}\.json$/;
+const DBX_BACKUP_KEEP = 30;
+function localDay(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
+async function dbxApi(tok, path, body){
+  const res = await fetch('https://api.dropboxapi.com/2/files/' + path, { method:'POST',
+    headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/json' }, body:JSON.stringify(body) });
+  if(!res.ok){
+    let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
+    throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
+  }
+  return res.json().catch(() => ({}));
+}
+async function dbxBackup(tok){
+  const now = new Date(), day = localDay(now);
+  if(dbx.backupDay === day) return;                 /* once a day on this device */
+  try{
+    const name = 'hub-backup-' + day + '.json';
+    const res = await fetch('https://content.dropboxapi.com/2/files/upload', { method:'POST',
+      headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
+        'Dropbox-API-Arg':JSON.stringify({ path:DBX_BACKUP_DIR + '/' + name, mode:{ '.tag':'overwrite' }, autorename:false, mute:true }) },
+      body: backupBlob() });
+    if(!res.ok){
+      let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
+      throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
+    }
+    dbx.backupDay = day; dbx.backupAt = now.toISOString(); dbx.backupErr = '';
+    dbxSave();
+    /* tidy up: a failure here is not a failed backup — the file is already safe */
+    let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
+    let all = list.entries || [];
+    while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
+    const mine = all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || '')).sort((a, b) => a.name < b.name ? -1 : 1);
+    for(const f of mine.slice(0, Math.max(0, mine.length - DBX_BACKUP_KEEP))) await dbxApi(tok, 'delete_v2', { path:f.path_lower });
+  }catch(e){
+    if(dbx.backupDay !== day) dbx.backupErr = String(e && e.message || e);
+  }
+}
 /* the file as written by another device — only well-formed parts are taken */
 function cleanRemote(r){
   const out = { accounts:[], entries:{}, deleted:{} };
@@ -2886,12 +2932,25 @@ async function syncNow(){
     }
     if(!done) throw new Error('another device kept writing at the same moment');
     dbx.last = new Date().toISOString(); dbx.err = '';
+    await dbxBackup(await dbxAccess());
   }catch(e){ dbx.err = String(e && e.message || e); }
   dbxSave(); syncBusy = false; renderSync();
   if(syncAgain){ syncAgain = false; syncSoon(); }
 }
+/* the line under the backup buttons in Your data: when Dropbox last kept a backup */
+function renderBackupLine(){
+  const el = $('dropboxBackupLine');
+  if(!el) return;
+  el.hidden = !dbxOn();
+  if(!dbxOn()) return;
+  const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
+  const when = iso => { const d = new Date(iso); return d.toDateString() === new Date().toDateString() ? 'today ' + hm(iso) : d.getDate() + ' ' + MON3[d.getMonth()] + ' ' + hm(iso); };
+  el.textContent = dbx.backupErr ? 'Dropbox could not keep today\'s backup — ' + dbx.backupErr + '. It tries again on the next sync.'
+    : 'Dropbox keeps a backup every day — last: ' + (dbx.backupAt ? when(dbx.backupAt) : 'not yet');
+}
 function renderSync(){
   markSync();
+  renderBackupLine();
   /* 2.1.2: while connected, the update icon sits in the sync row instead of the wide button */
   if($('updateBtn')) $('updateBtn').hidden = !!(DBX_KEY && dbx.refresh);
   const body = $('syncBody'), sum = $('syncSum');

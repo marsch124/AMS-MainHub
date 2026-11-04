@@ -88,6 +88,17 @@ holds the same (`wealthSig()`, order-free); a 409 `path/conflict` re-runs, up to
 Runs at start-up, 1.2 s after each save (`syncSoon()`), on return to the page,
 and on Sync now. Links, look and the sent-to-Excel marks are not synced.
 
+**Daily backup (2.2).** After a successful `syncNow()`, `dbxBackup(tok)` uploads
+`backupBlob()` once per local day to `/backups/hub-backup-YYYY-MM-DD.json`
+(overwrite), then lists `/backups` and `delete_v2`s all but the newest 30 files
+named `hub-backup-YYYY-MM-DD.json`. State in `amshub.dropbox`: `backupDay`,
+`backupAt`, `backupErr`; `renderBackupLine()` → `dropbox-backup-line` in Your data.
+**Sync mark (2.2).** `markSync()` (from `markPen()` and `renderSync()`) puts
+`svg.msync[data-testid=wealth-synced][data-state=ok|err]` in the Wealth tile's name.
+
+**Top area (2.2).** `header .mrow` is a 3-column grid on the phone and the Mac;
+on the phone the pen sits at the end of the name row (40×34 target, 19px pen).
+
 **Forecast.** `wealthForecast()` → `retire-forecast` on the Retirement tile:
 newest entry vs the first entry on/after a year before it (else the oldest),
 linear to `RETIREMENT`; none under 60 days of span.
