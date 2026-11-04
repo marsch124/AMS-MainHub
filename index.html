@@ -629,6 +629,11 @@
   .btn.danger{background:none; border-color:rgba(200,60,60,.35); color:#c43c3c; flex:0 0 auto; padding:14px 18px;}
   .btn.full{width:100%; flex:none; margin-top:10px;}
   .btn:active{transform:scale(.97);}
+  /* 2.1.2: one line of hand-drawn icon buttons (Dropbox sync) */
+  .iconrow{display:flex; gap:8px; margin-top:14px;}
+  .btn.ibtn{flex:0 0 58px; height:42px; padding:0; display:flex; align-items:center; justify-content:center; border-radius:12px;}
+  .btn.ibtn svg{width:24px; height:24px;}
+  .btn.ibtn.go{flex:1; background:var(--accent); border-color:var(--accent); color:#fff;}
 
   /* foldable settings sections */
   details.fold{border:1px solid var(--line); border-radius:16px; background:var(--bg); margin-top:12px; overflow:hidden;}
@@ -760,6 +765,17 @@
     <path d="M5.6 4.4c-.1 1.2 0 2.4.2 3.6 1.2.1 2.4 0 3.6-.3"/>
     <path d="M4.6 13.4c.6 3.6 3.7 6.3 7.4 6.2 2.6-.1 4.8-1.4 6.1-3.5"/>
     <path d="M18.4 19.6c.1-1.2 0-2.4-.2-3.6-1.2-.1-2.4 0-3.6.3"/>
+  </symbol>
+  <symbol id="icon-unlink" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9.2 8.6c-.8 0-1.6 0-2.4.1-1.9 0-3.3 1.5-3.2 3.4 0 1.8 1.5 3.2 3.3 3.2.8.1 1.6.1 2.3 0"/>
+    <path d="M14.8 8.6c.8 0 1.6 0 2.4.1 1.9 0 3.3 1.5 3.2 3.4 0 1.8-1.5 3.2-3.3 3.2-.8.1-1.6.1-2.3 0"/>
+    <path d="M10.4 5.1c.3.7.6 1.4 1 2M13.7 5.1c-.3.7-.6 1.4-1 2"/>
+    <path d="M10.4 18.9c.3-.7.6-1.4 1-2M13.7 18.9c-.3-.7-.6-1.4-1-2"/>
+  </symbol>
+  <symbol id="icon-update" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12.2 4.2c4.3 0 7.8 3.4 7.7 7.9-.1 4.3-3.6 7.7-7.9 7.7-4.4 0-7.8-3.5-7.8-7.8.1-4.4 3.6-7.8 8-7.8Z"/>
+    <path d="M12 8.2c.1 2.5.1 5 0 7.5"/>
+    <path d="M9.1 12.9c1 1 1.9 1.9 2.9 2.8 1-.9 2-1.9 2.9-2.9"/>
   </symbol>
   <symbol id="icon-history" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
     <path d="M12.3 3.9c4.5.1 8 3.7 7.8 8.1-.2 4.4-3.7 7.9-8.1 7.9-4.4-.1-7.9-3.6-7.9-8"/>
@@ -1159,7 +1175,7 @@
         <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
         <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
         <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then”. It needs entries at least two months apart.</p>
-        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>.</p>
+        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>. Once connected, the section has one line of three icon buttons: the coloured <b>circling arrows</b> sync now, the red <b>broken link</b> disconnects this device (it asks first, and keeps everything), and the <b>arrow in a circle</b> checks for an app update. On the Mac, rest the pointer on a button to see its name.</p>
         <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
           </div>
         </details>
@@ -1237,7 +1253,7 @@
         <details class="sub">
           <summary>Updates<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately.</p>
+        <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately — while Dropbox sync is connected, that button is the <b>arrow in a circle</b> at the end of the Dropbox sync line instead.</p>
           </div>
         </details>
       </div>
@@ -1409,6 +1425,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.1.2', when:'4 Nov 2026',
+    what:'THE DROPBOX BUTTONS ARE ONE LINE OF ICONS. Before, Settings › Dropbox sync had two big buttons with words — a red-edged Disconnect and a black Sync now — and the wide Check for app update button sat further down on its own row: three buttons on two separate lines. Now, while Dropbox is connected, all three sit on ONE line as hand-drawn icons with no words: Sync now is the wide full-colour button with circling arrows (it used to be black), Disconnect is a red broken link, and Check for app update is an arrow in a circle. The wide Check for app update button is gone while the line carries it; when Dropbox is not connected it stays where it was. Each button still has its name for VoiceOver, and on the Mac the name shows when the pointer rests on it. Two new hand-drawn icons (broken link, arrow in a circle). A new test checks the three icons sit on one line with no words, that Sync is coloured, that the update icon still checks for an update, and that the wide button stays when Dropbox is off — seen failing before the change.' },
   { v:'2.1.1', when:'4 Nov 2026',
     what:'CONNECTING DROPBOX ON THE IPHONE NO LONGER LOSES ITS PLACE. Before, after you tapped Connect Dropbox and went to Dropbox to fetch the code, the iPhone sometimes started the hub afresh — and coming back, Settings › Dropbox sync showed "off" and the Connect Dropbox button again, with no box to paste the code into. Now the hub remembers it is waiting: come back, open Settings › Dropbox sync, and the paste box is there, still matching the code Dropbox showed you. Cancel (or Escape on the Mac) gives up on that code. A NEW CHECK in the sync test starts the hub afresh in the middle of connecting and makes sure the paste box is still there; it was seen failing before the fix.' },
   { v:'2.1', when:'3 Nov 2026',
@@ -2830,6 +2848,8 @@ async function syncNow(){
   if(syncAgain){ syncAgain = false; syncSoon(); }
 }
 function renderSync(){
+  /* 2.1.2: while connected, the update icon sits in the sync row instead of the wide button */
+  if($('updateBtn')) $('updateBtn').hidden = !!(DBX_KEY && dbx.refresh);
   const body = $('syncBody'), sum = $('syncSum');
   if(!body) return;
   const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
@@ -2856,8 +2876,9 @@ function renderSync(){
   const line = syncBusy ? 'Syncing…' : dbx.err ? `Not synced — ${esc(dbx.err)}. It tries again on the next change, when you come back, or with Sync now.` : dbx.last ? `Connected · last synced ${day(dbx.last)}` : 'Connected';
   sum.textContent = syncBusy ? 'syncing' : dbx.err ? 'not synced' : dbx.last ? day(dbx.last) : 'on';
   body.innerHTML = about + `<p class="syncline${dbx.err && !syncBusy ? ' err' : ''}" data-testid="sync-status">${line}</p>
-    <div class="btnrow"><button class="btn danger" id="syncOff" data-testid="sync-off">Disconnect</button><button class="btn primary" id="syncGo" data-testid="sync-now">Sync now</button></div>`;
+    <div class="iconrow"><button class="btn ibtn go" id="syncGo" data-testid="sync-now" aria-label="Sync now" title="Sync now"><svg aria-hidden="true"><use href="#icon-sync"/></svg></button><button class="btn ibtn danger" id="syncOff" data-testid="sync-off" aria-label="Disconnect Dropbox" title="Disconnect Dropbox"><svg aria-hidden="true"><use href="#icon-unlink"/></svg></button><button class="btn ibtn" id="syncUpd" data-testid="sync-update" aria-label="Check for app update" title="Check for app update"><svg aria-hidden="true"><use href="#icon-update"/></svg></button></div>`;
   $('syncGo').addEventListener('click', syncNow);
+  $('syncUpd').addEventListener('click', () => checkForUpdate(true));
   $('syncOff').addEventListener('click', () => {
     if(!confirm('Stop syncing on this device? Everything stays here and in Dropbox; this device just stops exchanging changes.')) return;
     dbx = {}; dbxSave(); renderSync();
