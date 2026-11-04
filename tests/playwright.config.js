@@ -1,4 +1,6 @@
 const { defineConfig, devices } = require('@playwright/test');
+/* HUB_PORT lets two copies of the hub be tested at the same time without meeting */
+const PORT = process.env.HUB_PORT || 4321;
 
 module.exports = defineConfig({
   testDir: '.',
@@ -7,7 +9,7 @@ module.exports = defineConfig({
   workers: 1,
   reporter: process.env.CI ? [['list'], ['html', { open:'never' }]] : [['list']],
   use: {
-    baseURL: 'http://127.0.0.1:4321',
+    baseURL: `http://127.0.0.1:${PORT}`,
     trace: 'retain-on-failure',
     serviceWorkers: 'block',
   },
@@ -16,8 +18,8 @@ module.exports = defineConfig({
     { name:'iphone', use:{ ...devices['iPhone 14'] } },
   ],
   webServer: {
-    command: 'npx --yes http-server .. -p 4321 -c-1 --silent',
-    url: 'http://127.0.0.1:4321/index.html',
+    command: `npx --yes http-server .. -p ${PORT} -c-1 --silent`,
+    url: `http://127.0.0.1:${PORT}/index.html`,
     reuseExistingServer: !process.env.CI,
     timeout: 60000,
   },

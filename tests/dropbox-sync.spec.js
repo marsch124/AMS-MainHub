@@ -179,3 +179,26 @@ test('the hub still waits for the code after it restarts', async ({ page, browse
   await expect(p2.getByTestId('sync-connect')).toHaveCount(0);
   await ctx.close();
 });
+
+/* 2.2 — a small mark on the Wealth tile says Dropbox sync is on, and turns amber when it is not getting through */
+test('the Wealth tile shows the synced mark only when Dropbox sync is on', async ({ page }) => {
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
+  const mark = page.getByTestId('tile-wealth').getByTestId('wealth-synced');
+  await expect(mark).toHaveAttribute('data-state', 'ok');
+});
+test('no synced mark when Dropbox is not connected', async ({ page }) => {
+  await openHub(page);
+  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-total')).toBeVisible();
+  await expect(page.getByTestId('wealth-synced')).toHaveCount(0);
+});
+test('the synced mark turns amber when Dropbox refuses', async ({ page }) => {
+  await page.route(/dropboxapi\.com/, route => {
+    const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*' };
+    if(route.request().method() === 'OPTIONS') return route.fulfill({ status:204, headers:cors });
+    return route.fulfill({ status:500, headers:cors, body:'down' });
+  });
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
+  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-synced')).toHaveAttribute('data-state', 'err');
+});

@@ -268,17 +268,29 @@
      aside (display:contents keeps its colour and type, which inherit through it) so
      its pieces can be ordered on the strip itself */
   @media (min-width:601px){
+    /* 2.2: three across in even rows (six tiles = two rows), so no tile is left alone on
+       a line of its own and every number stays on one line */
+    header .mrow{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:6px;}
+    header .mbig{white-space:nowrap;}
+    header .mlab > span{white-space:nowrap;}
     header .mlab{display:contents;}
     header .mlab > span, header .mtog{order:1;}
     header .mbody{order:2;}
     header .mpen{order:3; margin-left:auto;}
   }
-  /* a phone: the three tiles share one line, each a small stack — label, number, detail */
+  /* a phone (2.2): the tiles sit three across in a tidy grid, each a small stack —
+     name (with the pencil beside it, never on top), the number on one line, then up to
+     two short lines of detail. Six tiles make two even rows. */
   @media (max-width:600px){
-    header .mtile{flex:1 1 0; flex-direction:column; align-items:flex-start; gap:1px; padding:6px 9px 7px;}
-    header .mlab{min-height:18px; width:100%;}
+    header .mrow{display:grid; grid-template-columns:repeat(3, minmax(0, 1fr)); gap:6px;}
+    header .mtile{flex-direction:column; align-items:stretch; gap:2px; padding:8px 9px 9px; border-radius:14px;}
+    header .mlab{min-height:16px; width:100%; font-size:9px; letter-spacing:.07em; gap:4px;}
+    header .mlab > span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
     header .mbody{width:100%;}
-    header .mbig{font-size:15px;}
+    header .mbig{font-size:17px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
+    header .msub{white-space:normal; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
+                 overflow:hidden; margin-top:1px; line-height:1.3;}
+    header button.msub{display:block;}
   }
   @media (max-width:430px){
     .brand{font-size:15.5px; white-space:nowrap;}
@@ -330,6 +342,9 @@
   .syncsum + .chev{margin-left:8px !important;}
   .syncline{font-size:14px; margin:8px 0 0;}
   .syncline.err{color:var(--warn); font-weight:700;}
+  /* 2.2: the small sync mark beside WEALTH — on in the tile's colour, amber when not getting through */
+  .msync{display:inline-block; width:11px !important; height:11px !important; margin-left:4px; vertical-align:-1px; stroke-width:2.4; opacity:.85;}
+  .msync[data-state="err"]{color:var(--warn); opacity:1;}
   html[data-look="night"] .pdot{color:#1b1815;}   /* dark figure on the light night amber */
   /* on the header strip there is room for one line of detail: the warning takes it */
   header .mbody:has(.mwarn) .msub:not(.mwarn):not(.mremind){display:none;}
@@ -347,11 +362,14 @@
   .mpen .hi{width:38px; height:38px;}
   /* a phone: the tile is narrow and stacked, so the pen floats in its top-right corner
      instead of sitting in the label row (which would make the tile taller) */
+  /* a phone (2.2): a small pen at the end of the name row — beside the name, never on
+     it. Its invisible target still reaches well past the drawn pen, so it is easy to hit. */
   @media (max-width:600px){
     header .mtile{position:relative;}
-    header .mpen{position:absolute; top:0; right:0; width:58px; height:58px; border-radius:12px; margin:0;
-                 align-items:flex-start; justify-content:flex-end; padding:5px 7px 0 0;}   /* pen up in the corner, clear of the number */
-    header .mpen .hi{width:30px; height:30px;}
+    header .mpen{position:relative; flex:0 0 auto; width:40px; height:34px; margin:-9px -9px -9px auto;
+                 border-radius:12px; align-items:center; justify-content:center; padding:0;}
+    header .mpen .hi{width:19px; height:19px;}
+    header .pdot{top:-6px; right:-8px; min-width:14px; height:14px; font-size:9.5px; line-height:14px;}
   }
   /* 1.60: an amber dot on the pen's top-right when any month disagrees with the workbook */
   .pwrap{position:relative; display:flex;}
@@ -2602,7 +2620,7 @@ function renderYear(p){
 let finCache = null;
 function renderFinMonth(p){
   if(!finCache || !finCache.ok || !(finCache.previous || finCache.current)){
-    return `<div class="mbig">—</div><div class="msub">engine not answering</div>`;
+    return `<div class="mbig">—</div><div class="msub">${FROM_ENGINE ? 'engine not answering' : 'on the Mac'}</div>`;
   }
   const m = finCache.previous || finCache.current;
   const parts = [m.report, m.ledger, m.workbook, m.dashboard];
@@ -2644,7 +2662,20 @@ function renderTile(id){
 }
 /* the amber dot on the Wealth pencil: some month — any month, not only the newest the
    tile speaks about — disagrees with the workbook, so look in History (1.60) */
+/* 2.2: the sync mark on the Wealth tile's name — there only while Dropbox sync is on */
+function markSync(){
+  const lab = document.querySelector('[data-testid="tile-wealth"] .mlab > span');
+  if(!lab) return;
+  let m = lab.querySelector('.msync');
+  if(!dbxOn()){ if(m) m.remove(); return; }
+  if(!m){ lab.insertAdjacentHTML('beforeend', '<svg class="hi msync" data-testid="wealth-synced" aria-hidden="true"><use href="#icon-sync"/></svg>'); m = lab.querySelector('.msync'); }
+  const err = !syncBusy && !!dbx.err;
+  m.setAttribute('data-state', err ? 'err' : 'ok');
+  const t = dbx.last ? new Date(dbx.last).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '';
+  lab.title = err ? 'Dropbox sync is not getting through — see Settings › Dropbox sync' : (t ? `Synced with Dropbox at ${t}` : 'Dropbox sync is on');
+}
 function markPen(){
+  markSync();
   const pen = $('miniEdit');
   if(!pen) return;
   const n = offMonths().length;
@@ -2860,6 +2891,7 @@ async function syncNow(){
   if(syncAgain){ syncAgain = false; syncSoon(); }
 }
 function renderSync(){
+  markSync();
   /* 2.1.2: while connected, the update icon sits in the sync row instead of the wide button */
   if($('updateBtn')) $('updateBtn').hidden = !!(DBX_KEY && dbx.refresh);
   const body = $('syncBody'), sum = $('syncSum');
