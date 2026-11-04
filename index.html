@@ -628,6 +628,7 @@
   .btn.primary{background:var(--ink); border-color:var(--ink); color:#fff;}
   .btn.danger{background:none; border-color:rgba(200,60,60,.35); color:#c43c3c; flex:0 0 auto; padding:14px 18px;}
   .btn.full{width:100%; flex:none; margin-top:10px;}
+  a.btn{display:block; box-sizing:border-box; text-align:center; text-decoration:none;}
   .btn:active{transform:scale(.97);}
   /* 2.1.2: one line of hand-drawn icon buttons (Dropbox sync) */
   .iconrow{display:flex; gap:8px; margin-top:14px;}
@@ -1425,6 +1426,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.1.3', when:'4 Nov 2026',
+    what:'CONNECT DROPBOX OPENS ON THE IPHONE. Before, tapping Connect Dropbox in the Home Screen hub did nothing: the hub opened the Dropbox page a split second after your tap (it first works out a secret code for the connection), and the iPhone quietly blocks pages that open with a delay. On the Mac it worked, which is why it was not caught. Now the Dropbox page is prepared the moment the Dropbox sync section opens, and Connect Dropbox is a plain link, so the iPhone opens it straight away. After Allow, Dropbox shows the code; come back to the hub and paste it into the box under Dropbox sync. THE SYNC TEST now checks that Connect Dropbox is a ready-made link to Dropbox (it was seen failing before the change).' },
   { v:'2.1.2', when:'4 Nov 2026',
     what:'THE DROPBOX BUTTONS ARE ONE LINE OF ICONS. Before, Settings › Dropbox sync had two big buttons with words — a red-edged Disconnect and a black Sync now — and the wide Check for app update button sat further down on its own row: three buttons on two separate lines. Now, while Dropbox is connected, all three sit on ONE line as hand-drawn icons with no words: Sync now is the wide full-colour button with circling arrows (it used to be black), Disconnect is a red broken link, and Check for app update is an arrow in a circle. The wide Check for app update button is gone while the line carries it; when Dropbox is not connected it stays where it was. Each button still has its name for VoiceOver, and on the Mac the name shows when the pointer rests on it. Two new hand-drawn icons (broken link, arrow in a circle). A new test checks the three icons sit on one line with no words, that Sync is coloured, that the update icon still checks for an update, and that the wide button stays when Dropbox is off — seen failing before the change.' },
   { v:'2.1.1', when:'4 Nov 2026',
@@ -2724,12 +2727,21 @@ function dbxSave(){ storeJSON(DBX_STORE, dbx); }
 function dbxOn(){ return !!(DBX_KEY && dbx.refresh); }
 function syncSoon(){ if(!dbxOn()) return; clearTimeout(syncTimer); syncTimer = setTimeout(syncNow, 1200); }
 const b64url = buf => btoa(String.fromCharCode.apply(null, new Uint8Array(buf))).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
-async function dbxConnectStart(){
+/* 2.1.3: the iPhone blocks a page opened after a pause, and working out the code
+   challenge is one — so the link to Dropbox is made ready BEFORE the tap, and the tap
+   itself only follows a plain link. Its verifier is kept only once he taps. */
+let dbxPrep = null;
+async function dbxPrepare(){
   const verifier = b64url(crypto.getRandomValues(new Uint8Array(48)));
   const challenge = b64url(await crypto.subtle.digest('SHA-256', new TextEncoder().encode(verifier)));
-  dbx.verifier = verifier; dbxSave();
-  syncWaiting = true; renderSync();
-  window.open(`https://www.dropbox.com/oauth2/authorize?client_id=${DBX_KEY}&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&token_access_type=offline`, '_blank');
+  dbxPrep = { verifier, url:`https://www.dropbox.com/oauth2/authorize?client_id=${DBX_KEY}&response_type=code&code_challenge=${challenge}&code_challenge_method=S256&token_access_type=offline` };
+  return dbxPrep;
+}
+function dbxConnectTapped(ev){
+  if(!dbxPrep){ ev.preventDefault(); return; }
+  dbx.verifier = dbxPrep.verifier; dbxSave();
+  syncWaiting = true; dbxPrep = null;
+  setTimeout(renderSync, 60);   /* after the link has been followed */
 }
 async function dbxToken(form){
   const res = await fetch('https://api.dropboxapi.com/oauth2/token', { method:'POST',
@@ -2858,8 +2870,9 @@ function renderSync(){
   if(!DBX_KEY){ body.innerHTML = about + '<p class="syncline">Not ready yet.</p>'; sum.textContent = ''; return; }
   if(!dbx.refresh && !syncWaiting){
     sum.textContent = 'off';
-    body.innerHTML = about + '<button class="btn full primary" id="syncConnect" data-testid="sync-connect">Connect Dropbox</button>';
-    $('syncConnect').addEventListener('click', dbxConnectStart);
+    body.innerHTML = about + '<a class="btn full primary" id="syncConnect" data-testid="sync-connect" target="_blank" rel="noopener">Connect Dropbox</a>';
+    $('syncConnect').addEventListener('click', dbxConnectTapped);
+    (dbxPrep ? Promise.resolve(dbxPrep) : dbxPrepare()).then(p => { const a = $('syncConnect'); if(a) a.href = p.url; });
     return;
   }
   if(!dbx.refresh){

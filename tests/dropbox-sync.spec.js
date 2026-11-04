@@ -35,17 +35,28 @@ async function fakeDropbox(page, box){
     return route.fulfill({ status:404, headers:cors, body:'' });
   });
 }
+/* 2.1.3: Connect is a plain link to Dropbox, ready before the tap — the iPhone blocks a
+   page opened after a pause. Tap it here without following it, and hand back where it points. */
+async function tapConnect(page){
+  const link = page.getByTestId('sync-connect');
+  await expect(link).toHaveAttribute('href', /code_challenge=/);
+  await expect(link).toHaveAttribute('target', '_blank');
+  return page.evaluate(() => {
+    const a = document.querySelector('[data-testid="sync-connect"]');
+    a.addEventListener('click', e => e.preventDefault());
+    a.click();
+    return a.href;
+  });
+}
 const localEntries = page => page.evaluate(() => JSON.parse(localStorage.getItem('amshub.wealth.entries') || '{}'));
 
 test('connecting: Dropbox opens, the pasted code connects, and this device\'s entries go up', async ({ page }) => {
   const box = {};
-  await page.addInitScript(() => { window.open = u => { window.__opened = u; return null; }; });
   await openHub(page);
   await fakeDropbox(page, box);
   await page.getByTestId('settings-btn').click();
   await page.getByTestId('fold-sync').locator('summary').click();
-  await page.getByTestId('sync-connect').click();
-  await expect.poll(() => page.evaluate(() => window.__opened || '')).toContain('code_challenge=');
+  expect(await tapConnect(page)).toContain('client_id=');
   await page.getByTestId('sync-code').fill('THE-CODE');
   await page.getByTestId('sync-finish').click();
   await expect(page.getByTestId('sync-status')).toContainText('Connected');
@@ -152,11 +163,10 @@ test('an entry put back is not deleted again by the sync', async ({ page }) => {
 /* 2.1.1 — on the iPhone the hub can restart while he is in Dropbox fetching the code;
    coming back, it must still be waiting for that code, not show Connect again */
 test('the hub still waits for the code after it restarts', async ({ page, browser }) => {
-  await page.addInitScript(() => { window.open = () => null; });
   await openHub(page);
   await page.getByTestId('settings-btn').click();
   await page.getByTestId('fold-sync').locator('summary').click();
-  await page.getByTestId('sync-connect').click();
+  await tapConnect(page);
   await expect(page.getByTestId('sync-code')).toBeVisible();
   const stored = await page.evaluate(() => localStorage.getItem('amshub.dropbox'));
   /* the same device, started afresh, with what was stored */

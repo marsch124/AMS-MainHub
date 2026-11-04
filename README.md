@@ -73,7 +73,7 @@ entry exists.
 ## 2.0 — Dropbox sync, forecast, Year
 
 **Sync.** `DBX_KEY` is the hub's Dropbox app key (App folder access, public by
-design: PKCE, no secret). Connect = PKCE "code" flow *without* a redirect URI:
+design: PKCE, no secret). Connect = PKCE "code" flow *without* a redirect URI (since 2.1.3 `dbxPrepare()` builds the authorize URL when the section renders and Connect is a plain `<a target=_blank>` — iOS standalone blocks a `window.open` after an `await`):
 `dbxConnectStart()` opens the authorize page, he pastes the code shown,
 `dbxConnectFinish()` trades it (with the verifier) for a refresh token, kept in
 `amshub.dropbox` on that device only. The file is `/wealth.json` in the app folder:
