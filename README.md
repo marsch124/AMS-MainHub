@@ -101,6 +101,12 @@ label "Mon 9 Nov" + Today / Yesterday / N days ago) plus `dropbox-restore-cancel
 A tap confirms, downloads that file and hands it to `restoreFrom(data)` — the same
 function Import / restore uses, so wealth is put back with `putBackWealth()` (adds only).
 
+**Back up now (2.4).** `#dbxNowBtn` (`dropbox-backup-now`, only while `dbxOn()`)
+calls `dbxPutBackup(tok, 'hub-backup-YYYY-MM-DD-HHMM.json')` — the shared upload +
+prune that `dbxBackup()` also uses; `DBX_BACKUP_NAME` allows the optional `-HHMM`.
+`dbxListBackups()` sorts newest first by `backupKey()` (a daily file counts as 0000);
+the newest 30 of all kinds are kept. Restore list label adds ", HH:MM".
+
 **Forecast (2.3).** "by then" is `<span class="fby">`, hidden at ≤600px; the phone
 forecast is `white-space:nowrap`, one line.
 **Sync mark (2.2).** `markSync()` (from `markPen()` and `renderSync()`) puts

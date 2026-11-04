@@ -356,3 +356,48 @@ test('restore from Dropbox: not offered while Dropbox is not connected', async (
   await expect(page.getByTestId('backup-restore')).toBeVisible();
   await expect(page.getByTestId('dropbox-restore')).toBeHidden();
 });
+
+/* 2.4 — Back up now: an extra backup on the spot, named with the time, never replacing today's */
+test('back up now: a backup with the time in its name goes up, and today\'s daily one stays', async ({ page }) => {
+  await fixToday(page);
+  const box = {};
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups)).toContain(todayName);
+  const daily = box.backups[todayName];
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await page.getByTestId('dropbox-backup-now').click();
+  const extra = '/backups/hub-backup-2026-11-10-0900.json';
+  await expect.poll(() => Object.keys(box.backups).sort()).toEqual([extra, todayName]);
+  expect(box.backups[todayName]).toBe(daily);
+  expect(Object.keys(JSON.parse(box.backups[extra]).wealthEntries)).toEqual(['2026-10-01']);
+  await expect(page.getByTestId('toast')).toContainText('Backup saved in Dropbox');
+  await page.getByTestId('dropbox-restore').click();
+  await expect(page.getByTestId('dropbox-backup-item').first()).toHaveAttribute('data-path', extra);
+  await expect(page.getByTestId('dropbox-backup-item').first()).toContainText('09:00');
+});
+
+test('back up now: counts toward the newest 30, so the oldest daily one goes', async ({ page }) => {
+  await fixToday(page);
+  const old = [];
+  for(let i = 1; i <= 29; i++) old.push('hub-backup-2026-10-' + String(i).padStart(2, '0') + '.json');   /* 29 old + today = 30 */
+  const box = { oldBackups: old };
+  await fakeDropbox(page, box);
+  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:ONE });
+  await expect.poll(() => Object.keys(box.backups)).toContain(todayName);
+  expect(box.deleted).toEqual([]);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await page.getByTestId('dropbox-backup-now').click();
+  await expect.poll(() => box.deleted).toEqual(['/backups/hub-backup-2026-10-01.json']);
+});
+
+test('back up now: not offered while Dropbox is not connected', async ({ page }) => {
+  await openHub(page);
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').locator('summary').click();
+  await expect(page.getByTestId('backup-save')).toBeVisible();
+  await expect(page.getByTestId('dropbox-backup-now')).toHaveCount(1);
+  await expect(page.getByTestId('dropbox-backup-now')).toBeHidden();
+});

@@ -1248,6 +1248,7 @@
         <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
         <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty. Since 2.0 <b>Dropbox sync</b> carries your wealth accounts and entries across by itself, and since 2.2 Dropbox also keeps <b>a full backup every day</b> (Apps › AMS Main Hub › backups — the newest 30), so a fresh install that connects Dropbox gets everything back; the backup file under <b>Your data</b> stays the bridge for links, look and dashboard addresses, and for a device without Dropbox. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
         <p><b>Bringing a Dropbox backup back (2.3).</b> While Dropbox is connected, Settings › Your data has <b>Restore from Dropbox…</b>. Tap it and the newest seven daily backups appear, newest first — the day, and how long ago (Today, Yesterday, 3 days ago). Tap a day, say OK, and it comes back: wealth accounts and entries missing here are added, and nothing on this device is deleted (a date that is already here keeps what you have); your links, card order and colours become the ones in that backup. Cancel closes the list. No Files app needed — Import / restore… is still there for a backup file you saved yourself.</p>
+        <p><b>Back up now (2.4).</b> Above it, <b>Back up now to Dropbox</b> puts a backup in Dropbox on the spot — handy before a big change. It is named with the time (hub-backup-2026-11-04-1530.json), so it never replaces the day's automatic one, and it shows in Restore from Dropbox with its time (“Today, 15:30”). It counts toward the newest 30 backups kept.</p>
           </div>
         </details>
 
@@ -1431,6 +1432,7 @@
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
+        <button class="btn full" id="dbxNowBtn" data-testid="dropbox-backup-now" hidden>Back up now to Dropbox</button>
         <button class="btn full" id="dbxRestoreBtn" data-testid="dropbox-restore" hidden>Restore from Dropbox…</button>
         <div class="dbxlist" id="dbxRestoreList" data-testid="dropbox-restore-list" hidden></div>
         <p class="dim" id="dropboxBackupLine" data-testid="dropbox-backup-line" hidden></p>
@@ -1457,6 +1459,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.4', when:'4 Nov 2026',
+    what:'BACK UP NOW TO DROPBOX. Before, Dropbox only kept one automatic backup a day, made at the first sync of the day; for a backup right before a big change you had to save a file yourself. Now, while Dropbox is connected, Settings › Your data has a Back up now to Dropbox button above Restore from Dropbox. One tap puts a full backup in Dropbox at once and says "Backup saved in Dropbox". It is named with the time (hub-backup-2026-11-04-1530.json), so it never replaces the day\'s automatic backup, and Restore from Dropbox shows it with its time ("Today, 15:30"), newest first. It counts toward the 30 newest backups kept, so the oldest one makes room. If Dropbox refuses, it says why and nothing is changed. Without Dropbox the button is not shown. TESTS: three new ones — the extra backup goes up with the time in its name and today\'s automatic one stays untouched, then appears first in the restore list; it counts toward the 30 kept; the button is hidden without Dropbox. All seen failing before the change was built. Still 17 test files.' },
   { v:'2.3', when:'4 Nov 2026',
     what:'THE FORECAST ON ONE LINE, AND RESTORE FROM DROPBOX. (1) RETIREMENT TILE ON THE IPHONE. Before, the forecast read "≈ 8.27M kr by then" and on the iPhone it broke over two lines. Now on the iPhone it says just "≈ 8.27M kr", on one line; the Mac still says "by then". (2) RESTORE FROM DROPBOX. Before, bringing back one of the daily Dropbox backups meant finding the file in the Files app or Dropbox and opening it through Import / restore. Now, while Dropbox is connected, Settings › Your data has a Restore from Dropbox… button. It lists the newest seven daily backups, newest first, each with its day and how long ago (Today, Yesterday, 3 days ago). Tap one, confirm, and it is restored the same safe way as a backup file: wealth accounts and entries missing on this device are added, nothing here is deleted, a date already here keeps what you have; links, card order and colours become the backup\'s. Cancel closes the list. Without Dropbox the button is not shown. Import / restore… stays for files you saved yourself. (3) TESTS. New: the forecast is one line on the iPhone and keeps "by then" on the Mac; the Dropbox list shows exactly the newest seven backups in order and ignores other files; a picked backup adds its entries and keeps the ones here; the button is absent without Dropbox. All seen failing before the change was built. Still 17 test files, run at iPhone and Mac size on every push.' },
   { v:'2.2', when:'4 Nov 2026',
@@ -2849,7 +2853,9 @@ async function dbxUpload(tok, data, rev){
    and only the newest 30 such files are kept. Only files with exactly that name are ever
    listed for deleting; anything else in the folder is left alone. */
 const DBX_BACKUP_DIR = '/backups';
-const DBX_BACKUP_NAME = /^hub-backup-\d{4}-\d{2}-\d{2}\.json$/;
+const DBX_BACKUP_NAME = /^hub-backup-\d{4}-\d{2}-\d{2}(-\d{4})?\.json$/;   /* 2.4: -HHMM = made with Back up now */
+/* order of backups: by day, then time; a daily one (no time) counts as the start of its day */
+const backupKey = n => { const m = n.match(/(\d{4}-\d{2}-\d{2})(?:-(\d{4}))?/); return m[1] + (m[2] || '0000'); };
 const DBX_BACKUP_KEEP = 30;
 function localDay(d){ return d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0'); }
 async function dbxApi(tok, path, body){
@@ -2861,27 +2867,38 @@ async function dbxApi(tok, path, body){
   }
   return res.json().catch(() => ({}));
 }
+/* uploads one backup file, then keeps only the newest DBX_BACKUP_KEEP backup files */
+async function dbxPutBackup(tok, name){
+  const res = await fetch('https://content.dropboxapi.com/2/files/upload', { method:'POST',
+    headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
+      'Dropbox-API-Arg':JSON.stringify({ path:DBX_BACKUP_DIR + '/' + name, mode:{ '.tag':'overwrite' }, autorename:false, mute:true }) },
+    body: backupBlob() });
+  if(!res.ok){
+    let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
+    throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
+  }
+  dbx.backupAt = new Date().toISOString(); dbx.backupErr = '';
+  dbxSave();
+  /* tidy up: a failure here is not a failed backup — the file is already safe */
+  try{
+    const mine = await dbxListBackups(tok);
+    for(const f of mine.slice(DBX_BACKUP_KEEP)) await dbxApi(tok, 'delete_v2', { path:f.path_lower });
+  }catch(e){}
+}
+/* the backup files in Dropbox, newest first; anything else in the folder is ignored */
+async function dbxListBackups(tok){
+  let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
+  let all = list.entries || [];
+  while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
+  return all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || ''))
+    .sort((a, b) => backupKey(a.name) < backupKey(b.name) ? 1 : -1);
+}
 async function dbxBackup(tok){
-  const now = new Date(), day = localDay(now);
+  const day = localDay(new Date());
   if(dbx.backupDay === day) return;                 /* once a day on this device */
   try{
-    const name = 'hub-backup-' + day + '.json';
-    const res = await fetch('https://content.dropboxapi.com/2/files/upload', { method:'POST',
-      headers:{ Authorization:'Bearer ' + tok, 'Content-Type':'application/octet-stream',
-        'Dropbox-API-Arg':JSON.stringify({ path:DBX_BACKUP_DIR + '/' + name, mode:{ '.tag':'overwrite' }, autorename:false, mute:true }) },
-      body: backupBlob() });
-    if(!res.ok){
-      let why = ''; try{ why = JSON.parse(await res.text()).error_summary || ''; }catch(e){}
-      throw new Error(String(why || ('Dropbox answered ' + res.status)).replace(/\/+\.*$/, '').slice(0, 80));
-    }
-    dbx.backupDay = day; dbx.backupAt = now.toISOString(); dbx.backupErr = '';
-    dbxSave();
-    /* tidy up: a failure here is not a failed backup — the file is already safe */
-    let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
-    let all = list.entries || [];
-    while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
-    const mine = all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || '')).sort((a, b) => a.name < b.name ? -1 : 1);
-    for(const f of mine.slice(0, Math.max(0, mine.length - DBX_BACKUP_KEEP))) await dbxApi(tok, 'delete_v2', { path:f.path_lower });
+    await dbxPutBackup(tok, 'hub-backup-' + day + '.json');
+    dbx.backupDay = day; dbxSave();
   }catch(e){
     if(dbx.backupDay !== day) dbx.backupErr = String(e && e.message || e);
   }
@@ -2956,6 +2973,7 @@ function renderBackupLine(){
   if(!el) return;
   el.hidden = !dbxOn();
   if($('dbxRestoreBtn')) $('dbxRestoreBtn').hidden = !dbxOn();
+  if($('dbxNowBtn')) $('dbxNowBtn').hidden = !dbxOn();
   if(!dbxOn() && $('dbxRestoreList')) $('dbxRestoreList').hidden = true;
   if(!dbxOn()) return;
   const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
@@ -3759,12 +3777,12 @@ function restoreFrom(data){
 const DBX_RESTORE_SHOW = 7;
 const WDAY3 = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 function backupDayLabel(name){
-  const m = name.match(/(\d{4})-(\d{2})-(\d{2})/);
+  const m = name.match(/(\d{4})-(\d{2})-(\d{2})(?:-(\d{2})(\d{2}))?/);
   const d = new Date(+m[1], +m[2] - 1, +m[3]);
   const today = new Date(); today.setHours(0, 0, 0, 0);
   const ago = Math.round((today - d) / 86400000);
   return { day: WDAY3[d.getDay()] + ' ' + d.getDate() + ' ' + MON3[d.getMonth()] + (d.getFullYear() !== today.getFullYear() ? ' ' + d.getFullYear() : ''),
-           when: ago === 0 ? 'Today' : ago === 1 ? 'Yesterday' : ago + ' days ago' };
+           when: (ago === 0 ? 'Today' : ago === 1 ? 'Yesterday' : ago + ' days ago') + (m[4] ? ', ' + m[4] + ':' + m[5] : '') };
 }
 function closeDbxRestore(){ $('dbxRestoreList').hidden = true; $('dbxRestoreList').innerHTML = ''; }
 $('dbxRestoreBtn').addEventListener('click', async () => {
@@ -3774,11 +3792,7 @@ $('dbxRestoreBtn').addEventListener('click', async () => {
   box.innerHTML = '<p class="dim">Looking in Dropbox…</p>';
   try{
     const tok = await dbxAccess();
-    let list = await dbxApi(tok, 'list_folder', { path:DBX_BACKUP_DIR });
-    let all = list.entries || [];
-    while(list.has_more){ list = await dbxApi(tok, 'list_folder/continue', { cursor:list.cursor }); all = all.concat(list.entries || []); }
-    const mine = all.filter(f => f['.tag'] === 'file' && DBX_BACKUP_NAME.test(f.name || ''))
-      .sort((a, b) => a.name < b.name ? 1 : -1).slice(0, DBX_RESTORE_SHOW);
+    const mine = (await dbxListBackups(tok)).slice(0, DBX_RESTORE_SHOW);
     if(box.hidden) return;
     box.innerHTML = (mine.length ? '<p class="dim">Pick a day. Restoring adds what is missing here — no entry on this device is deleted.</p>'
         : '<p class="dim">No daily backups in Dropbox yet — the first is made after the next sync.</p>') +
@@ -3788,6 +3802,21 @@ $('dbxRestoreBtn').addEventListener('click', async () => {
   }catch(e){
     box.innerHTML = '<p class="dim">Could not reach Dropbox — ' + esc(String(e && e.message || e)) + '</p><button class="btn full" data-testid="dropbox-restore-cancel" data-dbx-cancel>Cancel</button>';
   }
+});
+/* 2.4: Back up now — an extra backup on the spot, named with the time, so today's daily one stays */
+$('dbxNowBtn').addEventListener('click', async () => {
+  const btn = $('dbxNowBtn');
+  if(btn.disabled) return;
+  btn.disabled = true; btn.textContent = 'Backing up…';
+  try{
+    const now = new Date();
+    const hm = String(now.getHours()).padStart(2, '0') + String(now.getMinutes()).padStart(2, '0');
+    await dbxPutBackup(await dbxAccess(), 'hub-backup-' + localDay(now) + '-' + hm + '.json');
+    renderBackupLine();
+    showToast('Backup saved in Dropbox ✅');
+    if(!$('dbxRestoreList').hidden) closeDbxRestore();
+  }catch(e){ alert('Dropbox could not keep the backup — ' + String(e && e.message || e) + '. Nothing was changed; try again, or use Save a backup file.'); }
+  btn.disabled = false; btn.textContent = 'Back up now to Dropbox';
 });
 $('dbxRestoreList').addEventListener('click', async ev => {
   if(ev.target.closest('[data-dbx-cancel]')){ closeDbxRestore(); return; }
