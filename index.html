@@ -994,14 +994,9 @@
 
 <main>
 
-  <!-- Four shelves, grouped by what you want to do — not by where the code runs.
-       FINANCE holds the whole monthly money system; the other three are the
-       everyday apps, the Mac-only tools, and your own links. -->
-  <section class="panel" style="--shelf:#5868c9; --shelfline:#5868c94d">
-    <div class="sect">FINANCE</div>
-    <div class="cards" id="finCards"></div>
-  </section>
-
+  <!-- Three shelves, grouped by what you want to do — not by where the code runs:
+       the everyday apps, the Mac tools, and your own links. (The FINANCE shelf
+       was retired in 2.5 — money lives in AMS Financial Steward.) -->
   <section class="panel" style="--shelf:#1f9e93; --shelfline:#1f9e934d">
     <div class="sect">EVERYDAY APPS</div>
     <div class="cards" id="webCards"></div>
@@ -1030,7 +1025,7 @@
     <input type="text" id="fName" placeholder="e.g. Anna’s recipe site" maxlength="40" />
     <label id="fUrlLabel">Web address or Mac path</label>
     <input type="text" id="fUrl" inputmode="url" placeholder="https://…  or  /Users/…/file.xlsx" autocapitalize="off" autocorrect="off" spellcheck="false" />
-    <p class="dim" id="pathHint" style="font-size:12.5px; margin:-4px 0 0">A web address opens in the browser. A path to a file or folder on the Mac (Finder: right-click → hold ⌥ → Copy as Pathname) opens it on the Mac when the hub is opened from AMS Finance in the Dock.</p>
+    <p class="dim" id="pathHint" style="font-size:12.5px; margin:-4px 0 0">A web address opens in the browser. A path to a file or folder on the Mac (Finder: right-click → hold ⌥ → Copy as Pathname) opens it on the Mac, from the AMS Main Hub app.</p>
     <div class="btnrow">
       <button class="btn danger" id="fDelete" style="display:none">Delete</button>
       <button class="btn" id="fCancel">Cancel</button>
@@ -1047,21 +1042,6 @@
     <div class="swgrid" id="swGrid"></div>
     <button class="btn full" id="paintReset">Back to its own colour</button>
     <div class="btnrow"><button class="btn" id="paintCancel">Cancel</button></div>
-  </div>
-</div>
-
-<!-- ============ wealth: accounts + dated entries ============ -->
-<div class="overlay" id="ovWealth" data-testid="wealth-sheet">
-  <div class="sheet">
-    <button class="iconbtn closex" id="wealthClose" data-testid="wealth-close" aria-label="Close"><svg class="hi"><use href="#icon-close"/></svg></button>
-    <h2><svg class="hi"><use href="#icon-coin"/></svg>Wealth</h2>
-    <div class="wnav">
-      <button class="wtab" data-wv="history" data-testid="wtab-history">History</button>
-      <button class="wtab" data-wv="entry" data-testid="wtab-entry">New entry</button>
-      <button class="wtab" data-wv="accounts" data-testid="wtab-accounts">Accounts</button>
-      <button class="wtab" data-wv="year" data-testid="wtab-year">Year</button>
-    </div>
-    <div id="wBody" data-testid="wealth-body"></div>
   </div>
 </div>
 
@@ -1100,31 +1080,22 @@
         <details class="sub">
           <summary>Start here<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the tiles, tap the card you need.</b> If the Finance tile shows a missing dot, the Finance shelf is where the work is.</p>
-        <p><b>On the Mac</b>, the hub is what <b>AMS Finance.app</b> in the Dock opens: <b>localhost:7780</b>, served by the Finance engine, so the Wealth and Finance tiles, the dashboard addresses and the latest report all fill themselves in. (The published copy on the web can’t ask the Mac for anything, so there those stay quiet.) On the iPhone, it’s the home-screen icon.</p>
+        <p>The hub is the front door to everything AMS. One habit on every device: <b>open the hub, read the three tiles, tap the card you need.</b> Money matters are not here any more — they live in <b>AMS Financial Steward</b>.</p>
+        <p><b>On the Mac</b>, the hub is served by a small engine that starts by itself when the Mac starts, at <b>localhost:7780/hub/</b>. (The published copy on the web can’t ask the Mac for anything, so there the Mac-only parts stay quiet.) On the iPhone, it’s the home-screen icon.</p>
 
-        <p>The full story — how the system is built, the daily habit, and the monthly money process as a worked example — sits in the next section, <b>The system, end to end</b>.</p>
+        <p>The full story — what the system is now, and what was retired — sits in the next section, <b>The system, end to end</b>.</p>
           </div>
         </details>
 
         <details class="sub">
-          <summary>Four shelves<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>Three shelves<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Cards sit on four shelves, grouped by what you want to do — not by where the code happens to run:</p>
+        <p>Cards sit on three shelves, grouped by what you want to do — not by where the code happens to run:</p>
         <ul>
-          <li><b>FINANCE</b> — the whole monthly money system in one place: the <b>Finance Hub</b> (where the process stands — Mac only), the <b>Spend Dashboard</b> and the <b>Finance Dashboard</b> (the two published chart pages), the <b>latest report</b> in Obsidian (Mac only), and <b>Sam</b>, who runs the month. This shelf is the one place where cards are not all equal — see <b>A front door and the rooms behind it</b> below.</li>
-          <li><b>EVERYDAY APPS</b> — the web apps you type into: packing, instructions, habits, and the rest.</li>
-          <li><b>MAC TOOLS</b> — things that only exist on the Mac, like the Timers board.</li>
+          <li><b>EVERYDAY APPS</b> — the apps you type into: packing, instructions, habits, and the rest.</li>
+          <li><b>MAC TOOLS</b> — things that only exist on the Mac, like the Timers board, and <b>Sam</b>, the assistant you talk to in Cowork.</li>
           <li><b>YOUR LINKS</b> — anything else you want a card for.</li>
         </ul>
-        <p>Four words, used strictly, so the names tell you what a thing is: a <b>Hub</b> is a front door, a <b>Dashboard</b> is a page you read, an <b>App</b> is a tool you type into, a <b>Report</b> is the monthly note in Obsidian.</p>
-          </div>
-        </details>
-
-        <details class="sub">
-          <summary>The two dashboards<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
-          <div class="subbody">
-        <p>The dashboards live on claude.ai, at private addresses. On the Mac (from localhost:7780) the Finance engine hands the hub those addresses itself, and each card admits how many months it lags behind the newest data — the same badge the Finance Hub shows. Anywhere else, tap the <b>pencil</b> on the card once and paste the address; it is stored only on that device and rides along in your backups.</p>
           </div>
         </details>
 
@@ -1137,17 +1108,14 @@
           <li><b>List</b> — one wider card per app with its description, version and data icons, for when you want the detail.</li>
         </ul>
         <p><b>Day and night.</b> The <b>Look</b> row at the top of Settings has three choices. <b>Automatic</b> (where you start) follows your iPhone and Mac: when they turn dark, so does the hub, straight away and even while it is open. <b>Day</b> keeps the light paper even when the device is dark; <b>Night</b> keeps the dark paper even in daylight. Your choice works the moment you tap it and is remembered on that device, so the iPhone and the Mac can each have their own. By night the paper is a warm near-black and every card and tile keeps its own colour, turned down, so you find things by colour exactly as by day; the main buttons stay full colour.</p>
-        <p><b>Four shelves, four colours.</b> Each shelf writes its name in its own colour — FINANCE indigo, EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
-        <p><b>A front door and the rooms behind it.</b> On the FINANCE shelf the <b>AMS Finance Hub</b> is the front door, and the three things it takes you to — the <b>Spend Dashboard</b>, the <b>Finance Dashboard</b> and the <b>latest report</b> — are <b>nested underneath it</b>. In the tiles layout they simply sit beside it as tiles of their own; in the list they hang indented below it on a thin line. On the phone the same idea takes its own shape: the hub is the big card and the three are small rows stepped in from the left, joined by a thin line. Either way they are drawn <b>quieter</b> than everything else — each keeps its own colour, faded most of the way to the paper, and the calm labels lose their pill (only <i>n months behind</i> keeps its voice, because that one is a warning). Nothing about them changed except how they are drawn — they still open the same pages, and they still carry their own colour, their own icon and their up-to-date badge. <b>Sam</b> stays a full card, because Sam runs the month with you rather than being somewhere the hub sends you.</p>
-        <p><b>The latest report away from the Mac.</b> That card is filled in by the Finance engine, which is what knows which note is newest and how to open it. On the iPhone there is nothing to ask, so the card stands with its glyph greyed and <b>MAC ONLY</b> beside it — it keeps its place in the group rather than disappearing, and a tap tells you the report is a Mac errand.</p>
-        <p>Move one of the three away from the hub in <b>Arrange</b> and it steps back out of the group — no line, no indent, just an ordinary card again, rather than pretending to hang off whatever now sits above it. Repaint the Finance Hub and the line takes its new colour. <b>Sam</b> is untouched throughout: Sam runs the month with you rather than being somewhere the hub sends you.</p>
+        <p><b>Three shelves, three colours.</b> Each shelf writes its name in its own colour — EVERYDAY APPS teal, MAC TOOLS lilac, YOUR LINKS coral — with a rule across the line and a plank of the same colour along its bottom edge, so you can see at a glance which shelf you are looking at when only part of it is on screen.</p>
           </div>
         </details>
 
         <details class="sub">
           <summary>Make the shelf yours<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>The <b>Arrange</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap the ✓ when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
+        <p>The <b>Arrange</b> button in the header opens <b>arrange mode</b>: every card grows ▲ ▼ buttons to move it up or down its shelf, and a little <b>palette</b> button that lets you pick the card's colour from a set of calm, matching shades — or send it back to its own colour with one tap. Tap <b>Done</b> (the tick) when you're happy. Your order and colours are remembered on this device, and they ride along in your backups.</p>
           </div>
         </details>
 
@@ -1166,45 +1134,30 @@
         </details>
 
         <details class="sub">
-          <summary>Mac only<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>Mac only, iPhone only<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Timers, the Finance Hub and the latest report live on the Mac itself, not on the internet, so their cards are marked <b>MAC ONLY</b> or <b>OBSIDIAN</b>. Tapping them on the iPhone does nothing useful — that's expected.</p>
+        <p>Timers lives on the Mac itself, not on the internet, so its card is marked <b>MAC ONLY</b>; tapping it on the iPhone does nothing useful — that's expected. In the same way, an app that exists only on the iPhone is marked <b>iPHONE APP</b> and stands greyed on the Mac; tapping it says so.</p>
           </div>
         </details>
 
         <details class="sub">
-          <summary>The mini tiles<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>The three tiles<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>The small tiles sit <b>up in the header</b>, between the name and the buttons, so the whole page below is shelves. Each shows one number, in its own colour. On the Mac they share the header's line as slim strips; on the iPhone they sit on a line of their own under the name, three across. The little wealth chart rests in the header — the total and what changed stay.</p>
-        <p><b>You choose which ones appear.</b> Tap <b>Arrange</b> and every tile grows a small circle in its corner — filled means shown, empty means hidden. Tiles you switch off stay on screen while you are arranging, greyed out, so you can always bring one back. Tap the tick when you are done; your choice is remembered on this device.</p>
+        <p>Three small tiles sit <b>up in the header</b>, between the name and the buttons, so the whole page below is shelves. Each shows one number, in its own colour, and they sit in one row on the Mac and on the iPhone.</p>
+        <p><b>You choose which ones appear.</b> Tap <b>Arrange</b> and every tile grows a small circle in its corner — filled means shown, empty means hidden. Tiles you switch off stay on screen while you are arranging, greyed out, so you can always bring one back. Tap Done when you are finished; your choice is remembered on this device.</p>
         <ul>
-          <li><b>Wealth · 0</b> — the very same money, drawn from zero instead. Honest about scale: the filled block shows how much there is, and a year of movement is only a slight tilt along the top. Keep it beside the other one, or keep just the one you prefer.</li>
-          <li><b>Wealth</b> — your latest total, how it moved since your previous entry, and a small line showing its shape over the past year. The total is the sum of the account balances you type in through the <b>pencil</b> on this tile — see <b>Entering your wealth</b> below. On the Mac, if the budget workbook has a figure for the same month, and it differs from yours, an amber <b>workbook</b> line appears under your total so the mismatch cannot be missed (History then shows which month it is); your own entry is always the number that counts. The numbers live only on this device and in your own backup files — <b>never</b> in the hub's public code.</li>
           <li><b>Retirement</b> — the days left until 1 July 2028.</li>
-          <li><b>The year</b> — how much of the year has gone, and how many days are left.</li>
-          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps (Report · Ledger · Workbook · Dashboard) that fills in as you finish it. Asked live from the Finance engine, so it needs the Mac with the engine running. The tiles are a glance, not a workplace: the little <b>Finance Hub ›</b> on this tile takes you to where the work is.</li>
+          <li><b>The year</b> — how much of the year has gone, in per cent, how many days are left, and a bar.</li>
           <li><b>Apps</b> — how many of your apps answered when the hub asked their version just now. All of them answering means everything is alive; the actual numbers sit on the cards below.</li>
         </ul>
           </div>
         </details>
 
         <details class="sub">
-          <summary>Entering your wealth<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>Where your wealth went<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Tap the <b>pencil</b> on the Wealth tile. If it carries a small <b>amber dot with a number</b>, that many months — any month, not only the newest — have a different figure in the budget workbook than your own entry; open History to see which, and tap a month's amber line there to correct it. The sheet always opens on <b>History</b>, so you see where things stand before you type; the other two pages are one tap away at the top:</p>
-        <ul>
-          <li><b>New entry</b> — the date (today, unless you change it) and one row per account, in your own order. <b>Type thousands:</b> 250 and a press of <b>Tab</b> becomes 250 000. Type five digits or more and it is taken exactly as it stands, so an exact balance like 1 234 567 can still be entered in full — and a figure already in the box (when you correct an old entry) is never scaled a second time. Spaces and dots are fine. Next to a row, the small <b>arrow</b> opens that bank or broker in Safari so you can read the balance, then come back — what you have typed so far is kept, even if the phone reloads the hub in between. The <b>Total</b> at the bottom adds up as you type. A row you leave empty <b>carries</b> its last known balance (shown greyed as <i>last: …</i>) and the entry says which accounts were carried, so a total is never silently short. <b>Save entry</b> stores the snapshot. If that date already has an entry, saving replaces it.</li>
-          <li><b>Send to Excel</b> (on the Mac) — the green button beside the date. The date picks the month, and one press copies that month's <b>latest entry</b> into its row of the budget workbook, one figure per account. It finds each account's column <b>by its name</b> every time, so a moved column or a small typo in the workbook does not matter; if it cannot be sure of a column it writes nothing and tells you which. Before anything is written it shows you exactly what will go in, and a dated copy of the workbook is kept first. Only those account cells change — your totals, charts and everything else stay as they are. If you have typed figures and not saved them, the button says <b>Save &amp; send</b> and does both. Close the workbook in Excel before you press it. Once a month has gone the button reads <b>"September sent ✓"</b>, until that month's entry changes.</li>
-          <li><b>Budget workbook</b> — under the Total, a row that opens the Excel budget workbook itself, the one the workbook cross-check is read from. Handy while you are typing: you can put your own figures next to the workbook\'s. On the Mac only, with the Finance engine running — that is where the file is. The hub is never told where it lives; it asks the engine to open its own workbook.</li>
-          <li><b>Accounts</b> — the list starts empty; add each account with a name and, if you like, the web address of its bank or broker. The pencil renames an account, changes its link or deletes it. <b>▲ ▼</b> set the order of your accounts, and that one order is used on every page — History, New entry and Accounts — so a name is always in the same place. A new account starts at the bottom until you move it. Deleting an account keeps its old balances in past entries, and its name too — it only stops appearing in new ones, and shows in History as <i>removed</i>.</li>
-          <li><b>History</b> — the page the sheet opens on. If the budget workbook (on the Mac) has a different figure for a month than your own entry, that month gets a small amber <b>workbook</b> line under its TOTAL, so you see exactly which month is off; a pointer over it says by how much. <b>Tap that amber line</b> and the month's entry opens to correct it, just like Adjust. Months that agree show nothing. With two entries in one month, the mark sits on the last one. A table: your accounts down the side in <b>your own order</b>, the <b>five most recent</b> entries across the top — oldest on the left, <b>newest on the right</b>, like a timeline — and a <b>TOTAL</b> row along the bottom. On the iPhone there is room for the three newest; the two before them are listed underneath. <b>Adjust</b> under a column reopens that entry to correct it — and that is also where you delete it, with the <b>Delete</b> button beside Cancel. A <b>—</b> means that account was not part of that entry, which is not the same as a zero. Paler figures were carried from the entry before rather than typed. Add an account and it appears at the bottom, with dashes for the entries it missed; delete one and its row stays in History, marked <i>removed</i>, so the past still adds up. Anything older than the columns is listed underneath as <b>Earlier entries</b>, so nothing is ever hidden. At the bottom, a quiet line reminds you that a copy of your numbers is kept on this device each day; if entries ever do go missing it says so plainly and offers to put them back. The pencil reopens an entry so you can correct it; delete removes it. Below the list the hub reports its <b>safety copy</b>: once a day it keeps a copy of your accounts and entries, always holding on to the fullest one it has seen, and can put it back with one tap if something ever goes missing.</li>
-        </ul>
-        <p>The Wealth tiles then show the total of your newest entry, <b>how much it has grown this year</b> (for example “+9.8% since Jan” — your newest entry against your first entry of this year, or against your last entry from before 1 January if this year has no other one yet; on the Mac a pointer over it gives the amount in kronor; in the first week of January, before you type a January entry, it shows how the whole of last year went, such as “+14% in 2026”), and the shape over the past year — one point per month, the last entry of each month. All of it stays on this device and in your backups; nothing is typed into the hub's public code.</p>
-        <p><b>The Year tab.</b> In the wealth window, Year shows how a year went: the change from the end of the year before to your last entry that year, each account from start to end, and the best and weakest month. Tap a year at the top to look at another one.</p>
-        <p><b>The forecast.</b> The Retirement tile says where your wealth is heading by 1 July 2028 at your pace of the last twelve months, such as “≈ 8.27M kr by then” on the Mac; on the iPhone it is just “≈ 8.27M kr”, on one line. It needs entries at least two months apart.</p>
-        <p><b>The top tiles.</b> They sit three across in two even rows, on the iPhone and on the Mac, so every number is on one line. While Dropbox sync is on, a small sync mark sits beside WEALTH in the tile’s own colour — amber if it is not getting through (Settings › Dropbox sync then says why).</p>
-        <p><b>Dropbox sync.</b> Connect Dropbox once on each device (Settings › Dropbox sync: Connect Dropbox, Allow, copy the code, paste it — if the hub started afresh meanwhile, open Settings › Dropbox sync again and the paste box is waiting). Then your wealth accounts and entries are the same on your iPhone and your Mac: each change travels through one small file in your Dropbox (Apps › AMS Main Hub). When the same date was changed on both, the later change wins; nothing that exists on only one device is lost. Links and look stay on each device. If Dropbox ever turns the file down, Settings › Dropbox sync says <i>Not synced</i> and why; if Dropbox has withdrawn the connection it asks you to <b>Connect Dropbox again</b>. Once connected, the section has one line of three icon buttons: the coloured <b>circling arrows</b> sync now, the red <b>broken link</b> disconnects this device (it asks first, and keeps everything), and the <b>arrow in a circle</b> checks for an app update. On the Mac, rest the pointer on a button to see its name.</p>
-        <p><b>A monthly reminder.</b> From the 8th of each month, if that month has no entry yet, the Wealth tile shows a quiet honey line such as “Nov not entered yet”. Tap it to go straight to New entry. It disappears as soon as you save an entry for that month.</p>
+        <p>Wealth is entered and looked at in <b>AMS Financial Steward</b> now. The hub no longer has Wealth tiles, a pencil for entering balances, or a wealth window.</p>
+        <p>Nothing you typed here was deleted. The wealth accounts and entries stay <b>stored</b> on each device, they travel in every backup (a backup file, Copy backup, and the Dropbox backups), and Dropbox sync still keeps them the same on iPhone and Mac. They are simply not shown any more.</p>
           </div>
         </details>
 
@@ -1216,18 +1169,14 @@
           <li><b>A phone</b> — the app stores everything on the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
           <li><b>Phone + Mac + cloud together</b> — AMS Packing is the special one: its catalogue lives on each device <i>and</i> syncs between iPhone and Mac through a Dexie Cloud account.</li>
           <li><b>A Mac screen</b> — the app and its data live on the Mac itself.</li>
-          <li><b>A grid sheet</b> — the Finance Hub doesn't store anything itself; it watches the monthly Excel workbooks and ledgers in the AMS Finance folder in Documents.</li>
+          <li><b>A grid sheet</b> — the data sits in an Excel workbook (AMS Workout Sync keeps its plan in one, in Dropbox).</li>
           <li><b>A gem</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
           <li>The apps' <b>code</b> is public on GitHub — but none of your data ever is.</li>
         </ul>
-        <p>And the whole landscape on one page, for the day you come back after weeks away:</p>
+        <p>And the landscape on one page, for the day you come back after weeks away:</p>
         <div class="mapwrap"><table class="map">
           <tr><th>What</th><th>Kind</th><th>Runs</th><th>Its data</th></tr>
-          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (the AMS Main Hub app, served at localhost:7780)</td><td>Links, order, colours, wealth accounts and entries — on each device</td></tr>
-          <tr><td><b>AMS Finance Hub</b></td><td>Hub</td><td>Mac only, localhost:7780/finance</td><td>Reads the Excel workbooks and the Obsidian reports; keeps its checklist beside itself</td></tr>
-          <tr><td><b>Spend Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the monthly report</td></tr>
-          <tr><td><b>Finance Dashboard</b></td><td>Dashboard</td><td>claude.ai</td><td>Built by Sam from the budget workbook</td></tr>
-          <tr><td><b>Monthly report</b></td><td>Report</td><td>Obsidian on the Mac</td><td>Areas › Finance › Reports</td></tr>
+          <tr><td><b>AMS Main Hub</b></td><td>Hub</td><td>iPhone · Mac (the AMS Main Hub app, served at localhost:7780/hub/)</td><td>Links, order, colours, tiles — on each device; old wealth entries are kept, not shown</td></tr>
           <tr><td><b>Sam</b></td><td>Assistant</td><td>Cowork on the Mac</td><td>Notes and memory in the Obsidian vault</td></tr>
           <tr><td><b>Timers</b></td><td>Mac tool</td><td>Mac, port 7777</td><td>Its own folder</td></tr>
           <tr><td><b>The everyday apps</b></td><td>Apps</td><td>iPhone (and Safari on the Mac)</td><td>On the device; Packing also syncs via Dexie Cloud</td></tr>
@@ -1239,16 +1188,12 @@
           <summary>Where your numbers live<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>Worth knowing before you ever move, reinstall or rename anything.</p>
-        <p><b>Two different numbers sit in the Wealth tile, and only one of them is yours.</b></p>
-        <ul>
-          <li><b>Your entries</b> — the big total, and everything behind it: the balances you type through the pencil, your account names and their order, and the daily safety copies. These live <b>inside this app, on this device</b>, and nowhere else. Not on a server, not in the hub's public code, not in iCloud.</li>
-          <li><b>The amber workbook line</b> (Mac only) — a cross-check, read straight out of your Excel budget workbook every time you look. It only appears when the workbook disagrees with your own newest entry: then the Wealth tile shows <b>workbook …</b> in amber under your total, and a pointer over it says by how much and which way. <b>Tap that line</b> and your newest entry opens with its figures filled in, ready to correct. When they agree, nothing shows. The hub never stores it, and your own entry is always the number that counts. Going the other way, <b>Send to Excel</b> copies a month of your entries into the workbook when you ask it to.</li>
-        </ul>
-        <p>Your <b>links</b>, the two dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
-        <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. Typing an entry in one does not put it in the other. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast, or let AMS Finance open it for you. Anything else showing this page is an empty copy.</p>
-        <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, clearing Safari's website data, or carrying your entries from the iPhone to the Mac — each of those starts a box from empty. Since 2.0 <b>Dropbox sync</b> carries your wealth accounts and entries across by itself, and since 2.2 Dropbox also keeps <b>a full backup every day</b> (Apps › AMS Main Hub › backups — the newest 30), so a fresh install that connects Dropbox gets everything back; the backup file under <b>Your data</b> stays the bridge for links, look and dashboard addresses, and for a device without Dropbox. Your Excel workbook is never touched by any of this, so the workbook figures are never at risk.</p>
-        <p><b>Bringing a Dropbox backup back (2.3).</b> While Dropbox is connected, Settings › Your data has <b>Restore from Dropbox…</b>. Tap it and the newest seven daily backups appear, newest first — the day, and how long ago (Today, Yesterday, 3 days ago). Tap a day, say OK, and it comes back: wealth accounts and entries missing here are added, and nothing on this device is deleted (a date that is already here keeps what you have); your links, card order and colours become the ones in that backup. Cancel closes the list. No Files app needed — Import / restore… is still there for a backup file you saved yourself.</p>
-        <p><b>Back up now (2.4).</b> Above it, <b>Back up now to Dropbox</b> puts a backup in Dropbox on the spot — handy before a big change. It is named with the time (hub-backup-2026-11-04-1530.json), so it never replaces the day's automatic one, and it shows in Restore from Dropbox with its time (“Today, 15:30”). It counts toward the newest 30 backups kept.</p>
+        <p><b>The wealth accounts and entries you typed here in the past</b> — the balances, your account names and their order, and the daily safety copies — are still <b>stored inside this app, on each device</b>, and they are carried by every backup. They are not shown any more, and there is no amber workbook line any more. New wealth figures go into AMS Financial Steward.</p>
+        <p>Your <b>links</b>, the old dashboard addresses, and your card order, colours and chosen tiles live in the same place: inside this app, on this device.</p>
+        <p><b>Each app is its own box.</b> The hub on your iPhone and the hub on your Mac keep separate copies — and on the Mac, the <b>AMS Main Hub</b> app is a separate box from the hub open in a Safari tab, even though they show the same page. So on the Mac there is exactly one door: the AMS Main Hub app — type its name in Raycast. Anything else showing this page is an empty copy.</p>
+        <p>So: <b>save a backup file before you move house.</b> Reinstalling the app, re-adding it to the Dock, renaming it, or clearing Safari's website data — each of those starts a box from empty. <b>Dropbox sync</b> still keeps the old wealth accounts and entries the same on iPhone and Mac, and Dropbox keeps <b>a full backup every day</b> (Apps › AMS Main Hub › backups — the newest 30), so a fresh install that connects Dropbox gets everything back; the backup file under <b>Your data</b> stays the bridge for links, look and old dashboard addresses, and for a device without Dropbox.</p>
+        <p><b>Bringing a Dropbox backup back.</b> While Dropbox is connected, Settings › Your data has <b>Restore from Dropbox…</b>. Tap it and the newest seven daily backups appear, newest first — the day, and how long ago (Today, Yesterday, 3 days ago). Tap a day, say OK, and it comes back: stored wealth accounts and entries missing here are added, and nothing on this device is deleted (a date that is already here keeps what you have); your links, card order and colours become the ones in that backup. Cancel closes the list. No Files app needed — Import / restore… is still there for a backup file you saved yourself.</p>
+        <p><b>Back up now.</b> Above it, <b>Back up now to Dropbox</b> puts a backup in Dropbox on the spot — handy before a big change. It is named with the time (hub-backup-2026-11-04-1530.json), so it never replaces the day's automatic one, and it shows in Restore from Dropbox with its time (“Today, 15:30”). It counts toward the newest 30 backups kept.</p>
           </div>
         </details>
 
@@ -1257,26 +1202,25 @@
           <div class="subbody">
         <p>The bottom shelf is yours: add any web address, file or folder you want a card for. These links are stored <b>only on this device</b>, never in the hub's public code, so private addresses stay private. The pencil on a link edits or deletes it.</p>
         <p><b>How a link card reads.</b> The name you gave it, and under it one small word for what it is — SPREADSHEET, PDF, PICTURE, SLIDES, DOCUMENT, FOLDER, or the site's name for a web link. The long address is <b>not</b> on the card: it lives behind the pencil (and on the Mac it appears if you rest the pointer on the card). Each kind brings its own colour and its own hand-drawn icon — a spreadsheet is green, a PDF red, a folder honey — and a web link keeps a colour picked from its name. The palette in Arrange still overrules all of it whenever you want a particular card a particular colour.</p>
-        <p><b>Files and folders on the Mac.</b> The same field also takes a path — for example <code>/Users/you/Library/CloudStorage/Dropbox/Triathlon/Training plan.xlsx</code>. In the Finder, right-click the file, hold ⌥ and choose <b>Copy as Pathname</b>, then paste it here. The card gets a document or folder icon, and a tap opens the file in its own app (or the folder in the Finder). This works from the AMS Main Hub app on the Mac, because it is served by the Finance engine at localhost:7780 and can ask the engine to open things for it. The engine only opens what exists inside your home folder or on an attached disk. On the iPhone, or in the published copy on the web, tapping such a card simply copies the path.</p>
+        <p><b>Files and folders on the Mac.</b> The same field also takes a path — for example <code>/Users/you/Library/CloudStorage/Dropbox/Triathlon/Training plan.xlsx</code>. In the Finder, right-click the file, hold ⌥ and choose <b>Copy as Pathname</b>, then paste it here. The card gets a document or folder icon, and a tap opens the file in its own app (or the folder in the Finder). This works from the AMS Main Hub app on the Mac, because it is served by the small engine at localhost:7780 and can ask the engine to open things for it. The engine only opens what exists inside your home folder or on an attached disk. On the iPhone, or in the published copy on the web, tapping such a card simply copies the path.</p>
           </div>
         </details>
 
         <details class="sub">
           <summary>Backups<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens Apple's own <b>Save</b> window — the same one every Mac app uses. Name the file, browse to any folder, even make a new one, and press Save. The Finance engine writes the backup there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. Next time the window opens in the folder you used last. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the dashboard addresses, your wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. A restore <b>adds</b> to what is here and never takes anything away: wealth dates missing on this device come back, dates and accounts already here stay as they are — so an old backup can never wipe newer entries, here or (through Dropbox) on your other device. The same goes for <b>Put those entries back</b> under History. If this device ever refuses to store a saved entry (its storage full or blocked), the hub tells you straight away so you can save a backup file. Because wealth entries live on the device you typed them on, a backup is also how you carry them from the iPhone to the Mac.</p>
+        <p><b>You choose the name and the folder, and a backup only counts once the file exists.</b> On the Mac, <b>Save a backup file</b> opens Apple's own <b>Save</b> window — the same one every Mac app uses. Name the file, browse to any folder, even make a new one, and press Save. The engine writes the backup there, checks its size on the disk and reports the name and folder back, so <i>Last backup</i> is never a guess. Next time the window opens in the folder you used last. It asks before replacing a file of the same name, and if you cancel, nothing is saved and nothing is claimed. On the iPhone the share sheet asks where to put it, and only a finished save counts. Under <b>Your data</b> below, <b>Save a backup file</b> writes everything this app holds into one small file: your links, the card order, colours and tiles you've chosen, the old dashboard addresses, the stored wealth accounts and every entry, and the daily safety copies. You can also copy the lot to the clipboard, or restore a backup. A restore shows its work: it tells you exactly how many links, accounts and entries came back, and if anything goes wrong your current data and your backup file are left untouched. A restore <b>adds</b> to what is here and never takes anything away: wealth dates missing on this device come back, dates and accounts already here stay as they are — so an old backup can never wipe newer entries, here or (through Dropbox) on your other device. A backup is also how you carry your links and look from the iPhone to the Mac.</p>
           </div>
         </details>
 
         <details class="sub">
           <summary>Tests<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p><b>The hub now tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with a made-up set of wealth accounts and entries, and checks that the things you depend on still work.</p>
-        <p>Fourteen test files now, each run at iPhone and Mac size. Among them: that <b>the hub starts up and the Wealth tile shows your newest total</b> (not an older entry, not a blank, and with nothing going wrong during start-up); that <b>the pencil opens the wealth window on History and Close shuts it again</b>; and that <b>a backup file really contains your data and really brings it back</b>. A brand-new hub with nothing saved must show “—”, not a made-up number.</p>
-        <p>The backup test is the important one. It doesn’t trust the words on the button: it saves a real file, reads what is inside it, then opens a <b>second, completely empty hub</b> — a fresh device — and restores the file there. Your accounts, every entry and your own links all have to come back. That is exactly the journey from your iPhone to your Mac, and it is the one failure that would cost you something you can’t retype.</p>
-        <p>Over on the Mac side, the two little programs that read and write your budget workbook are tested too, on every push: they must find the wealth block <b>by the words in its header row</b> wherever you move it to, write into the right month and no other, never overwrite a formula, and always take a dated BU copy first.</p>
-        <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed. Each test was deliberately broken first to prove it notices — the tile showing the oldest total instead of the newest, your saved entries not being read back, the pencil disconnected, and the window opening on the wrong tab were all caught.</p>
-        <p>The tests find every button by a hidden name of its own, never by the words printed on it, so rewording a label can never break them. More will be added one at a time — saving an entry, the backup file, and Send to Excel are next.</p>
+        <p><b>The hub tests itself every time it is published, and a new version only reaches your devices if the tests pass.</b> GitHub opens the hub on its own machines — once at Mac size and once at iPhone size — with made-up data, and checks that the things you depend on still work.</p>
+        <p>Among other things the tests check that <b>the hub opens with its three tiles</b>; that <b>the retired tiles and cards are gone</b>; that <b>a backup file really contains your data — the old wealth entries too — and a restore really brings it back</b>; that Dropbox sync and the Dropbox backups work; and that the day and night look and the top area on the iPhone are right.</p>
+        <p>The backup test is the important one. It doesn’t trust the words on the button: it saves a real file, reads what is inside it, then opens a <b>second, completely empty hub</b> — a fresh device — and restores the file there. Your stored accounts, every entry and your own links all have to come back. That is exactly the journey from one device to another, and it is the one failure that would cost you something you can’t retype.</p>
+        <p>If a test goes red, <b>nothing is published</b>: the copy on your iPhone stays on the last good version until it is fixed.</p>
+        <p>The tests find every button by a hidden name of its own, never by the words printed on it, so rewording a label can never break them.</p>
           </div>
         </details>
 
@@ -1286,133 +1230,108 @@
         <p>The hub checks for a new version of itself when you open it (and whenever you come back to it, at most every 5 minutes). When a newer version is live, a bar appears at the bottom with an <b>Update</b> button — one tap loads it. The <b>Check for app update</b> button below asks immediately — while Dropbox sync is connected, that button is the <b>arrow in a circle</b> at the end of the Dropbox sync line instead.</p>
           </div>
         </details>
+
+        <details class="sub">
+          <summary>Signs in this app<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
+        <p>Every mark and colour that means something, and what it means:</p>
+        <ul>
+          <li><b>A small number on a card, in the card’s colour</b> — the version that app is running right now. Shown in the list layout. No number: the hub could not reach that app.</li>
+          <li><b>MAC ONLY</b> — it exists on the Mac only (Timers).</li>
+          <li><b>MAC + iPHONE</b> — it exists on both, as one app (AMS WatchLater).</li>
+          <li><b>iPHONE APP</b> — an app that lives only on the iPhone. On the Mac its card is greyed, and a tap tells you so.</li>
+          <li><b>COWORK</b> — Sam, the assistant, is run in Cowork.</li>
+          <li><b>A greyed card</b> — it cannot open on this device.</li>
+          <li><b>Tiny icons under a card’s name</b> — where that app keeps its data: a phone (this device), a Mac screen (the Mac), a cloud (synced through Dexie Cloud), a grid sheet (an Excel workbook), a gem (the Obsidian vault). Point at them for the words.</li>
+          <li><b>A small word under a link’s name</b> — what the link is: SPREADSHEET (green), PDF (red), PICTURE, SLIDES, DOCUMENT, FOLDER (honey), or a web link’s site name.</li>
+          <li><b>The pencil on a link card</b> — edit or delete that link.</li>
+          <li><b>▲ ▼ on a card (in Arrange)</b> — move it up or down its shelf.</li>
+          <li><b>The palette on a card (in Arrange)</b> — pick a colour for it, or go back to its own.</li>
+          <li><b>A circle in a tile’s corner (in Arrange)</b> — filled: the tile is shown; empty: it is hidden. A greyed tile is one you have switched off.</li>
+          <li><b>The tick (Done)</b> — you are in Arrange; tap it to finish.</li>
+          <li><b>The count on the Apps tile (such as 12/14)</b> — how many apps answered. All of them: everything is alive.</li>
+          <li><b>In Dropbox sync: the circling arrows</b> (coloured) — sync now. <b>The red broken link</b> — disconnect this device (it asks first, and keeps everything). <b>The arrow in a circle</b> — check for an app update.</li>
+          <li><b>A word beside “Dropbox sync”</b> — how it stands: <i>off</i>, <i>connecting</i>, <i>syncing</i>, the time of the last sync, or <i>not synced</i>. <i>Not synced</i> and its line in amber mean Dropbox turned the file down; the line says why.</li>
+          <li><b>A dark bar at the bottom</b> — a short message, or (with a yellow <b>Update</b> button) a newer hub is ready.</li>
+        </ul>
+          </div>
+        </details>
       </div>
     </details>
 
     <details class="fold hb" id="foldHandbook">
       <summary><svg class="hi"><use href="#icon-document"/></svg>The system, end to end<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p>Read this the day you come back after weeks away, or when something feels out of place. It says what the system is, how it is built, what you do every day and every month, and how to notice when it needs improving.</p>
+        <p>Read this the day you come back after weeks away, or when something feels out of place. It says what the system is now, what was retired, and how to keep it tidy.</p>
 
         <details class="sub">
           <summary>1 · What the system is<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>AMS is the household’s set of small apps, one for each thing worth keeping track of. One of them, the money system, is a real process with a monthly rhythm. The rest are everyday tools. All of it opens from one front door: <b>AMS Main Hub</b>.</p>
-        <p>Four words, used strictly, so the name of a thing tells you what it is:</p>
+        <p>AMS is the household’s set of small apps, one for each thing worth keeping track of. All of it opens from one front door: <b>AMS Main Hub</b>.</p>
         <ul>
-          <li><b>Hub</b> — a front door. You start there; it shows status and takes you onward. AMS Main Hub is the front door to everything; AMS Finance Hub is the front door to the money process.</li>
-          <li><b>Dashboard</b> — a page you read. Charts, no typing. The Spend Dashboard and the Finance Dashboard.</li>
-          <li><b>App</b> — a tool you type into. Packing, Instructions, Tracking, and the rest.</li>
-          <li><b>Report</b> — the monthly finance note in Obsidian that Sam writes.</li>
+          <li><b>AMS Main Hub</b> — the front door to the apps. Three small tiles at the top, three shelves of cards below. On the Mac it is served by a small engine at localhost:7780/hub/; on the iPhone it is the home-screen icon.</li>
+          <li><b>AMS Financial Steward</b> — all money matters, wealth included, are kept and looked at there.</li>
+          <li><b>Sam</b> — the robot assistant, run in Cowork on the Mac. Sam keeps notes and memory as plain files in the Obsidian vault.</li>
         </ul>
+        <p>Behind the scenes, the small <b>engine</b> on the Mac starts by itself when the Mac starts; you never see it. It serves the hub and opens the files and folders behind your links.</p>
           </div>
         </details>
 
         <details class="sub">
-          <summary>2 · How it is built<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
-          <div class="subbody">
-        <p>Three layers. You always enter at the top and go down; nothing skips a layer.</p>
-        <div class="layers">
-          <div class="layer" style="background:#fdeadd"><b style="color:#d96a45">LAYER 1 · THE FRONT DOOR</b>AMS Main Hub. The tiles say how things stand; the four shelves take you onward. On the Mac it is what the Dock icon opens (served by the Finance engine at localhost:7780). On the iPhone it is the home-screen icon.</div>
-          <div class="larrow">▼</div>
-          <div class="layer" style="background:#e2e6fa"><b style="color:#5868c9">LAYER 2 · THE WORKPLACE</b>AMS Finance Hub (localhost:7780/finance, Mac only). The monthly status board, the KPI cards, the checklist, and one-click tiles for every file and note the process touches. This is where the monthly work happens.</div>
-          <div class="larrow">▼</div>
-          <div class="layer" style="background:#d7f2ef"><b style="color:#1f9e93">LAYER 3 · SOURCES AND OUTPUTS</b>The budget workbook (Excel), the monthly ledger, the Obsidian vault (reports, expenses log, wealth log), Sam who does the monthly run in Cowork, and the two dashboards on claude.ai that Sam refreshes from those files.</div>
-        </div>
-        <p>Behind the scenes, a small helper program on the Mac — the <b>engine</b> — reads the files in layer 3 and shows layers 1 and 2. It starts by itself when the Mac starts; you never see it. If it is off, the tiles say “engine not answering”.</p>
-        <p>The one-page map of every part, where it runs and where its data lives, is in <b>How this works › Where everything lives</b>.</p>
-          </div>
-        </details>
-
-        <details class="sub">
-          <summary>3 · The daily habit<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>2 · The daily habit<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>One habit, same on every device: <b>open AMS Main Hub, read the tiles, tap the card you need.</b></p>
+        <p>Keep only the tiles you actually glance at: <b>Arrange</b>, then the small circle on each tile.</p>
+          </div>
+        </details>
+
+        <details class="sub">
+          <summary>3 · What was retired on 24 Nov 2026<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <div class="subbody">
+        <p>Money now lives in AMS Financial Steward, so the old money parts of the hub were retired. All of it is kept as an archive; nothing was deleted.</p>
         <ul>
-          <li><b>Wealth</b> — the total of your newest entry and its shape over the past year. Typed in through the pencil on the tile, one balance per account; on the Mac the workbook's figure sits under it as a check.</li>
-          <li><b>Finance</b> — the month being reported, with a dot for each of the four steps. All four filled means nothing is waiting. A missing dot means the Finance shelf is where the work is.</li>
-          <li><b>Retirement</b> and <b>The year</b> — the calendar, at a glance.</li>
+          <li>The Wealth tiles and the wealth window (History, New entry, Accounts, Year).</li>
+          <li>The Finance tile.</li>
+          <li>The AMS Finance Hub page (localhost:7780/finance).</li>
+          <li>The Spend Dashboard and the Finance Dashboard on claude.ai.</li>
+          <li>Sam’s monthly finance report.</li>
         </ul>
-        <p>Keep only the tiles you actually glance at: <b>Arrange</b>, then the small circle on each tile. Fewer tiles, faster glance.</p>
-        <p>On the iPhone the tiles that need the Mac stay quiet, and the dashboard cards show a pencil. That is expected. Tap the pencil once and paste a dashboard’s address if you want it on the phone too; otherwise read the dashboards on the Mac.</p>
+        <p>The wealth accounts and entries typed into the hub up to now stay stored on each device and in every backup. Sam stays, on the MAC TOOLS shelf.</p>
           </div>
         </details>
 
         <details class="sub">
-          <summary>4 · The monthly process<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
-          <div class="subbody">
-        <p>The money process closes one month at a time, in the month after it. The Finance Hub carries it: a <b>status board</b> with four checks per month, and a <b>checklist</b> of seven steps that resets on the 1st. Four of the steps tick themselves (⚡) when the hub sees the work is done; three you tick by hand because they need your judgment.</p>
-        <p>The four checks on the status board, in order:</p>
-        <ol>
-          <li><b>Report</b> — the month’s report exists in Obsidian.</li>
-          <li><b>Ledger</b> — the month has its row in the monthly ledger.</li>
-          <li><b>Workbook</b> — the month’s actuals are really written into the budget workbook.</li>
-          <li><b>Dashboard</b> — the month is included in the Spend Dashboard.</li>
-        </ol>
-        <p>A finished month is not due straight away: bank statements need a week to settle, so it becomes <b>due on the 8th</b> of the following month (you can change that day in the Finance Hub). Until then the row shows a calm grey “bank statements settling”. From the 8th it turns amber: <i>Due — run this month</i>.</p>
-
-        <div class="hbnote"><b>Worked example: closing August 2026.</b> Everything below is what you see and do, in order, in September.</div>
-        <ol>
-          <li><b>1 September.</b> The checklist resets — all seven ticks cleared. The status board shows August as “Due 8 Sept · bank statements settling”. The Finance tile on AMS Main Hub reads <i>Aug 2026 · 0 of 4 done</i>, four empty dots. Nothing to do yet.</li>
-          <li><b>8 September or later.</b> August turns amber on the board. Open AMS Main Hub from the Dock, see the empty dots, click <b>AMS Finance Hub</b> on the FINANCE shelf.</li>
-          <li><b>Export bank transactions (Swedbank).</b> Download August’s transactions from the bank and save the file in the Imports folder (the Folders tiles at the bottom of the Finance Hub open it). Tick item 1 by hand.
-            <div class="hbstate">Board: unchanged. You did the fetching; the hub can’t see the bank.</div></li>
-          <li><b>Log any manual cash expenses.</b> Open the <b>Expenses log</b> tile (Obsidian) and add anything paid in cash or outside the bank export. Tick item 2 by hand.</li>
-          <li><b>Run the monthly report with Sam.</b> Open <b>Sam</b> (the Cowork card on the FINANCE shelf) and ask for the August report. Sam reads the export, sorts every row into the categories, asks you about anything unclear, writes the report into Obsidian, and adds August’s row to the ledger.
-            <div class="hbstate">Board: <b>Report ✓ Ledger ✓</b>. Item 3 ticks itself ⚡. The KPI cards switch to August’s income, expenses, net and savings rate. The Finance tile shows two dots.</div></li>
-          <li><b>Resolve flagged merchants and name ticket buys.</b> During the run Sam flags merchants it could not place and asks which multi-year “ticket” a big purchase belongs to (a holiday, a bike). Decide them. Tick item 4 by hand — that judgment is yours, not a file the hub can check.</li>
-          <li><b>Write actuals to the budget workbook.</b> Ask Sam to write August’s actuals into the workbook’s August column.
-            <div class="hbstate">Board: <b>Workbook ✓</b>. Item 5 ticks itself ⚡. The Finance Dashboard card now says <i>1 month behind</i> — it hasn’t caught up with the new column yet. Three dots.</div></li>
-          <li><b>Refresh the Spend Dashboard, then the Finance Dashboard.</b> Ask Sam to refresh both. Same links as before; only the numbers change.
-            <div class="hbstate">Board: <b>Dashboard ✓</b>, August flips to teal <b>Complete</b>. Items 6 and 7 tick themselves ⚡. Both dashboard cards say <i>UP TO DATE</i>. The Finance tile reads <i>Aug 2026 · all done</i>, four dots filled.</div></li>
-          <li><b>Read.</b> Open the <b>Spend Dashboard</b> from the FINANCE shelf: which categories ran hot, the biggest merchants, Sam’s observations. Then the <b>Finance Dashboard</b>: net worth, budget vs. actual by month, the runway to 2038. If a figure surprises you, the report in Obsidian (the <b>Latest report</b> card) has the row-level story.</li>
-          <li><b>Done until October.</b> A month is closed when its row says Complete and the Finance tile shows four dots. On 1 October the checklist resets and September waits for the 8th.</li>
-        </ol>
-        <p>The whole run takes one sitting once the export is in. If you get interrupted, the board and the checklist remember exactly where you stopped — that is the point of them.</p>
-          </div>
-        </details>
-
-        <details class="sub">
-          <summary>5 · When something looks wrong<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>4 · When something looks wrong<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <ul>
-          <li><b>Tiles say “engine not answering”, dashboard cards show pencils on the Mac.</b> You are looking at the web copy of the hub, or the engine is off. Open the hub from the Dock icon (it must open localhost:7780). If that page won’t load, double-click <b>AMS Finance.app</b> in Documents › 01 Leisure › 30 App Development › AMS Finance — that starts the engine and opens the hub.</li>
-          <li><b>A dashboard card says “N months behind”.</b> Not an error: the workbook or the report is newer than the dashboard. Ask Sam to refresh that dashboard; the badge clears on the next reload.</li>
-          <li><b>A ⚡ item didn’t tick.</b> Reload the Finance Hub (↻ Refresh). Items tick when the hub sees the matching check go green; if the check is still red, the work isn’t finished as far as the files show.</li>
           <li><b>A version chip is missing on a card.</b> The hub couldn’t reach that app just now — offline, or the app is being published. Harmless.</li>
-          <li><b>An “Update” bar appears.</b> A newer hub is live. Tap Update. On the Mac the hub is read straight from its folder, so there the newest version is always what you see after a pull in GitHub Desktop.</li>
+          <li><b>An “Update” bar appears.</b> A newer hub is live. Tap Update. On the Mac the hub is read straight from its own folder, so the newest version is simply there the next time you open it.</li>
+          <li><b>A link to a file or folder does nothing on the Mac.</b> You may be looking at the web copy of the hub, or the engine is off. Open the AMS Main Hub app (it must open localhost:7780/hub/).</li>
           <li><b>Something else.</b> Open Sam or Claude and describe what you see — a screenshot says more than a paragraph.</li>
         </ul>
           </div>
         </details>
 
         <details class="sub">
-          <summary>6 · Keeping it tidy<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>5 · Keeping it tidy<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
         <p>The disorder crept in because things were added one at a time without a place to put them. These rules give every new thing its place:</p>
         <ul>
           <li><b>One front door.</b> Nothing gets its own Dock icon. New things become a card on AMS Main Hub.</li>
-          <li><b>Every card goes on the shelf that says what it is for.</b> Money things on FINANCE, tools on EVERYDAY APPS, Mac-only helpers on MAC TOOLS, everything else in YOUR LINKS.</li>
-          <li><b>Name things with the four words.</b> A new chart page is a Dashboard; a new tool is an App. Never a second name for the same thing.</li>
-          <li><b>One dashboard per question.</b> Before asking for a new chart page, ask whether an existing one could carry the answer.</li>
+          <li><b>Every card goes on the shelf that says what it is for.</b> Tools on EVERYDAY APPS, Mac-only helpers on MAC TOOLS, everything else in YOUR LINKS.</li>
           <li><b>Every release writes one line in its app’s version log.</b> That log is the memory of the system — it is what you read after weeks away.</li>
-          <li><b>Files stay where the map says.</b> The budget workbook, ledger and reports keep their folders; the Finance Hub’s tiles point at them, so a moved file shows up as a red check.</li>
         </ul>
           </div>
         </details>
 
         <details class="sub">
-          <summary>7 · The quarterly review<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
+          <summary>6 · The quarterly review<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Once a quarter — a good moment is right after a month closes — open AMS Main Hub and answer these honestly. Each “no” or “never” is an improvement waiting to be made; tell Sam or Claude and it becomes a change.</p>
+        <p>Once a quarter, open AMS Main Hub and answer these honestly. Each “no” or “never” is an improvement waiting to be made; tell Sam or Claude and it becomes a change.</p>
         <ol>
           <li>Which tiles did I actually glance at this quarter? Hide the rest with Arrange.</li>
           <li>Which cards did I never click? Move them down their shelf, or ask whether the app has earned its place.</li>
-          <li>Did any checklist item stay unticked for a reason other than forgetting? Then the step is unclear or too big — split it, or reword it in the Finance Hub.</li>
-          <li>Which step of the monthly run took the longest? Could Sam do more of it, or could the hub check it instead of me?</li>
           <li>Did I look for something and not find it on the shelf? Give it a card, on the right shelf.</li>
-          <li>Does every name still mean what the four words say? Rename anything that drifted.</li>
-          <li>Did a dashboard answer a question I stopped asking? Retire it rather than keep refreshing it.</li>
         </ol>
         <p>Write the answers in the Obsidian vault, or simply tell Claude. Small, regular corrections are what keep a home-grown system feeling like home.</p>
           </div>
@@ -1428,7 +1347,7 @@
     <details class="fold" id="foldData" data-testid="fold-data">
       <summary><svg class="hi"><use href="#icon-backup"/></svg>Your data<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
       <div class="foldbody">
-        <p class="dim" style="margin-top:8px">Your wealth accounts and entries, your personal links, the dashboard addresses and the card order, colours and tiles you've chosen live <b>only on this device</b> — except your wealth accounts and entries once <b>Dropbox sync</b> (above) is connected. Once Dropbox is connected it also keeps a backup of everything here, every day — the newest 30. Without it, save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
+        <p class="dim" style="margin-top:8px">Your personal links and the card order, colours and tiles you've chosen live <b>only on this device</b>. So do the wealth accounts and entries you typed here before wealth moved to <b>AMS Financial Steward</b>: they are no longer shown, but they are kept, and every backup carries them. Once <b>Dropbox sync</b> (above) is connected it keeps a backup of everything here, every day — the newest 30. Without it, save a backup file before you move, reinstall or rename anything — and every now and then besides.</p>
         <button class="btn full" id="exportBtn" data-testid="backup-save">Save a backup file</button>
         <button class="btn full" id="copyBtn">Copy backup to clipboard</button>
         <button class="btn full" id="importBtn" data-testid="backup-restore">Import / restore…</button>
@@ -1459,6 +1378,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.5', when:'24 Nov 2026',
+    what:'MONEY HAS MOVED TO AMS FINANCIAL STEWARD — THE HUB IS A PLAIN FRONT DOOR AGAIN. You now enter and read your wealth in AMS Financial Steward (it matched the Hub to the krona for September 2026), and the old monthly finance tools are retired. So their places on the Hub are cleared. NOTHING OF YOURS IS DELETED. (1) THE TOP AREA: 3 TILES INSTEAD OF 6. Before, six tiles in two rows: Wealth, Wealth · 0, Retirement, The Year, Finance, Apps. Gone: Wealth, Wealth · 0 and Finance. Now three tiles in one row, on the iPhone and on the Mac: Retirement, The Year, Apps. (2) EVERYTHING THAT HUNG ON THE WEALTH TILE IS GONE WITH IT: the pencil and its amber dot, the wealth window with its four pages (History, New entry, Accounts, Year), the "+9.8% since Jan" growth line, the "Nov not entered yet" reminder, the amber workbook line, the small Dropbox mark beside the name, and Send to Excel on the Mac. (3) THE RETIREMENT TILE. Before, three lines: the days, "days · 1 Jul 2028" and the forecast "≈ 8.27M kr by then". The forecast is gone — it would have stayed frozen on your last Hub entry. Now two lines: the days and the date. (4) SHELVES: 3 INSTEAD OF 4. Before: Finance, Everyday apps, Mac tools, Your links. The Finance shelf is gone, and with it four cards: AMS Finance Hub, Spend Dashboard, Finance Dashboard and Latest report. Sam moved to Mac tools and keeps his COWORK label, so Mac tools now has three cards: Timers, AMS WatchLater, Sam. The Apps tile counts one app fewer (the Finance Hub is no longer asked whether it answers). (5) WHAT IS KEPT. The wealth accounts and entries you typed into the Hub stay stored on each device, exactly as they were. Every backup still carries them — Save a backup file, Copy backup, the daily Dropbox backup and Back up now. Import / restore and Restore from Dropbox still put back what is missing and delete nothing. Dropbox sync still keeps them the same on iPhone and Mac. The two dashboard addresses you once typed are kept in the backups too. They are simply no longer shown. (6) SETTINGS. Dropbox sync and Your data work as before; their two explaining lines now say that the old wealth entries are kept and not shown. A restore now says "old wealth entries put back in storage (they are kept, not shown)". (7) THE MAC. The hub still opens from its Dock icon exactly as before; the small engine behind it keeps running and still opens the Mac files and folders under Your links. (8) FOUR MESSAGES NO LONGER NAME "AMS FINANCE". Before, when the Mac could not open a file or save a backup, the Hub said "open AMS Finance from the Dock" — an app that no longer exists under that name. Now they say the hub’s engine on the Mac is not answering, and that it starts with the Mac. (9) HOW THIS WORKS is rewritten for all of this — three shelves, three tiles, "Where your wealth went" — and has a new last part, SIGNS IN THIS APP: every mark, label and colour on the Hub, each with its meaning in a few words. (10) TESTS. Nine tests about the retired parts are removed. A new one checks every time the Hub is published that the three tiles are there, that the retired tiles and cards are gone, that the Hub no longer asks the Mac for wealth or finance figures, and — most important — that your old wealth entries are untouched and still inside a backup.' },
   { v:'2.4', when:'4 Nov 2026',
     what:'BACK UP NOW TO DROPBOX. Before, Dropbox only kept one automatic backup a day, made at the first sync of the day; for a backup right before a big change you had to save a file yourself. Now, while Dropbox is connected, Settings › Your data has a Back up now to Dropbox button above Restore from Dropbox. One tap puts a full backup in Dropbox at once and says "Backup saved in Dropbox". It is named with the time (hub-backup-2026-11-04-1530.json), so it never replaces the day\'s automatic backup, and Restore from Dropbox shows it with its time ("Today, 15:30"), newest first. It counts toward the 30 newest backups kept, so the oldest one makes room. If Dropbox refuses, it says why and nothing is changed. Without Dropbox the button is not shown. TESTS: three new ones — the extra backup goes up with the time in its name and today\'s automatic one stays untouched, then appears first in the restore list; it counts toward the 30 kept; the button is hidden without Dropbox. All seen failing before the change was built. Still 17 test files.' },
   { v:'2.3', when:'4 Nov 2026',
@@ -1640,22 +1561,6 @@ const WEB_APPS = [
     probe:{ path:'AMS-Workout-Sync/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' },
     probeIOS:{ path:'AMS-Workout-Sync/ios.json', json:true, pre:'v' } },
 ];
-/* The money system, all on one shelf. The two dashboards are `slot` cards:
-   their address comes from the Finance engine on the Mac, or is typed once
-   on any other device. The latest report only exists when the engine says so. */
-const FIN_APPS = [
-  { id:'finance',    name:'AMS Finance Hub',   sub:'Where the monthly process stands',        icon:'coin',     dot:'#5868c9', tint:'#e2e6fa', url:'http://localhost:7780/finance/',
-    probe:{ url:'http://localhost:7780/health', json:true, pre:'v' },
-    store:'Excel files in Documents › 01 Leisure › 30 App Development › AMS Finance', where:['mac','excel'] },
-  { id:'dashSpend',  name:'Spend Dashboard',   sub:'One month’s spending in detail',          icon:'bars',     dot:'#1f9e93', tint:'#d7f2ef', slot:'spend',  under:'finance',
-    store:'A published page on claude.ai · built by Sam from the monthly report', where:['cloud'] },
-  { id:'dashBudget', name:'Finance Dashboard', sub:'Budget, net worth and the runway to 2038', icon:'trend',    dot:'#c8952b', tint:'#faeecb', slot:'budget', under:'finance',
-    store:'A published page on claude.ai · built by Sam from the budget workbook', where:['cloud','excel'] },
-  { id:'report',     name:'Latest report',     sub:'The newest monthly report',               icon:'document', dot:'#d84f86', tint:'#fbdeeb', engineOnly:true, under:'finance',
-    store:'A note in the Obsidian vault · Areas › Finance › Reports', where:['mac','vault'] },
-  { id:'sam',        name:'Sam',               sub:'The robot assistant, run in Cowork',      icon:'bubble',   dot:'#9a5fc9', tint:'#f0e3fa',
-    store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
-];
 const MAC_APPS = [
   { id:'timers',  name:'Timers',           sub:'The timer board on the Mac',    icon:'clock', dot:'#7a5fc0', tint:'#e9e2f8', url:'http://localhost:7777',
     store:'On the Mac, inside the app’s own folder', where:['mac'] },
@@ -1663,13 +1568,19 @@ const MAC_APPS = [
      its own address; the old web app and its engine on 7821 are retired */
   { id:'watchlater', name:'AMS WatchLater', sub:'Videos, articles and your notes — Mac and iPhone', icon:'playring', dot:'#1a6b56', tint:'#dcefe8', url:'amswatchlater://',
     native:true, macToo:true, store:'In your iCloud Drive, shared by the Mac and the iPhone', where:['mac'] },
+  /* 2.5: Sam moved here when the FINANCE shelf was retired; the card opens nothing,
+     it says where Sam lives */
+  { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork', icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
+    lbl:'COWORK', store:'Notes and memory in the Obsidian vault', where:['mac','vault'] },
 ];
-const ALL_APPS = () => [...FIN_APPS, ...WEB_APPS, ...MAC_APPS];
+const ALL_APPS = () => [...WEB_APPS, ...MAC_APPS];
 /* any card another card names as its `under` is a front door, and is drawn
    as one — nothing has to be listed twice */
 const PARENT_IDS = new Set(ALL_APPS().filter(a => a.under).map(a => a.under));
 
-/* dashboard addresses: the engine's answer wins, a typed one fills the gap */
+/* The two dashboard addresses he once typed in. The dashboards were retired in 2.5
+   and nothing shows them any more, but the addresses stay stored and keep riding
+   along in every backup — nothing of his is thrown away. */
 const FIN_KEY = 'amshub.finlinks';
 let finLinks = {};
 try{
@@ -1679,13 +1590,6 @@ try{
   }
 }catch(e){ /* none typed yet */ }
 function saveFinLinks(){ try{ localStorage.setItem(FIN_KEY, JSON.stringify(finLinks)); }catch(e){} }
-let engineLinks = null;   /* { spend:{url,behind}, budget:{url,behind}, report:{id,month} } from the engine */
-function finUrl(a){
-  if(!a.slot) return a.url || null;
-  const e = engineLinks && engineLinks[a.slot];
-  if(e && e.url) return e.url;
-  return finLinks[a.slot] || null;
-}
 
 /* ============ your look — card order & colours (this device only) ============ */
 const LOOK_KEY = 'amshub.look';
@@ -1842,26 +1746,10 @@ async function openPath(l){
     if(data && data.error === 'missing'){ showToast('Nothing at that path on this Mac — check the spelling with the pencil.', null, '', 6000); return; }
     if(data && data.error === 'outside'){ showToast('The hub only opens things inside your home folder or on an attached disk.', null, '', 6000); return; }
   }catch(e){ /* not on the Mac, or the hub is the published copy — fall through */ }
-  const why = FROM_ENGINE ? 'The Finance engine is not answering — open AMS Finance from the Dock once.'
-                          : 'Mac paths open from the hub on the Mac (AMS Finance in the Dock). Copied it for you.';
+  const why = FROM_ENGINE ? 'The hub’s engine on the Mac is not answering. It starts with the Mac — restart the Mac, or tell Claude.'
+                          : 'Mac paths open from the AMS Main Hub app on the Mac. Copied it for you.';
   if(!FROM_ENGINE){ try{ await navigator.clipboard.writeText(p); }catch(e){} }
   showToast(why, null, '', 6000);
-}
-
-/* one of the Finance engine's own whitelisted targets (the budget workbook, a folder,
-   a note) — the hub never holds the path, it just names the thing it wants opened, so
-   nothing personal lands in this public file. Only works where the engine answers. */
-async function openEngineTarget(id, label){
-  try{
-    const res = await fetch(ENGINE + '/api/open?id=' + encodeURIComponent(id) + '&vercheck=' + Date.now(), { cache:'no-store' });
-    const data = await res.json().catch(() => null);
-    if(res.ok && data && data.ok){ showToast('Opening ' + label + '…', null, '', 2500); return; }
-    if(res.status === 404){ showToast('The engine does not know that one — check AMS Finance is up to date.', null, '', 6000); return; }
-    showToast('Could not open ' + label, null, '', 5000);
-  }catch(e){
-    showToast(FROM_ENGINE ? 'The Finance engine is not answering — open AMS Finance from the Dock once.'
-                          : 'The workbook opens from the hub on the Mac.', null, '', 6000);
-  }
 }
 
 const WHERE_ICON = { iphone:'dev-iphone', mac:'dev-mac', cloud:'dev-cloud', excel:'dev-excel', vault:'dev-vault' };
@@ -1913,76 +1801,7 @@ function appRow(a, right, sect){
             style="${sty}" ${tip}>${mid}</a>`;
 }
 
-/* the right-hand corner of a finance card: version chip, months-behind badge,
-   the pencil for a dashboard address, or a plain label */
-function finRight(a){
-  if(a.id === 'finance'){
-    return `<span class="verchip" id="ver-finance" style="color:${lookFor(a).dot}"></span> <span class="maclbl">MAC ONLY</span>`;
-  }
-  if(a.slot){
-    const e = engineLinks && engineLinks[a.slot];
-    if(e && e.url){
-      const n = typeof e.behind === 'number' ? e.behind : 0;
-      return n > 0
-        ? `<span class="stalelbl behind">${n} MONTH${n > 1 ? 'S' : ''} BEHIND</span>`
-        : `<span class="stalelbl">UP TO DATE</span>`;
-    }
-    return `<button class="rowbtn" data-editfin="${a.slot}" aria-label="Set the address"><svg class="hi"><use href="#icon-pencil"/></svg></button>`;
-  }
-  if(a.id === 'report') return `<span class="maclbl">OBSIDIAN</span>`;
-  if(a.id === 'sam') return `<span class="maclbl">COWORK</span>`;
-  return '';
-}
-
-/* one finance card, whichever kind it is */
-function finCardHTML(a){
-  if(a.engineOnly){
-    const r = engineLinks && engineLinks.report;
-    /* No engine to ask — off the Mac the hub cannot know which note is newest,
-       what month it is, or how to open it. The card stands anyway, greyed and
-       labelled, so the group holds the same three things on every device
-       instead of quietly losing one; a tap says where it does work. */
-    if(!r || !r.id) return appRow({ ...a, away:true }, `<span class="maclbl">MAC ONLY</span>`, 'fin');
-    /* the engine opens the note in Obsidian; the card itself goes nowhere */
-    return appRow({ ...a, sub: r.month ? monthLabel(r.month) + ' — opens in Obsidian' : a.sub, openId: r.id }, finRight(a), 'fin');
-  }
-  if(a.slot){
-    const url = finUrl(a);
-    return appRow({ ...a, url, sub: url ? a.sub : 'Tap the pencil and paste its address' }, finRight(a), 'fin');
-  }
-  return appRow(a, finRight(a), 'fin');
-}
-
-/* The rooms behind a door are wrapped in one <div class="nest">, so the whole
-   group can be stepped in and railed as a single block. That wrapper is what
-   makes this work in the GRID as well as the list: a grid has no left-hand
-   gutter to draw a line into, so the nest has to be a real element that spans
-   the row and holds its own smaller tiles.
-   A run is only wrapped when it genuinely follows its door — move one away in
-   Arrange and it renders as a plain card again, small but not pretending to
-   hang off whatever now sits above it. */
-function finShelfHTML(){
-  const list = ordered(FIN_APPS, 'fin');
-  const out = [];
-  for(let i = 0; i < list.length; ){
-    const a = list[i];
-    const prev = i > 0 ? list[i - 1] : null;
-    if(a.under && prev && prev.id === a.under){
-      const run = [];
-      while(i < list.length && list[i].under === a.under){ run.push(finCardHTML(list[i])); i++; }
-      const inner = run.filter(Boolean).join('');
-      const door = ALL_APPS().find(x => x.id === a.under);
-      if(inner) out.push(`<div class="nest" style="--kin:${(door ? lookFor(door) : lookFor(a)).dot}">${inner}</div>`);
-      continue;
-    }
-    out.push(finCardHTML(a));
-    i++;
-  }
-  return out.join('');
-}
-
 function renderShelf(){
-  $('finCards').innerHTML = finShelfHTML();
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
     appRow(a, (a.native && !a.iosUrl) ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>${IS_IOS ? '' : ' <span class="maclbl">iPHONE APP</span>'}` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
   document.querySelectorAll('#webCards [data-away]').forEach(el => {
@@ -1993,31 +1812,10 @@ function renderShelf(){
   });
   $('macCards').innerHTML = ordered(MAC_APPS, 'mac').map(a =>
     /* a Mac tool that announces its version gets a live chip too, the same way
-       the Finance Hub card does — the label alone said nothing about whether
+       the web apps do — the label alone said nothing about whether
        the thing was actually running. */
-    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}<span class="maclbl">${a.macToo ? 'MAC + iPHONE' : 'MAC ONLY'}</span>`, 'mac')).join('');
+    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}<span class="maclbl">${a.lbl || (a.macToo ? 'MAC + iPHONE' : 'MAC ONLY')}</span>`, 'mac')).join('');
   fillChips();
-
-  /* the latest report: ask the engine to open it (it only appears when the engine answered) */
-  document.querySelectorAll('#finCards [data-open]').forEach(el => {
-    el.addEventListener('click', () => {
-      if(document.body.classList.contains('custom')) return;
-      const id = el.dataset.open;
-      showToast('Opening the report in Obsidian…', null, null, 3000);
-      fetch(ENGINE + '/api/open?id=' + encodeURIComponent(id), { cache:'no-store' })
-        .then(r => { if(!r.ok) showToast('The engine could not open it.'); })
-        .catch(() => showToast('The engine is not answering.'));
-    });
-  });
-
-  /* a card that only works on the Mac says so when tapped, rather than
-     looking broken */
-  document.querySelectorAll('#finCards [data-away]').forEach(el => {
-    el.addEventListener('click', () => {
-      if(document.body.classList.contains('custom')) return;
-      showToast('The monthly report lives in Obsidian on the Mac. Open the hub from AMS Finance in the Dock to read it.', null, null, 7000);
-    });
-  });
 
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
@@ -2069,9 +1867,8 @@ function renderLinks(){
 
 /* ============ add / edit personal link ============ */
 let editingId = null;
-let editingFin = null;   /* 'spend' | 'budget' while a dashboard address is being typed */
 function openEdit(id){
-  editingId = id; editingFin = null;
+  editingId = id;
   const l = id ? state.links.find(x => x.id === id) : null;
   $('editTitle').textContent = l ? 'Edit link' : 'New link';
   $('editHint').hidden = true;
@@ -2083,21 +1880,6 @@ function openEdit(id){
   $('fDelete').style.display = l ? '' : 'none';
   $('ovEdit').classList.add('show');
 }
-/* same sheet, but the name is fixed — only the address is yours to paste */
-function openFinEdit(slot){
-  const a = FIN_APPS.find(x => x.slot === slot);
-  if(!a) return;
-  editingId = null; editingFin = slot;
-  $('editTitle').textContent = a.name;
-  $('editHint').textContent = 'Paste the dashboard’s address (it lives on claude.ai). It is stored only on this device. On the Mac, opened from localhost:7780, the Finance engine fills this in by itself.';
-  $('editHint').hidden = false;
-  $('fUrlLabel').textContent = 'Web address';
-  $('pathHint').hidden = true;
-  $('fName').value = a.name; $('fName').disabled = true;
-  $('fUrl').value = finLinks[slot] || '';
-  $('fDelete').style.display = finLinks[slot] ? '' : 'none';
-  $('ovEdit').classList.add('show');
-}
 $('fCancel').addEventListener('click', () => $('ovEdit').classList.remove('show'));
 $('fSave').addEventListener('click', () => {
   const name = $('fName').value.trim();
@@ -2105,13 +1887,8 @@ $('fSave').addEventListener('click', () => {
   if(!name){ alert('Give the link a name.'); return; }
   if(!url){ alert('Fill in the web address or the path.'); return; }
   const cleaned = cleanPath(url);
-  if(!editingFin && isPath(cleaned)) url = cleaned;
+  if(isPath(cleaned)) url = cleaned;
   else if(!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  if(editingFin){
-    finLinks[editingFin] = url; saveFinLinks(); renderShelf();
-    $('ovEdit').classList.remove('show');
-    return;
-  }
   if(editingId){
     const l = state.links.find(x => x.id === editingId);
     if(l){ l.name = name; l.url = url; }
@@ -2122,13 +1899,6 @@ $('fSave').addEventListener('click', () => {
   $('ovEdit').classList.remove('show');
 });
 $('fDelete').addEventListener('click', () => {
-  if(editingFin){
-    const a = FIN_APPS.find(x => x.slot === editingFin);
-    if(!confirm(`Forget the ${a ? a.name : 'dashboard'} address on this device?`)) return;
-    delete finLinks[editingFin]; saveFinLinks(); renderShelf();
-    $('ovEdit').classList.remove('show');
-    return;
-  }
   const l = state.links.find(x => x.id === editingId);
   if(!l) return;
   if(!confirm(`Delete “${l.name}”?`)) return;
@@ -2202,16 +1972,9 @@ document.addEventListener('click', (e) => {
   if(mv){
     e.preventDefault(); e.stopPropagation();
     const dir = parseInt(mv.dataset.move, 10);
-    if(mv.dataset.sect === 'fin') moveApp('fin', FIN_APPS, mv.dataset.id, dir);
-    else if(mv.dataset.sect === 'web') moveApp('web', WEB_APPS, mv.dataset.id, dir);
+    if(mv.dataset.sect === 'web') moveApp('web', WEB_APPS, mv.dataset.id, dir);
     else if(mv.dataset.sect === 'mac') moveApp('mac', MAC_APPS, mv.dataset.id, dir);
     else moveLink(mv.dataset.id, dir);
-    return;
-  }
-  const ef = e.target.closest('[data-editfin]');
-  if(ef){
-    e.preventDefault(); e.stopPropagation();
-    openFinEdit(ef.dataset.editfin);
     return;
   }
   const pt = e.target.closest('[data-paint]');
@@ -2277,10 +2040,15 @@ $('paintReset').addEventListener('click', () => setColor(null));
 $('paintCancel').addEventListener('click', () => $('ovPaint').classList.remove('show'));
 
 /* ============ mini panels ============ */
-const W_ENGINE_KEY = 'amshub.wealth.engine';   /* fetched from the Finance engine (Mac) */
+/* 2.5 — WEALTH RETIRED FROM THE SCREEN, NOT FROM STORAGE. He enters wealth in AMS
+   Financial Steward now, so the Wealth tiles, the wealth window, the forecast, the
+   growth line, the monthly reminder and Send to Excel are gone. The accounts and
+   entries he typed here are kept exactly as they were: read at start-up, carried in
+   every backup file and Dropbox backup, merged by Dropbox sync, added back by a
+   restore. Nothing below ever deletes them. (Also still in storage, untouched and
+   unused: amshub.wealth.engine and amshub.wealth.draft.) */
 const W_ACC_KEY    = 'amshub.wealth.accounts'; /* [{id,name,url}] in his order */
 const W_ENT_KEY    = 'amshub.wealth.entries';  /* { 'YYYY-MM-DD': { v:{accId:kr}, c:[carried accIds] } } */
-const W_DRAFT_KEY  = 'amshub.wealth.draft';    /* what he was typing when he left for the bank app */
 const W_SNAP_KEY   = 'amshub.wealth.snaps';
 const W_SENT_KEY   = 'amshub.wealth.sent';     /* { 'YYYY-MM': {at, entryDate, entryAt} } — months sent to Excel */    /* daily safety copies, the fullest one is never dropped */
 const W_LEGACY_KEY = 'amshub.wealth.manual';   /* pre-1.15 one-total-per-month editor */
@@ -2292,24 +2060,12 @@ function loadJSON(key, fallback){
   catch(e){ return fallback; }
 }
 function storeJSON(key, val){ try{ localStorage.setItem(key, JSON.stringify(val)); return true; }catch(e){ return false; } }
-function monthKey(d){ return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`; }
-function monthLabel(m){
-  const [y, mo] = m.split('-').map(Number);
-  return new Date(y, mo - 1, 1).toLocaleDateString('en-GB', { month:'short', year:'numeric' });
-}
-function fmtM(v){
-  if(v >= 1000000) return (v / 1000000).toFixed(2).replace(/\.00$/, '') + 'M kr';
-  if(v >= 1000) return Math.round(v / 1000) + 'k kr';
-  return v + ' kr';
-}
 
-/* all five live side by side at the top — small enough to read in one glance */
+/* three tiles side by side at the top — small enough to read in one glance
+   (2.5: WEALTH, WEALTH · 0 and FINANCE were retired) */
 const PANELS = [
-  { id:'wealth',   label:'WEALTH',     dot:'#c8952b', tint:'#faeecb' },
-  { id:'wealth0',  label:'WEALTH · 0', dot:'#b8873f', tint:'#f7ecd8' },
   { id:'retire',   label:'RETIREMENT', dot:'#1f9e93', tint:'#d7f2ef' },
   { id:'year',     label:'THE YEAR',   dot:'#3487d6', tint:'#dcebfb' },
-  { id:'finmonth', label:'FINANCE',    dot:'#5868c9', tint:'#e2e6fa' },
   { id:'versions', label:'APPS',       dot:'#33a065', tint:'#d9f2e2' },
 ];
 
@@ -2348,7 +2104,6 @@ function adoptNewTiles(){
 }
 
 /* ---- wealth store: accounts + dated entries ---- */
-let wExact = {};   /* accounts whose field text is already an exact kr figure */
 let wAcc = loadJSON(W_ACC_KEY, []);
 let wEnt = loadJSON(W_ENT_KEY, {});
 if(!Array.isArray(wAcc)) wAcc = [];
@@ -2392,51 +2147,11 @@ function stampWealth(){
   wAcc.forEach(a => { const o = om.get(a.id); if(!o || bare(o) !== bare(a)) a.at = now; });
   storeJSON(W_DEL_KEY, del);
 }
-function fmtKr(n){ return String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, ' '); }
-function parseKr(s){ const d = String(s == null ? '' : s).replace(/[^\d]/g, ''); return d ? parseInt(d, 10) : null; }
-/* He types THOUSANDS: 250 becomes 250 000. Five digits or more is taken exactly, so an
-   exact balance like 1 234 567 can still be typed in full. Anything already normalised —
-   a field he has tabbed out of, or a figure pre-filled when correcting an old entry — is
-   flagged in wExact and never scaled again, or 5 000 kr would quietly become 5 000 000. */
-const KR_SHORT_MAX = 4;
-function scalesByThousand(s){
-  const d = String(s == null ? '' : s).replace(/[^\d]/g, '');
-  return !!d && d.length <= KR_SHORT_MAX;
-}
-function parseEntryKr(s){
-  const n = parseKr(s);
-  return n == null ? null : (scalesByThousand(s) ? n * 1000 : n);
-}
 function entryTotal(e){ return Object.values(e.v || {}).reduce((a, b) => a + (typeof b === 'number' ? b : 0), 0); }
 function entryDates(){ return Object.keys(wEnt).filter(d => /^\d{4}-\d{2}-\d{2}$/.test(d) && wEnt[d] && wEnt[d].v).sort(); }
-/* the newest entry on or before a date — but never the one currently being corrected */
-function lastEntryBefore(date){ const ds = entryDates().filter(d => d <= date && d !== wEditDate); return ds.length ? { date: ds[ds.length - 1], e: wEnt[ds[ds.length - 1]] } : null; }
 const MON3 = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-function dayLabel(d){ const [y, m, dd] = d.split('-').map(Number); return `${dd} ${MON3[m - 1]}`; }
 function todayKey(){ const n = new Date(); return `${n.getFullYear()}-${String(n.getMonth()+1).padStart(2,'0')}-${String(n.getDate()).padStart(2,'0')}`; }
 function newAccId(){ return 'w' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5); }
-
-/* Opened in an ordinary browser tab rather than the app window? Then this is a separate,
-   empty copy of the hub — every browser tab and every app window keeps its own box. An
-   empty wealth sheet there looks exactly like lost data (it did, 2026-09-18, in a Safari
-   tab left open after the rename), so the empty states say so plainly. */
-function separateCopyNote(){
-  if(IS_STANDALONE) return '';
-  return `<p class="wsafe warnline" style="margin-top:10px">Expecting your accounts? This is the hub open in a browser tab, which keeps its own separate copy. Your accounts and entries are in the <b>AMS Main Hub</b> app — type its name in Raycast.</p>`;
-}
-
-/* The accounts you still keep. A deleted account is RETIRED
-   (gone:true) rather than dropped, because an entry only stores {accountId: kronor} —
-   throw the account away and its past balances lose their name. Retired ones vanish
-   from New entry and Accounts and live on only as History rows. */
-/* ONE order on every page — his own, set with ▲▼ on Accounts and kept in wAcc itself —
-   so a name is always in the same place whichever page he is on. (1.40 made everything
-   alphabetical; he wanted his own order, and asked for it to hold everywhere.) */
-function liveAccounts(){ return wAcc.filter(a => !a.gone); }
-function accountName(id){
-  const a = wAcc.find(x => x.id === id);
-  return a ? a.name : 'Removed account';
-}
 
 /* pre-1.15 month totals (from this device or an old backup) become entries under one account */
 function importLegacyTotals(map){
@@ -2475,156 +2190,14 @@ function snapWealth(){
   }
   storeJSON(W_SNAP_KEY, snaps);
 }
-function fullestSnap(){
-  const snaps = loadJSON(W_SNAP_KEY, []).filter(s => s && s.day && s.entries);
-  return snaps.length ? snaps.reduce((b, s) => (s.n > b.n ? s : b), snaps[0]) : null;
-}
 snapWealth();
-
-/* the series the tiles draw: one point per month = the last entry of that month.
-   Your own entries always win; the engine (workbook) only fills months you have not typed. */
-function wealthData(){
-  const engine = loadJSON(W_ENGINE_KEY, null);
-  const map = new Map();
-  if(engine && Array.isArray(engine.series)){
-    engine.series.forEach(p => { if(p && /^\d{4}-\d{2}$/.test(p.month)) map.set(p.month, typeof p.value === 'number' ? p.value : null); });
-  }
-  entryDates().forEach(d => map.set(d.slice(0, 7), entryTotal(wEnt[d])));
-  const cur = monthKey(new Date());
-  const months = [...map.keys()].filter(m => m <= cur).sort().slice(-12);
-  return months.map(m => ({ month:m, value: map.get(m) == null ? null : map.get(m) }));
-}
-function engineValue(month){
-  const engine = loadJSON(W_ENGINE_KEY, null);
-  if(!engine || !Array.isArray(engine.series)) return null;
-  const p = engine.series.find(q => q && q.month === month);
-  return p && typeof p.value === 'number' ? p.value : null;
-}
-
-/* zeroBased: measure from 0 and fill the area, so the tile answers
-   "how big is it" rather than "how did it wobble" */
-function wealthSpark(S, known, p, zeroBased){
-  const w = 150, h = 22, padX = 3, padY = 3;
-  const vals = known.map(x => x.value);
-  let vMin, vMax = Math.max.apply(null, vals);
-  if(zeroBased){
-    vMin = 0; vMax = vMax * 1.06;
-  }else{
-    vMin = Math.min.apply(null, vals);
-    const vPad = (vMax - vMin) * 0.2 || vMax * 0.02;
-    vMin -= vPad; vMax += vPad;
-  }
-  const x = i => padX + (w - 2 * padX) * (S.length === 1 ? 0.5 : i / (S.length - 1));
-  const y = v => padY + (h - 2 * padY) * (1 - (v - vMin) / (vMax - vMin));
-  const pts = [], xs = [];
-  S.forEach((q, i) => { if(q.value != null){ pts.push(x(i).toFixed(1) + ',' + y(q.value).toFixed(1)); xs.push(x(i)); } });
-  const line = `<path d="M ${pts.join(' L ')}" fill="none" stroke="${p.dot}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>`;
-  const area = zeroBased
-    ? `<path d="M ${xs[0].toFixed(1)},${h} L ${pts.join(' L ')} L ${xs[xs.length-1].toFixed(1)},${h} Z" fill="${p.dot}" opacity=".22"/>`
-    : '';
-  const last = known[known.length - 1];
-  const lastX = x(S.findIndex(q => q.month === last.month));
-  return `<svg class="mspark" viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-label="Net worth by month">
-      ${area}${line}<circle cx="${lastX.toFixed(1)}" cy="${y(last.value).toFixed(1)}" r="2.6" fill="${p.dot}"/>
-    </svg>`;
-}
-
-function renderWealth(p, zeroBased){
-  const S = wealthData();
-  const known = S.filter(x => x.value != null);
-  if(!known.length) return `<div class="mbig" data-testid="wealth-total" data-have="no">—</div><div class="msub">${wAcc.length ? 'no entries yet' : 'tap the pencil to start'}</div>`;
-  const last = known[known.length - 1], prev = known[known.length - 2];
-  let sub, check = '';
-  const ds = entryDates();
-  if(ds.length && ds[ds.length - 1].slice(0, 7) === last.month){
-    /* the newest point is one of his own entries: compare with the entry before it */
-    const nd = ds[ds.length - 1], pd = ds[ds.length - 2], pe = pd ? { date: pd, e: wEnt[pd] } : null;
-    const nt = entryTotal(wEnt[nd]);
-    sub = pe
-      ? `${nt - entryTotal(pe.e) < 0 ? '−' : '+'}${fmtM(Math.abs(nt - entryTotal(pe.e)))} since ${dayLabel(pe.date)}`
-      : `entered ${dayLabel(nd)}`;
-    const ev = engineValue(last.month);
-    /* the workbook disagrees with his own entry: say so in amber, with how far apart —
-       a wrong number under the total must never sit there quietly (3 Nov 2026) */
-    if(ev != null && ev !== nt && !zeroBased) check =
-      `<button class="msub mwarn" data-tedit="${nd}" data-testid="wealth-mismatch" title="Your workbook says ${fmtM(ev)} — ${fmtM(Math.abs(ev - nt))} ${ev < nt ? 'less' : 'more'} than your own entry. Tap to correct it.">workbook ${fmtM(ev)}</button>`;
-  }else{
-    sub = prev
-      ? `${last.value - prev.value < 0 ? '−' : '+'}${fmtM(Math.abs(last.value - prev.value))} vs ${monthLabel(prev.month).split(' ')[0]}`
-      : monthLabel(last.month);
-  }
-  let grow = '', remind = '';
-  if(!zeroBased){
-    const g = yearGrowth();
-    if(g) grow = `<div class="msub mgrow" data-testid="wealth-growth" title="${g.tip}">${g.text}</div>`;
-    const r = missingMonth();
-    if(r) remind = `<button class="msub mremind" data-tremind="1" data-testid="wealth-reminder" style="color:${p.dot}" title="Tap to type in this month's wealth">${r} not entered yet</button>`;
-  }
-  return `<div class="mbig" data-testid="wealth-total" data-have="yes">${fmtM(last.value)}</div>
-    ${grow || `<div class="msub">${zeroBased ? 'all of it, from zero' : sub}</div>`}${check}${remind}
-    ${wealthSpark(S, known, p, zeroBased)}`;
-}
-/* 2.0: where the wealth is heading by retirement, at the pace of the last twelve months
-   (the newest entry against the entry closest to a year before it, or the oldest one) */
-function wealthForecast(){
-  const ds = entryDates();
-  if(ds.length < 2) return null;
-  const day = d => { const [y, m, dd] = d.split('-').map(Number); return new Date(y, m - 1, dd); };
-  const nd = ds[ds.length - 1], ndt = day(nd);
-  const yearAgo = new Date(ndt.getFullYear() - 1, ndt.getMonth(), ndt.getDate());
-  const from = ds.find(d => day(d) >= yearAgo && d !== nd) || ds[0];
-  const span = (ndt - day(from)) / 86400000;
-  if(span < 60) return null;                       /* under two months says too little */
-  const ahead = (RETIREMENT - ndt) / 86400000;
-  if(ahead <= 0) return null;
-  const nt = entryTotal(wEnt[nd]), perDay = (nt - entryTotal(wEnt[from])) / span;
-  const value = Math.max(0, Math.round(nt + perDay * ahead));
-  const perMonth = Math.round(perDay * 30.44);
-  return { value, tip: `At your pace since ${dayLabel(from)} ${from.slice(0, 4)}: ${perMonth < 0 ? '−' : '+'}${fmtM(Math.abs(perMonth))} a month` };
-}
-
-/* this year's growth (1.62): the newest entry against the first entry of this year —
-   or, with nothing else from this year, the last entry from before 1 January.
-   1.63: in the first week of January, before a January entry, last year's result */
-function yearGrowth(){
-  const ds = entryDates();
-  if(!ds.length) return null;
-  const now = new Date(), nd = ds[ds.length - 1];
-  let y = String(now.getFullYear()), lastYear = false;
-  if(nd.slice(0, 4) !== y){
-    if(now.getMonth() !== 0 || now.getDate() >= 8 || nd.slice(0, 4) !== String(now.getFullYear() - 1)) return null;
-    y = nd.slice(0, 4); lastYear = true;
-  }
-  const inYear = ds.filter(d => d.slice(0, 4) === y && d !== nd);
-  const before = ds.filter(d => d < y + '-01-01');
-  /* last year in full: measured from the end of the year before, when there is one */
-  const from = lastYear ? (before[before.length - 1] || inYear[0]) : (inYear.length ? inYear[0] : before[before.length - 1]);
-  if(!from) return null;
-  const bt = entryTotal(wEnt[from]), nt = entryTotal(wEnt[nd]);
-  if(!bt) return null;
-  const pc = (nt - bt) / bt * 100, a = Math.abs(pc), sign = pc < 0 ? '−' : '+';
-  const num = a >= 10 || Math.round(a * 10) % 10 === 0 ? String(Math.round(a)) : a.toFixed(1);
-  const since = lastYear ? `in ${y}` : from.slice(0, 4) === y ? `since ${MON3[+from.slice(5, 7) - 1]}` : 'since Jan';
-  return { from, text: `${sign}${num}% ${since}`,
-           tip: `${nt - bt < 0 ? '−' : '+'}${fmtM(Math.abs(nt - bt))} since ${dayLabel(from)} ${from.slice(0, 4)}` };
-}
-/* the monthly reminder (1.62): from the 8th, a month with no entry yet is named on the tile */
-function missingMonth(){
-  const now = new Date();
-  if(now.getDate() < 8 || !wAcc.length) return null;
-  const mk = monthKey(now);
-  if(entryDates().some(d => d.slice(0, 7) === mk)) return null;
-  return MON3[now.getMonth()];
-}
-function renderWealth0(p){ return renderWealth(p, true); }
 
 function renderRetire(){
   const now = new Date();
   const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
   const days = Math.max(0, Math.round((RETIREMENT - today) / 86400000));
-  const f = wealthForecast();
   return `<div class="mbig">${days.toLocaleString('en-GB')}</div>
-    <div class="msub">days · 1 Jul 2028</div>${f ? `<div class="msub mfore" data-testid="retire-forecast" title="${f.tip}">≈ ${fmtM(f.value)}<span class="fby"> by then</span></div>` : ''}`;
+    <div class="msub">days · 1 Jul 2028</div>`;
 }
 
 function renderYear(p){
@@ -2638,21 +2211,6 @@ function renderYear(p){
     <div class="mbar"><div style="width:${pct}%; background:${p.dot}"></div></div>`;
 }
 
-let finCache = null;
-function renderFinMonth(p){
-  if(!finCache || !finCache.ok || !(finCache.previous || finCache.current)){
-    return `<div class="mbig">—</div><div class="msub">${FROM_ENGINE ? 'engine not answering' : 'on the Mac'}</div>`;
-  }
-  const m = finCache.previous || finCache.current;
-  const parts = [m.report, m.ledger, m.workbook, m.dashboard];
-  const done = parts.filter(Boolean).length;
-  const dots = parts.map(d =>
-    `<span class="mdot"${d ? ` style="background:${p.dot}"` : ''}></span>`).join('');
-  return `<div class="mbig" style="font-size:20px">${monthLabel(m.month)}</div>
-    <div class="msub">${done === 4 ? 'all done' : done + ' of 4 done'} · <a href="${ENGINE}/finance/" target="_blank" rel="noopener">Finance Hub ›</a></div>
-    <div class="mdots">${dots}</div>`;
-}
-
 function renderVersions(){
   const apps = ALL_APPS().filter(a => a.probe);
   const on = apps.filter(a => verCache[a.id]).length;
@@ -2660,18 +2218,14 @@ function renderVersions(){
     <div class="msub">apps answering</div>`;
 }
 
-const MINI_RENDER = { wealth:renderWealth, wealth0:renderWealth0, retire:renderRetire, year:renderYear, finmonth:renderFinMonth, versions:renderVersions };
+const MINI_RENDER = { retire:renderRetire, year:renderYear, versions:renderVersions };
 
 function renderMini(){
   $('miniRow').innerHTML = PANELS.map(p => `
     <div class="mtile${tileOn(p.id) ? '' : ' off'}" style="background:${tintOf(p)}" data-testid="tile-${p.id}">
-      <div class="mlab" style="color:${p.dot}"><span>${p.label}</span>${
-        p.id === 'wealth' ? `<button class="mpen" id="miniEdit" data-testid="wealth-pen" aria-label="Enter your wealth"><span class="pwrap"><svg class="hi"><use href="#icon-pencil"/></svg></span></button>` : ''
-      }<button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
+      <div class="mlab" style="color:${p.dot}"><span>${p.label}</span><button class="mtog${tileOn(p.id) ? ' on' : ''}" data-tile="${p.id}" aria-label="Show this tile"></button></div>
       <div class="mbody" id="mt-${p.id}" data-testid="tile-body-${p.id}">${MINI_RENDER[p.id](p)}</div>
     </div>`).join('');
-  $('miniEdit').addEventListener('click', () => openWealth());
-  markPen();
   document.querySelectorAll('[data-tile]').forEach(b =>
     b.addEventListener('click', () => toggleTile(b.dataset.tile)));
 }
@@ -2679,86 +2233,6 @@ function renderMini(){
 function renderTile(id){
   const p = PANELS.find(x => x.id === id), el = $('mt-' + id);
   if(p && el) el.innerHTML = MINI_RENDER[id](p);
-  if(id === 'wealth') markPen();
-}
-/* the amber dot on the Wealth pencil: some month — any month, not only the newest the
-   tile speaks about — disagrees with the workbook, so look in History (1.60) */
-/* 2.2: the sync mark on the Wealth tile's name — there only while Dropbox sync is on */
-function markSync(){
-  const lab = document.querySelector('[data-testid="tile-wealth"] .mlab > span');
-  if(!lab) return;
-  let m = lab.querySelector('.msync');
-  if(!dbxOn()){ if(m) m.remove(); return; }
-  if(!m){ lab.insertAdjacentHTML('beforeend', '<svg class="hi msync" data-testid="wealth-synced" aria-hidden="true"><use href="#icon-sync"/></svg>'); m = lab.querySelector('.msync'); }
-  const err = !syncBusy && !!dbx.err;
-  m.setAttribute('data-state', err ? 'err' : 'ok');
-  const t = dbx.last ? new Date(dbx.last).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' }) : '';
-  lab.title = err ? 'Dropbox sync is not getting through — see Settings › Dropbox sync' : (t ? `Synced with Dropbox at ${t}` : 'Dropbox sync is on');
-}
-function markPen(){
-  markSync();
-  const pen = $('miniEdit');
-  if(!pen) return;
-  const n = offMonths().length;
-  let dot = pen.querySelector('.pdot');
-  if(n && !dot){ pen.querySelector('.pwrap').insertAdjacentHTML('beforeend', '<span class="pdot" data-testid="pen-dot"></span>'); dot = pen.querySelector('.pdot'); }
-  if(n) dot.textContent = n;
-  if(!n && dot) dot.remove();
-  pen.setAttribute('aria-label', n ? `Enter your wealth — ${n} month${n === 1 ? '' : 's'} differs from your workbook` : 'Enter your wealth');
-  pen.title = n ? `${n} month${n === 1 ? ' differs' : 's differ'} from your workbook — see History` : '';
-}
-
-/* asking the engine (Mac only; elsewhere these quietly fail and the
-   panels fall back to typed numbers / a friendly note) */
-async function fetchWealth(){
-  try{
-    const res = await fetch(ENGINE + '/wealth?vercheck=' + Date.now(), { cache:'no-store' });
-    if(!res.ok) return;
-    const data = await res.json();
-    if(data && data.ok && Array.isArray(data.series)){
-      storeJSON(W_ENGINE_KEY, { fetchedAt: new Date().toISOString(), series: data.series });
-      renderTile('wealth'); renderTile('wealth0');
-    }
-  }catch(e){ /* engine off or unreachable */ }
-}
-async function fetchFin(){
-  try{
-    const res = await fetch(ENGINE + '/hubstatus?vercheck=' + Date.now(), { cache:'no-store' });
-    if(!res.ok) return;
-    finCache = await res.json();
-    renderTile('finmonth');
-  }catch(e){ /* engine off or unreachable */ }
-}
-/* the dashboard addresses and the newest report — the engine hands these
-   over only when the hub is served from its own address (localhost:7780/hub) */
-async function fetchLinks(){
-  try{
-    const res = await fetch(ENGINE + '/hublinks?vercheck=' + Date.now(), { cache:'no-store' });
-    if(!res.ok) return;
-    const data = await res.json();
-    if(data && data.ok){ engineLinks = data; renderShelf(); }
-  }catch(e){ /* not on the Mac, or served from the web */ }
-}
-
-/* ============ the wealth sheet: New entry · Accounts · History ============ */
-let wView = 'history';   /* the sheet always opens on History — look first, then type */
-let wEditDate = null;          /* the ORIGINAL date of the entry being corrected (never changes mid-edit) */
-let wTyped = {};               /* accId -> raw string, survives a date change or a page switch */
-let wDate = null;              /* the date shown in the form */
-
-function wOpenTab(v){
-  wView = v;
-  document.querySelectorAll('.wtab[data-wv]').forEach(b => b.classList.toggle('cur', b.dataset.wv === v));
-  const body = $('wBody');
-  body.innerHTML = v === 'entry' ? viewEntry() : v === 'accounts' ? viewAccounts() : v === 'year' ? viewYear() : viewHistory();
-  if(v === 'entry') bindEntry(); else if(v === 'accounts') bindAccounts(); else if(v === 'year') bindYear(); else bindHistory();
-}
-function openWealth(v){
-  wEditDate = null; wTyped = {}; wExact = {}; wDate = null;
-  const draft = loadJSON(W_DRAFT_KEY, null);
-  if(draft && draft.date && draft.v){ wDate = draft.date; wTyped = draft.v; wExact = (draft.x && typeof draft.x === 'object') ? draft.x : {}; }
-  wOpenTab(v || 'history');
-  $('ovWealth').classList.add('show');
 }
 /* ============ Dropbox sync (2.0) ============
    One small file, Apps/<app>/wealth.json in his own Dropbox, holds the accounts, the
@@ -2953,8 +2427,7 @@ async function syncNow(){
       if(wealthSig(m) !== wealthSig({ accounts:wAcc, entries:wEnt, deleted:loadJSON(W_DEL_KEY, {}) })){
         wAcc = m.accounts; wEnt = m.entries;
         storeJSON(W_ACC_KEY, wAcc); storeJSON(W_ENT_KEY, wEnt); storeJSON(W_DEL_KEY, m.deleted);
-        snapWealth(); refreshWealthTiles(); renderTile('retire');
-        if($('ovWealth').classList.contains('show') && wView !== 'entry') wOpenTab(wView);
+        snapWealth();
       }
       if(got.data && wealthSig(m) === wealthSig(cleanRemote(got.data))){ done = true; break; }
       const r = await dbxUpload(tok, Object.assign({ app:'AMS Main Hub', savedAt:new Date().toISOString() }, m), got.rev);
@@ -2982,7 +2455,6 @@ function renderBackupLine(){
     : 'Dropbox keeps a backup every day — last: ' + (dbx.backupAt ? when(dbx.backupAt) : 'not yet');
 }
 function renderSync(){
-  markSync();
   renderBackupLine();
   /* 2.1.2: while connected, the update icon sits in the sync row instead of the wide button */
   if($('updateBtn')) $('updateBtn').hidden = !!(DBX_KEY && dbx.refresh);
@@ -2990,7 +2462,7 @@ function renderSync(){
   if(!body) return;
   const hm = iso => new Date(iso).toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit' });
   const day = iso => { const d = new Date(iso), t = new Date(); return d.toDateString() === t.toDateString() ? hm(iso) : `${d.getDate()} ${MON3[d.getMonth()]} ${hm(iso)}`; };
-  const about = '<p class="dim" style="margin-top:8px">Your wealth accounts and entries, the same on iPhone and Mac — through one small file in your Dropbox (Apps › AMS Main Hub). Connect once on each device.</p>';
+  const about = '<p class="dim" style="margin-top:8px">A backup of the whole hub in your Dropbox every day (Apps › AMS Main Hub), and the wealth entries you once typed here kept the same on iPhone and Mac. Connect once on each device.</p>';
   if(!DBX_KEY){ body.innerHTML = about + '<p class="syncline">Not ready yet.</p>'; sum.textContent = ''; return; }
   if(!dbx.refresh && !syncWaiting){
     sum.textContent = 'off';
@@ -3019,521 +2491,6 @@ function renderSync(){
   $('syncOff').addEventListener('click', () => {
     if(!confirm('Stop syncing on this device? Everything stays here and in Dropbox; this device just stops exchanging changes.')) return;
     dbx = {}; dbxSave(); renderSync();
-  });
-}
-
-/* the tile's amber line: straight to that month's entry (1.61) */
-document.addEventListener('click', ev => {
-  if(ev.target.closest('[data-tremind]')){ ev.stopPropagation(); openWealth('entry'); return; }
-  const b = ev.target.closest('[data-tedit]');
-  if(!b || !wEnt[b.dataset.tedit]) return;
-  ev.stopPropagation();
-  openWealth('history'); editEntry(b.dataset.tedit);
-});
-function closeWealth(){ $('ovWealth').classList.remove('show'); wEditDate = null; }
-function refreshWealthTiles(){ renderTile('wealth'); renderTile('wealth0'); renderTile('retire'); }
-document.querySelectorAll('.wtab[data-wv]').forEach(b => b.addEventListener('click', () => wOpenTab(b.dataset.wv)));
-$('wealthClose').addEventListener('click', closeWealth);
-
-/* ---- New entry ---- */
-function viewEntry(){
-  const live = liveAccounts();
-  if(!live.length){
-    return `${separateCopyNote()}<p class="dim" style="margin:6px 0 0">No accounts yet. Add each one you want to count — a bank, a broker, a fund — and it becomes a row here.</p>
-      <button class="btn full primary" data-wv="accounts">Add your accounts</button>`;
-  }
-  const date = wDate || todayKey();
-  const existing = wEnt[date];
-  const base = wEditDate ? wEnt[wEditDate] : null;
-  const prev = lastEntryBefore(date);
-  const rows = live.map(a => {
-    const last = wEditDate ? null : (prev && typeof prev.e.v[a.id] === 'number' ? prev.e.v[a.id] : null);
-    const v = wTyped[a.id];
-    return `<div class="wrow">
-      <span class="wm">${esc(a.name)}</span>
-      <input type="text" inputmode="numeric" data-wa="${a.id}" data-testid="entry-${esc(a.id)}" value="${esc(v || '')}" placeholder="${last != null ? 'last: ' + fmtKr(last) : (base && typeof base.v[a.id] === 'number' ? 'carried: ' + fmtKr(base.v[a.id]) : '—')}" autocomplete="off" />
-      <span class="wkr">kr</span>
-      ${a.url ? `<a class="wlink" href="${esc(a.url)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.name)}"><svg class="hi"><use href="#icon-linkout"/></svg></a>` : '<span class="wlink none"></span>'}
-    </div>`;
-  }).join('');
-  return `<label>Date</label>
-    <div class="wdaterow">
-      <input type="date" id="wDate" data-testid="entry-date" value="${date}" max="${todayKey()}" />
-      ${FROM_ENGINE ? sendButtonHTML(date) : ''}
-    </div>
-    ${existing && date !== wEditDate ? `<p class="dim wnote whint warn">There is already an entry for ${dayLabel(date)} — saving replaces it.</p>` : ''}
-    ${wEditDate ? `<p class="dim wnote whint">Correcting the entry from ${dayLabel(wEditDate)} ${wEditDate.slice(0, 4)}.</p>` : ''}
-    <p class="dim wnote whint">Thousands: <b>250</b> ⇥ <b>250 000</b>. Five digits or more is taken exactly.</p>
-    ${rows}
-    <div class="wtot"><span>Total</span><b id="wTotal" data-testid="entry-total">—</b></div>
-    <p class="dim wnote" id="wSince"></p>
-    ${FROM_ENGINE ? `<button class="wbook" id="wOpenBook">
-      <svg class="hi"><use href="#icon-dev-excel"/></svg>
-      <span>Budget workbook</span>
-      <svg class="hi out"><use href="#icon-linkout"/></svg>
-    </button>` : ''}
-    <div class="btnrow">
-      ${wEditDate ? '<button class="btn danger" id="wDelEntry">Delete</button>' : ''}
-      <button class="btn" id="wCancel">Cancel</button>
-      <button class="btn primary" id="wSave" data-testid="entry-save">${wEditDate ? 'Save changes' : 'Save entry'}</button>
-    </div>`;
-}
-/* what would be saved right now: typed balances, and the last known one for every empty row.
-   When correcting an existing entry, an empty row keeps what THAT entry had (or stays out) —
-   it never borrows a balance from some other date. */
-function entryFromForm(date){
-  const prev = lastEntryBefore(date);
-  const base = wEditDate ? wEnt[wEditDate] : null;
-  const v = {}, c = [];
-  let typedAny = false;
-  liveAccounts().forEach(a => {
-    const n = wExact[a.id] ? parseKr(wTyped[a.id]) : parseEntryKr(wTyped[a.id]);
-    if(n != null && n >= 0){ v[a.id] = n; typedAny = true; }
-    else if(base){
-      if(typeof base.v[a.id] === 'number'){ v[a.id] = base.v[a.id]; if((base.c || []).includes(a.id)) c.push(a.id); typedAny = true; }
-    }
-    else if(prev && typeof prev.e.v[a.id] === 'number'){ v[a.id] = prev.e.v[a.id]; c.push(a.id); }
-  });
-  /* balances belonging to a retired account are kept exactly as they were — correcting
-     an old entry must never quietly drop the accounts it was made of */
-  if(base) Object.keys(base.v || {}).forEach(id => {
-    if(!(id in v) && typeof base.v[id] === 'number'){
-      v[id] = base.v[id];
-      if((base.c || []).includes(id)) c.push(id);
-    }
-  });
-  return { v, c, typedAny, prev, base };
-}
-function updateTotalLine(){
-  const date = $('wDate').value || todayKey();
-  const f = entryFromForm(date);
-  const tot = entryTotal(f);
-  $('wTotal').textContent = Object.keys(f.v).length ? fmtKr(tot) + ' kr' : '—';
-  const bits = [];
-  if(f.prev && Object.keys(f.v).length){
-    const d = tot - entryTotal(f.prev.e);
-    bits.push(`${d < 0 ? '−' : '+'}${fmtKr(Math.abs(d))} kr since ${dayLabel(f.prev.date)}`);
-  }else if(Object.keys(f.v).length){ bits.push('first entry'); }
-  if(f.c.length) bits.push(`${f.c.map(id => (wAcc.find(a => a.id === id) || {}).name).filter(Boolean).join(', ')} carried${f.prev && !f.base ? ' from ' + dayLabel(f.prev.date) : ''}`);
-  if(f.prev && f.prev.date === date && !f.base) bits.push('replaces the entry already saved for this date');
-  $('wSince').textContent = bits.join(' · ');
-  refreshSendButton();
-}
-function bindEntry(){
-  const goAcc = document.querySelector('#wBody [data-wv]');
-  if(goAcc){ goAcc.addEventListener('click', () => wOpenTab('accounts')); return; }
-  const saveDraft = () => { if(!wEditDate) storeJSON(W_DRAFT_KEY, { date: $('wDate').value || todayKey(), v: wTyped, x: wExact }); };
-  document.querySelectorAll('#wBody [data-wa]').forEach(inp => {
-    inp.addEventListener('input', () => {
-      const raw = inp.value;
-      delete wExact[inp.dataset.wa];   /* freshly typed — the thousands rule applies again */
-      if(raw.trim() === '') delete wTyped[inp.dataset.wa]; else wTyped[inp.dataset.wa] = raw;
-      updateTotalLine(); saveDraft();
-    });
-    inp.addEventListener('blur', () => {
-      const n = wExact[inp.dataset.wa] ? parseKr(inp.value) : parseEntryKr(inp.value);
-      if(n != null){
-        inp.value = fmtKr(n);
-        wTyped[inp.dataset.wa] = inp.value;
-        wExact[inp.dataset.wa] = true;   /* now an exact figure — Tab again must not scale it */
-        updateTotalLine(); saveDraft();
-      }
-    });
-  });
-  $('wDate').addEventListener('change', () => {
-    const d = $('wDate').value;
-    if(!/^\d{4}-\d{2}-\d{2}$/.test(d)) return;
-    wDate = d;
-    saveDraft();
-    wOpenTab('entry');
-  });
-  const delEntry = $('wDelEntry');
-  if(delEntry) delEntry.addEventListener('click', () => {
-    const d = wEditDate;
-    if(!d || !wEnt[d]) return;
-    if(!confirm(`Delete the entry for ${dayLabel(d)} ${d.slice(0, 4)} (${fmtKr(entryTotal(wEnt[d]))} kr)?`)) return;
-    delete wEnt[d];
-    saveWealth();
-    wTyped = {}; wExact = {}; wDate = null; wEditDate = null;
-    refreshWealthTiles();
-    wOpenTab('history');
-    showToast('Entry deleted');
-  });
-  const book = $('wOpenBook');
-  if(book) book.addEventListener('click', () => openEngineTarget('workbook', 'the budget workbook'));
-  $('wCancel').addEventListener('click', () => {
-    try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
-    closeWealth();
-  });
-  $('wSave').addEventListener('click', () => {
-    const r = commitEntry();
-    if(!r) return;
-    wDate = null;
-    closeWealth();
-    showToast(`Saved — ${fmtKr(entryTotal(r.f))} kr on ${dayLabel(r.date)}${r.f.c.length ? ` (${r.f.c.length} carried)` : ''}`);
-  });
-  const send = $('wSend');
-  if(send) send.addEventListener('click', sendToExcel);
-  updateTotalLine();
-}
-
-/* save what is in the form — for Save entry and for Save & send. Returns {date, f},
-   or null if there was nothing (valid) to save. Leaves the sheet open. */
-function commitEntry(){
-  const date = $('wDate').value;
-  if(!/^\d{4}-\d{2}-\d{2}$/.test(date)){ alert('Pick a date first.'); return null; }
-  if(date > todayKey()){ alert('That date is in the future.'); return null; }
-  const f = entryFromForm(date);
-  if(!f.typedAny){ alert('Type at least one balance.'); return null; }
-  if(wEditDate && wEditDate !== date && wEnt[date] && !confirm(`There is already an entry for ${dayLabel(date)}. Replace it?`)) return null;
-  if(wEditDate && wEditDate !== date) delete wEnt[wEditDate];
-  wEnt[date] = { v:f.v, c:f.c, at:new Date().toISOString() };
-  saveWealth();
-  try{ localStorage.removeItem(W_DRAFT_KEY); }catch(e){}
-  wTyped = {}; wExact = {}; wDate = date; wEditDate = null;
-  refreshWealthTiles();
-  return { date, f };
-}
-
-/* ---- Send to Excel (Mac only — the Finance engine does the writing) ----
-   The date on New entry picks the month; the month's LATEST entry goes into that
-   month's row of the budget workbook. send_wealth.py in AMS Finance finds each
-   account's column by name every time, writes only those cells, keeps a dated copy
-   first and refuses while Excel has the file open. A dry run comes first so he sees
-   exactly what will be written before anything is. */
-const MONTHS_LONG = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-let sendingExcel = false;
-function latestEntryIn(month){
-  const ds = entryDates().filter(d => d.slice(0, 7) === month);
-  return ds.length ? { date: ds[ds.length - 1], e: wEnt[ds[ds.length - 1]] } : null;
-}
-function sendState(date){
-  const month = (date || todayKey()).slice(0, 7);
-  const name = MONTHS_LONG[+month.slice(5, 7) - 1] || month;
-  const unsaved = Object.keys(wTyped).length > 0;
-  const latest = latestEntryIn(month);
-  const sent = loadJSON(W_SENT_KEY, {})[month];
-  /* "sent ✓" only while what was sent is still the month's latest entry, unchanged */
-  const fresh = !!(sent && latest && sent.entryDate === latest.date && sent.entryAt === (latest.e.at || ''));
-  return { month, name, unsaved, latest, fresh };
-}
-function sendButtonHTML(date){
-  const st = sendState(date);
-  return `<button class="wsend${st.fresh && !st.unsaved ? ' sent' : ''}" id="wSend" data-testid="wealth-send" type="button">
-      <svg class="hi"><use href="#icon-dev-excel"/></svg>
-      <span class="wsendtx"><b id="wSendMain">${st.unsaved ? 'Save &amp; send' : 'Send to Excel'}</b><small id="wSendSub">${
-        st.fresh && !st.unsaved ? esc(st.name) + ' sent ✓' : esc(st.name) + ' → workbook'}</small></span>
-    </button>`;
-}
-function refreshSendButton(){
-  const b = $('wSend');
-  if(!b) return;
-  const st = sendState($('wDate').value);
-  const done = st.fresh && !st.unsaved;
-  b.classList.toggle('sent', done);
-  $('wSendMain').textContent = st.unsaved ? 'Save & send' : 'Send to Excel';
-  $('wSendSub').textContent = done ? st.name + ' sent ✓' : st.name + ' → workbook';
-}
-function sendProblem(r, st){
-  const why = {
-    'open-in-excel': 'The budget workbook is open in Excel. Close it there, then press Send again.',
-    'unmatched': `The workbook has no column for ${(r.unmatched || []).join(', ')}. Check the account names in its header row.`,
-    'no-month-row': `The workbook has no row for ${st.name} ${st.month.slice(0, 4)}.`,
-    'no-header': 'The row with your account names could not be found in the workbook.',
-    'no-workbook': 'The budget workbook could not be found.',
-    'no-sheet': 'The budget sheet could not be found in the workbook.',
-    'verify-failed': 'Something did not check out after writing, so the workbook was left exactly as it was.',
-  }[r && r.error] || 'The workbook could not be written.';
-  alert(`Not sent — nothing was written.\n\n${why}`);
-}
-async function sendToExcel(){
-  if(sendingExcel) return;
-  let date = $('wDate').value || todayKey();
-  if(Object.keys(wTyped).length){          /* typed but not saved: save first, then send */
-    const r = commitEntry();
-    if(!r) return;
-    date = r.date;
-  }
-  const st = sendState(date);
-  if(!st.latest){ showToast(`No entry in ${st.name} yet — nothing to send`, null, '', 5000); return; }
-  /* in his own account order, so the preview reads the way his pages do */
-  const v = st.latest.e.v || {};
-  const ids = wAcc.map(a => a.id).filter(id => typeof v[id] === 'number')
-    .concat(Object.keys(v).filter(id => typeof v[id] === 'number' && !wAcc.some(a => a.id === id)));
-  const accounts = ids.map(id => ({ name: accountName(id), kr: v[id] }));
-  const post = (dryRun) => fetch(ENGINE + '/api/sendwealth', {
-    method:'POST', cache:'no-store', headers:{ 'Content-Type':'application/json' },
-    body: JSON.stringify({ month: st.month, dryRun, accounts }),
-  }).then(res => res.json());
-  sendingExcel = true;
-  const b = $('wSend'); if(b) b.disabled = true;
-  try{
-    const plan = await post(true);
-    if(!plan.ok){ sendProblem(plan, st); return; }
-    const lines = plan.plan.map(p => `${p.name}  →  ${fmtKr(p.kr)} kr` +
-      (typeof p.now === 'number' && Math.round(p.now) !== p.kr ? `   (was ${fmtKr(p.now)})` : '')).join('\n');
-    if(!confirm(`Send ${st.name} ${st.month.slice(0, 4)} to the budget workbook?\n\nYour entry of ${dayLabel(st.latest.date)}:\n\n${lines}\n\nA dated copy of the workbook is kept first.`)){
-      showToast('Not sent — nothing was written', null, '', 4000);
-      return;
-    }
-    const res = await post(false);
-    if(!res.ok){ sendProblem(res, st); return; }
-    const sent = loadJSON(W_SENT_KEY, {});
-    sent[st.month] = { at: new Date().toISOString(), entryDate: st.latest.date, entryAt: st.latest.e.at || '' };
-    storeJSON(W_SENT_KEY, sent);
-    const skipped = (res.skipped || []).length;
-    showToast(`${st.name} sent to Excel ✓` + (skipped ? ` — ${skipped} cell${skipped > 1 ? 's' : ''} held a formula and was left alone` : ''), null, '', 6000);
-  }catch(e){
-    showToast('The Finance engine is not answering — open AMS Finance, then try again', null, '', 7000);
-  }finally{
-    sendingExcel = false;
-    if($('wBody') && wView === 'entry') wOpenTab('entry');   /* redraw with the saved entry and the new state */
-  }
-}
-
-/* ---- Accounts ---- */
-let wAccForm = null;   /* null = list; 'new' = adding; an id = editing that one */
-function viewAccounts(){
-  if(wAccForm){
-    const a = wAccForm === 'new' ? { name:'', url:'' } : (wAcc.find(x => x.id === wAccForm) || { name:'', url:'' });
-    return `<label>Name</label>
-      <input type="text" id="waName" value="${esc(a.name)}" placeholder="e.g. ISK" maxlength="30" />
-      <label>Web address of the bank or broker (optional)</label>
-      <input type="url" id="waUrl" value="${esc(a.url || '')}" placeholder="https://…" autocapitalize="off" autocorrect="off" />
-      <div class="btnrow">
-        ${wAccForm !== 'new' ? '<button class="btn danger" id="waDelete">Delete</button>' : ''}
-        <button class="btn" id="waCancel">Cancel</button>
-        <button class="btn primary" id="waSave">Save</button>
-      </div>`;
-  }
-  const latest = entryDates().length ? wEnt[entryDates()[entryDates().length - 1]] : null;
-  const live = liveAccounts();
-  const rows = live.map((a, i) => `<div class="arow">
-      <div class="amid"><div class="aname">${esc(a.name)}</div><div class="aurl">${a.url ? esc(a.url.replace(/^https?:\/\//i, '')) : 'no link'}</div></div>
-      ${latest && typeof latest.v[a.id] === 'number' ? `<span class="asum">${fmtKr(latest.v[a.id])}</span>` : ''}
-      <button class="rowbtn" data-wedit="${a.id}" aria-label="Edit ${esc(a.name)}"><svg class="hi"><use href="#icon-pencil"/></svg></button>
-      <button class="rowbtn" data-wup="${a.id}" aria-label="Move ${esc(a.name)} up" ${i === 0 ? 'disabled' : ''}><svg class="hi"><use href="#icon-up"/></svg></button>
-      <button class="rowbtn" data-wdown="${a.id}" aria-label="Move ${esc(a.name)} down" ${i === live.length - 1 ? 'disabled' : ''}><svg class="hi"><use href="#icon-down"/></svg></button>
-    </div>`).join('');
-  return `${rows || separateCopyNote() + '<p class="dim" style="margin:6px 0 0">Nothing here yet. Each account you add becomes a row on the New entry page.</p>'}
-    <button class="addrow" id="waAdd" style="margin-top:14px"><svg class="hi" style="width:18px;height:18px"><use href="#icon-plus"/></svg>Add account</button>
-    <p class="dim wnote">▲ ▼ set the order — it is the same on History, New entry and here. A new account starts at the bottom. Deleting one keeps its balances <i>and</i> its name in past entries; it only stops appearing in new ones.</p>`;
-}
-function bindAccounts(){
-  if(wAccForm){
-    $('waCancel').addEventListener('click', () => { wAccForm = null; wOpenTab('accounts'); });
-    $('waSave').addEventListener('click', () => {
-      const name = $('waName').value.trim();
-      let url = $('waUrl').value.trim();
-      if(!name){ alert('Give the account a name.'); return; }
-      if(url && !/^https?:\/\//i.test(url)) url = 'https://' + url;
-      if(wAccForm === 'new') wAcc.push({ id:newAccId(), name, url });
-      else { const a = wAcc.find(x => x.id === wAccForm); if(a){ a.name = name; a.url = url; } }
-      saveWealth(); wAccForm = null; wOpenTab('accounts'); refreshWealthTiles();
-    });
-    const del = $('waDelete');
-    if(del) del.addEventListener('click', () => {
-      const a = wAcc.find(x => x.id === wAccForm);
-      if(a && confirm(`Delete ${a.name}? Its past balances stay in History.`)){
-        /* retired, not erased — History still needs the name against the old numbers */
-        a.gone = true;
-        delete wTyped[wAccForm];
-        delete wExact[wAccForm];
-        saveWealth(); wAccForm = null; wOpenTab('accounts'); refreshWealthTiles();
-      }
-    });
-    setTimeout(() => $('waName').focus(), 50);
-    return;
-  }
-  $('waAdd').addEventListener('click', () => { wAccForm = 'new'; wOpenTab('accounts'); });
-  document.querySelectorAll('[data-wedit]').forEach(b => b.addEventListener('click', () => { wAccForm = b.dataset.wedit; wOpenTab('accounts'); }));
-  /* swap with the next LIVE neighbour — a retired account sitting between them in wAcc
-     keeps its own place (it only shows in History) and is simply stepped over */
-  const move = (id, dir) => {
-    const live = liveAccounts();
-    const k = live.findIndex(a => a.id === id), n = k + dir;
-    if(k < 0 || n < 0 || n >= live.length) return;
-    const i = wAcc.indexOf(live[k]), j = wAcc.indexOf(live[n]);
-    [wAcc[i], wAcc[j]] = [wAcc[j], wAcc[i]];
-    saveWealth(); wOpenTab('accounts'); refreshWealthTiles();
-  };
-  document.querySelectorAll('[data-wup]').forEach(b => b.addEventListener('click', () => move(b.dataset.wup, -1)));
-  document.querySelectorAll('[data-wdown]').forEach(b => b.addEventListener('click', () => move(b.dataset.wdown, 1)));
-}
-
-/* ---- History ---- */
-/* ---- History: accounts down the side, the three newest entries across ----
-   Rows follow his own account order and include RETIRED accounts, so a deleted account
-   keeps its place in the past; a new account appears at the bottom. An empty
-   cell is shown as — rather than 0, because "not in this entry" is not "was zero". */
-/* five columns on the Mac, oldest on the left and the newest on the RIGHT, the way a
-   timeline reads; a phone has room for three, so the two oldest columns step down into
-   the Earlier entries list there instead of disappearing */
-const HIST_COLS = 5, HIST_COLS_PHONE = 3;
-function histRowAccounts(cols){
-  const seen = new Set();
-  cols.forEach(d => Object.keys((wEnt[d] || {}).v || {}).forEach(id => seen.add(id)));
-  /* every account still kept, plus any account (retired, or orphaned by an old
-     delete) that actually carries a number in one of these columns */
-  const rows = wAcc.filter(a => !a.gone || seen.has(a.id));   /* his order; retired ones keep their place */
-  const known = new Set(wAcc.map(a => a.id));
-  [...seen].filter(id => !known.has(id)).forEach(id => rows.push({ id, name:'Removed account' }));
-  return rows;
-}
-/* the workbook figure for this entry's month, when it disagrees — only for the month's
-   LAST entry, the one the tile and the workbook stand for (1.59) */
-function monthOff(d){
-  const m = d.slice(0, 7);
-  const same = entryDates().filter(x => x.slice(0, 7) === m);
-  if(same[same.length - 1] !== d) return null;
-  const ev = engineValue(m), nt = entryTotal(wEnt[d]);
-  return ev == null || ev === nt ? null : { m, ev, nt };
-}
-/* every entry that is its month's last and disagrees with the workbook */
-function offMonths(){ return entryDates().filter(d => monthOff(d)); }
-/* tapping the mark opens that entry, exactly like Adjust (1.60) */
-function histMismatch(d){
-  const o = monthOff(d);
-  if(!o) return '';
-  return `<button class="hwarn" data-hedit="${d}" data-testid="hist-mismatch" data-month="${o.m}" title="Your workbook says ${fmtM(o.ev)} — ${fmtM(Math.abs(o.ev - o.nt))} ${o.ev < o.nt ? 'less' : 'more'} than your own entry. Tap to correct it.">workbook ${fmtM(o.ev)}</button>`;
-}
-/* ---- Year (2.0): how one year went — start, end, each account, best and weakest month ---- */
-let wYear = null;
-function entryYears(){ return [...new Set(entryDates().map(d => d.slice(0, 4)))].sort().reverse(); }
-function yearReview(y){
-  const ds = entryDates(), inY = ds.filter(d => d.slice(0, 4) === y);
-  if(!inY.length) return null;
-  const before = ds.filter(d => d < y + '-01-01');
-  const start = before.length ? before[before.length - 1] : inY[0], end = inY[inY.length - 1];
-  if(start === end) return { start, end, single:true };
-  const se = wEnt[start], ee = wEnt[end], st = entryTotal(se), et = entryTotal(ee);
-  const ids = [...new Set(Object.keys(se.v).concat(Object.keys(ee.v)))];
-  const name = id => { const a = wAcc.find(x => x.id === id); return a ? a.name : '?'; };
-  const accounts = ids.map(id => ({ id, name:name(id), gone: !!(wAcc.find(x => x.id === id) || {}).gone,
-      a: typeof se.v[id] === 'number' ? se.v[id] : 0, b: typeof ee.v[id] === 'number' ? ee.v[id] : 0 }))
-    .sort((p, q) => p.name.localeCompare(q.name, 'sv'));
-  /* each month's last entry against the month before it (or the starting entry) */
-  const ends = [];
-  inY.forEach(d => { const m = d.slice(0, 7); if(ends.length && ends[ends.length - 1].slice(0, 7) === m) ends[ends.length - 1] = d; else ends.push(d); });
-  const months = [];
-  let prev = before.length ? start : null;
-  ends.forEach(d => { if(prev && prev !== d) months.push({ m:d.slice(5, 7), ch: entryTotal(wEnt[d]) - entryTotal(wEnt[prev]) }); prev = d; });
-  const best = months.length ? months.reduce((p, q) => q.ch > p.ch ? q : p) : null;
-  const worst = months.length > 1 ? months.reduce((p, q) => q.ch < p.ch ? q : p) : null;
-  return { start, end, st, et, accounts, best, worst };
-}
-function viewYear(){
-  const ys = entryYears();
-  if(!ys.length) return '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
-  if(!wYear || !ys.includes(wYear)) wYear = ys[0];
-  const r = yearReview(wYear);
-  const nav = ys.length > 1 ? `<div class="wnav yrnav">${ys.slice(0, 6).map(y =>
-    `<button class="wtab${y === wYear ? ' cur' : ''}" data-year="${y}" data-testid="year-pick-${y}">${y}</button>`).join('')}</div>` : '';
-  if(r.single) return nav + `<p class="dim" style="margin:6px 0 0" data-testid="year-single">Only one entry so far — ${dayLabel(r.end)} ${r.end.slice(0, 4)}. The review needs a second one to compare with.</p>`;
-  const sg = n => n === 0 ? '0' : (n < 0 ? '−' : '+') + fmtKr(Math.abs(n));
-  const pc = r.st ? (r.et - r.st) / r.st * 100 : 0, a = Math.abs(pc);
-  const pcs = (pc < 0 ? '−' : '+') + (a >= 10 || Math.round(a * 10) % 10 === 0 ? Math.round(a) : a.toFixed(1)) + '%';
-  const cls = n => n > 0 ? ' class="up"' : n < 0 ? ' class="down"' : '';
-  const mon = x => MON3[+x.m - 1];
-  return nav + `<div class="yhead" data-testid="year-total">${pcs} <span>${sg(r.et - r.st)} kr</span></div>
-    <div class="ysub">${dayLabel(r.start)} ${r.start.slice(0, 4)} → ${dayLabel(r.end)} ${r.end.slice(0, 4)}</div>
-    <div class="htwrap"><table class="htab" data-testid="year-table">
-      <thead><tr><th class="ahead">Accounts</th><th>Start</th><th>End</th><th>Change</th></tr></thead>
-      <tbody>
-        ${r.accounts.map(x => `<tr${x.gone ? ' class="retired"' : ''} data-testid="year-row-${x.id}"><th>${esc(x.name)}${x.gone ? '<i> removed</i>' : ''}</th>
-          <td>${fmtKr(x.a)}</td><td>${fmtKr(x.b)}</td><td${cls(x.b - x.a)}>${sg(x.b - x.a)}</td></tr>`).join('')}
-        <tr class="tot"><th>TOTAL</th><td>${fmtKr(r.st)}</td><td>${fmtKr(r.et)}</td><td${cls(r.et - r.st)}>${sg(r.et - r.st)}</td></tr>
-      </tbody>
-    </table></div>
-    ${r.best ? `<div class="ymonths">
-      <div data-testid="year-best"><b>BEST MONTH</b>${mon(r.best)} ${sg(r.best.ch)} kr</div>
-      ${r.worst ? `<div data-testid="year-worst"><b>WEAKEST MONTH</b>${mon(r.worst)} ${sg(r.worst.ch)} kr</div>` : ''}
-    </div>` : ''}`;
-}
-function bindYear(){
-  document.querySelectorAll('[data-year]').forEach(b => b.addEventListener('click', () => { wYear = b.dataset.year; wOpenTab('year'); }));
-}
-
-function viewHistory(){
-  const ds = entryDates().slice().reverse();                 /* newest first */
-  const newest = ds.slice(0, HIST_COLS);
-  const cols = newest.slice().reverse();                      /* shown oldest → newest */
-  const phoneHidden = cols.slice(0, Math.max(0, cols.length - HIST_COLS_PHONE));   /* the oldest, on a phone */
-  const hx = d => phoneHidden.includes(d) ? ' class="hx"' : '';
-  const older = ds.slice(HIST_COLS);
-
-  let table = separateCopyNote() + '<p class="dim" style="margin:6px 0 0">No entries yet.</p>';
-  if(cols.length){
-    const rows = histRowAccounts(cols);
-    const anyCarried = cols.some(d => (wEnt[d].c || []).length);
-    table = `<div class="htwrap"><table class="htab">
-      <thead>
-        <tr><th class="ahead">Accounts</th>${cols.map(d =>
-          `<th${hx(d)}><span class="dfull">${d}</span><span class="dshort">${d.slice(5)}</span></th>`).join('')}</tr>
-      </thead>
-      <tbody>
-        ${rows.map(a => `<tr${a.gone ? ' class="retired"' : ''}>
-          <th>${esc(a.name)}${a.gone ? '<i> removed</i>' : ''}</th>
-          ${cols.map(d => {
-            const e = wEnt[d], val = (e.v || {})[a.id];
-            const cls = [phoneHidden.includes(d) ? 'hx' : '', typeof val !== 'number' ? 'none' : '',
-                         typeof val === 'number' && (e.c || []).includes(a.id) ? 'carried' : ''].filter(Boolean).join(' ');
-            const attrs = (cls ? ` class="${cls}"` : '') + (cls.includes('carried') ? ' title="carried from the entry before"' : '');
-            return `<td${attrs}>${typeof val === 'number' ? fmtKr(val) : '—'}</td>`;
-          }).join('')}
-        </tr>`).join('')}
-        <tr class="tot"><th>TOTAL</th>${cols.map(d => `<td${hx(d)}>${fmtKr(entryTotal(wEnt[d]))}${histMismatch(d)}</td>`).join('')}</tr>
-      </tbody>
-      <tfoot>
-        <tr><td class="corner"></td>${cols.map(d =>
-          `<td class="acts${phoneHidden.includes(d) ? ' hx' : ''}"><button class="hadj" data-hedit="${d}">Adjust</button></td>`).join('')}</tr>
-      </tfoot>
-    </table></div>
-    ${anyCarried ? '<p class="wsafe">Paler figures were carried from the entry before — nothing new was typed for them.</p>' : ''}`;
-  }
-
-  /* everything older keeps its one-line row, so no entry is ever hidden */
-  const listed = phoneHidden.slice().reverse().concat(older);   /* newest first */
-  const oldRows = listed.map(d => {
-    const e = wEnt[d];
-    return `<div class="arow${phoneHidden.includes(d) ? ' hxrow' : ''}">
-      <div class="amid"><div class="aname">${dayLabel(d)} ${d.slice(0, 4)}</div><div class="aurl">${Object.keys(e.v).length} account${Object.keys(e.v).length === 1 ? '' : 's'}</div>${histMismatch(d)}</div>
-      <span class="asum">${fmtKr(entryTotal(e))}</span>
-      <button class="hadj" data-hedit="${d}">Adjust</button>
-    </div>`;
-  }).join('');
-
-  /* This used to announce the machinery — "Safety copy: 3 entries and 6 accounts from
-     17 Sep, kept automatically once a day" — which says nothing about what it is FOR.
-     Now it says only what it is for, and only speaks up properly when something has
-     actually gone missing (two or more entries, or all of them — not one you deleted). */
-  const snap = fullestSnap();
-  const lost = snap && (snap.n > entryDates().length + 1 || (snap.n > 0 && !entryDates().length));
-  const safe = lost
-    ? `<p class="wsafe warnline">Some entries are missing from this device. A copy saved on ${dayLabel(snap.day)} still has ${snap.n} of them.</p>
-       <button class="btn full" id="wRestoreSnap">Put those entries back</button>`
-    : (snap ? `<p class="wsafe">If numbers ever go missing, there is a copy from ${dayLabel(snap.day)} to put back.</p>` : '');
-  return `${table}
-    ${listed.length ? `<h3 style="margin-top:20px"${older.length ? '' : ' class="hxrow"'}>Earlier entries</h3>${oldRows}` : ''}
-    ${safe}`;
-}
-/* open one entry on New entry with its figures filled in — Adjust, the amber marks (1.60, 1.61) */
-function editEntry(d){
-  wEditDate = d; wDate = d; wTyped = {}; wExact = {};
-  const e = wEnt[d];
-  liveAccounts().forEach(a => { if(typeof e.v[a.id] === 'number' && !(e.c || []).includes(a.id)){ wTyped[a.id] = fmtKr(e.v[a.id]); wExact[a.id] = true; } });
-  wOpenTab('entry');
-}
-function bindHistory(){
-  document.querySelectorAll('[data-hedit]').forEach(b => b.addEventListener('click', () => editEntry(b.dataset.hedit)));
-  const r = $('wRestoreSnap');
-  if(r) r.addEventListener('click', () => {
-    const snap = fullestSnap();
-    if(!snap) return;
-    if(!confirm(`Put back the entries missing here from the safety copy of ${dayLabel(snap.day)}? Entries here now stay as they are.`)) return;
-    const back = putBackWealth(Array.isArray(snap.accounts) ? snap.accounts : [], snap.entries && typeof snap.entries === 'object' ? snap.entries : {});
-    refreshWealthTiles(); wOpenTab('history');
-    showToast(`${back} entr${back === 1 ? 'y' : 'ies'} put back ✅`);
   });
 }
 
@@ -3631,12 +2588,12 @@ $('exportBtn').addEventListener('click', async () => {
       }else if(data && data.error === 'cancelled'){
         showToast('Backup cancelled — nothing saved', null, '', 4000);
       }else if(data && data.error === 'no-save-panel'){
-        showToast('The Save window is missing from AMS Finance — nothing saved', null, '', 7000);
+        showToast('The Save window is missing from the hub’s engine — nothing saved. Tell Claude.', null, '', 7000);
       }else{
         showToast('The backup could not be written — nothing saved', null, '', 6000);
       }
     }catch(e){
-      showToast('The Finance engine is not answering — open AMS Finance, then try again', null, '', 7000);
+      showToast('The hub’s engine on the Mac is not answering — nothing saved. Restart the Mac, or tell Claude.', null, '', 7000);
     }finally{
       savingBackup = false;
       $('exportBtn').disabled = false;
@@ -3753,23 +2710,22 @@ function restoreFrom(data){
     }
     if(data.wealthSent && typeof data.wealthSent === 'object' && !Array.isArray(data.wealthSent)) storeJSON(W_SENT_KEY, data.wealthSent);
     const legacyBack = importLegacyTotals(data.wealth);   /* backups from before v1.15 */
-    refreshWealthTiles();
     let finBack = 0;
     if(data.finlinks && typeof data.finlinks === 'object' && !Array.isArray(data.finlinks)){
       finLinks = {};
       ['spend','budget'].forEach(k => {
         if(typeof data.finlinks[k] === 'string' && /^https?:\/\//i.test(data.finlinks[k])){ finLinks[k] = data.finlinks[k]; finBack++; }
       });
-      saveFinLinks(); renderShelf();
+      saveFinLinks();
     }
     renderMini();   /* older backups may carry a `miniPanel` choice — harmless, ignored */
     $('ovSettings').classList.remove('show');
     alert(`Backup restored ✅\n${state.links.length} link${state.links.length===1?'':'s'} on this device now.` +
       (layoutBack ? '\nCard order and colours restored too.' : '') +
-      (accBack || entBack ? `\n${accBack} account${accBack===1?'':'s'} and ${entBack} wealth entr${entBack===1?'y':'ies'} restored.` : '') +
+      (accBack || entBack ? `\n${accBack} account${accBack===1?'':'s'} and ${entBack} old wealth entr${entBack===1?'y':'ies'} put back in storage (they are kept, not shown).` : '') +
       (entKept ? `\n${entKept} date${entKept===1?'':'s'} already here kept as they are.` : '') +
       (legacyBack ? `\n${legacyBack} older month total${legacyBack===1?'':'s'} moved into an account called Earlier totals.` : '') +
-      (finBack ? `\n${finBack} dashboard address${finBack===1?'':'es'} restored.` : '') +
+      (finBack ? `\n${finBack} old dashboard address${finBack===1?'':'es'} kept.` : '') +
       (snapBack ? `\n${snapBack} safety cop${snapBack===1?'y':'ies'} came back too.` : ''));
 }
 
@@ -3880,7 +2836,7 @@ $('updateBtn').addEventListener('click', () => checkForUpdate(true));
 $('guardOk').addEventListener('click', () => $('ovGuard').classList.remove('show'));
 
 /* close overlays by tapping the dimmed backdrop */
-['ovEdit','ovSettings','ovGuard','ovPaint','ovWealth'].forEach(id => {
+['ovEdit','ovSettings','ovGuard','ovPaint'].forEach(id => {
   const ov = $(id);
   ov.addEventListener('click', e => { if(e.target === ov) ov.classList.remove('show'); });
 });
@@ -3891,9 +2847,6 @@ renderLinks();
 adoptNewTiles();
 renderMini();
 probeAll();
-fetchWealth();
-fetchFin();
-fetchLinks();
 /* day ⇄ night while open: redraw the cards and tiles in their other tints */
 const redrawLook = () => { applyTheme(); renderShelf(); renderLinks(); renderMini(); };
 if(DARK_MQ && DARK_MQ.addEventListener) DARK_MQ.addEventListener('change', () => { if(themeChoice() === 'auto') redrawLook(); });
@@ -3907,7 +2860,7 @@ $('verGlance').textContent = 'v' + VERSIONLOG[0].v;
 renderSync(); syncNow();
 document.documentElement.dataset.ready = VERSIONLOG[0].v;
 document.addEventListener('visibilitychange', () => {
-  if(!document.hidden){ renderMini(); syncSoon(); probeAll(); fetchWealth(); fetchFin(); fetchLinks(); checkForUpdate(false); }
+  if(!document.hidden){ renderMini(); syncSoon(); probeAll(); checkForUpdate(false); }
 });
 setTimeout(() => checkForUpdate(false), 2500);
 

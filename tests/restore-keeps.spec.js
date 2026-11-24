@@ -1,4 +1,6 @@
 /* Test 15 — putting data back never throws away what is already here (2.1).
+   (2.5: the safety copy's "Put those entries back" and the refused-save test lived in the
+   retired wealth window and are gone; the backup restore below is the same rule.)
    Before 2.1 a restore REPLACED this device's wealth with the backup's, so
    entries newer than the backup were dropped — and with Dropbox sync on, that
    drop travelled to the other device as a deletion. The same went for the
@@ -28,36 +30,4 @@ test('restoring an older backup keeps the newer entries and deletes nothing', as
   const days = (await stored(page, 'amshub.wealth.snaps')).map(s => s.day);
   expect(days).toContain('2026-08-02');
   expect(days.length).toBeGreaterThan(1);
-  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-total')).toHaveText('1.40M kr');
-});
-
-test('"Put those entries back" adds the missing ones and keeps the newer ones', async ({ page }) => {
-  await openHub(page, { accounts:SEED.accounts, entries:{ '2026-10-01':{ v:{ a1:900000, a2:500000 }, c:[] } },
-    extra:{ 'amshub.wealth.snaps':JSON.stringify([{ day:'2026-09-02', n:3, accounts:SEED.accounts, entries:SEED.entries }]) } });
-  page.on('dialog', d => d.accept());
-  await page.getByTestId('tile-wealth').getByTestId('wealth-pen').click();
-  await page.locator('#wRestoreSnap').click();
-  await expect.poll(async () => Object.keys(await stored(page, 'amshub.wealth.entries') || {}).sort().join())
-    .toBe('2026-07-01,2026-08-01,2026-09-01,2026-10-01');
-  expect(await stored(page, 'amshub.wealth.deleted') || {}).toEqual({});
-});
-
-test('a save this device refuses to store is said out loud', async ({ page }) => {
-  await openHub(page);
-  await page.evaluate(() => {
-    const real = Storage.prototype.setItem;
-    Storage.prototype.setItem = function(k, v){
-      if(k === 'amshub.wealth.entries') throw new DOMException('full', 'QuotaExceededError');
-      return real.call(this, k, v);
-    };
-  });
-  const said = [];
-  page.on('dialog', d => { said.push(d.message()); d.accept(); });
-  await page.getByTestId('tile-wealth').getByTestId('wealth-pen').click();
-  await page.getByTestId('wtab-entry').click();
-  await page.getByTestId('entry-date').fill('2026-10-01');
-  await page.getByTestId('entry-a1').fill('900');
-  await page.getByTestId('entry-a2').fill('500');
-  await page.getByTestId('entry-save').click();
-  await expect.poll(() => said.join(' | ')).toContain('could not keep');
 });

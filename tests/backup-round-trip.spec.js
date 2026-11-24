@@ -45,8 +45,8 @@ test.describe('the backup file', () => {
     const other = await browser.newContext();
     const page2 = await other.newPage();
     await openHub(page2, null);                       /* nothing saved at all */
-    const total2 = page2.getByTestId('tile-wealth').getByTestId('wealth-total');
-    await expect(total2).toHaveAttribute('data-have', 'no');   /* really empty */
+    const stored2 = k => page2.evaluate(key => localStorage.getItem(key), k);
+    expect(await stored2('amshub.wealth.entries')).toBeNull();   /* really empty */
 
     page2.once('dialog', d => d.accept());   /* the restore asks before replacing */
     await page2.getByTestId('settings-btn').click();
@@ -54,8 +54,7 @@ test.describe('the backup file', () => {
     await page2.getByTestId('backup-file').setInputFiles(file);
 
     /* --- everything is back on the new device --- */
-    await expect(total2).toHaveAttribute('data-have', 'yes', { timeout: 10000 });
-    await expect(total2).toContainText('1.25M');
+    await expect.poll(async () => Object.keys(JSON.parse(await stored2('amshub.wealth.entries') || '{}')).length, { timeout: 10000 }).toBe(3);
     const back = await page2.evaluate(() => ({
       accounts: JSON.parse(localStorage.getItem('amshub.wealth.accounts') || '[]').map(a => a.name),
       entries: Object.keys(JSON.parse(localStorage.getItem('amshub.wealth.entries') || '{}')).sort(),

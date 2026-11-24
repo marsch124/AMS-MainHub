@@ -3,6 +3,7 @@
    refuses an upload made against an older revision, exactly as Dropbox does. */
 const { test, expect } = require('@playwright/test');
 const { openHub } = require('./helpers');
+const fs = require('fs'), os = require('os'), path = require('path');
 
 const ACC = [{ id:'a1', name:'ISK', url:'' }, { id:'a2', name:'Avanza', url:'' }];
 const CONNECTED = { 'amshub.dropbox': JSON.stringify({ refresh:'RT', access:'AT', exp: Date.now() + 3600e3 }) };
@@ -71,6 +72,17 @@ async function tapConnect(page){
     return a.href;
   });
 }
+/* 2.5: the wealth window is gone, so a change on this device is made the way he can still
+   make one: by restoring a backup file (which only ever adds what is missing) */
+async function importBackup(page, entries){
+  const file = path.join(os.tmpdir(), 'hub-import-' + Date.now() + '-' + Math.random().toString(36).slice(2) + '.json');
+  /* a backup file always has a links list — without one the hub refuses the file */
+  fs.writeFileSync(file, JSON.stringify({ app:'AMS Main Hub', links:[], wealthAccounts:ACC, wealthEntries:entries }));
+  page.once('dialog', d => d.accept());
+  await page.getByTestId('settings-btn').click();
+  await page.getByTestId('fold-data').evaluate(d => { d.open = true; });
+  await page.getByTestId('backup-file').setInputFiles(file);
+}
 const localEntries = page => page.evaluate(() => JSON.parse(localStorage.getItem('amshub.wealth.entries') || '{}'));
 
 test('connecting: Dropbox opens, the pasted code connects, and this device\'s entries go up', async ({ page }) => {
@@ -101,10 +113,9 @@ test('merging: the newer change wins entry by entry, a deletion travels, nothing
   expect((await localEntries(page))['2026-08-01'].v.a1).toBe(999000);
   await expect.poll(() => Object.keys(box.file.entries).sort().join()).toBe('2026-08-01,2026-09-01,2026-10-01');
   expect(box.file.deleted['2026-07-01']).toBeTruthy();
-  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-total')).toHaveText('1.20M kr');
 });
 
-test('a saved entry goes up, even when another device wrote in between', async ({ page }) => {
+test('an entry added here goes up, even when another device wrote in between', async ({ page }) => {
   await page.clock.setFixedTime(new Date('2026-11-10T09:00:00'));
   const box = {};
   await fakeDropbox(page, box);
@@ -112,11 +123,7 @@ test('a saved entry goes up, even when another device wrote in between', async (
   await expect.poll(() => box.file ? Object.keys(box.file.entries).join() : '').toBe('2026-10-01');
   /* the iPhone saves 1 Sep while this device is busy saving 10 Nov */
   box.interfere = f => ({ ...f, entries:{ ...f.entries, '2026-09-01':{ v:{ a1:400000, a2:400000 }, c:[], at:'2026-11-10T08:00:00.000Z' } } });
-  await page.getByTestId('wealth-pen').click();
-  await page.getByTestId('wtab-entry').click();
-  await page.getByTestId('entry-a1').fill('520');
-  await page.getByTestId('entry-a2').fill('500');
-  await page.getByTestId('entry-save').click();
+  await importBackup(page, { '2026-11-10':{ v:{ a1:520000, a2:500000 }, c:[] } });
   await expect.poll(() => Object.keys(box.file.entries).sort().join(), { timeout:10000 }).toBe('2026-09-01,2026-10-01,2026-11-10');
   await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-09-01,2026-10-01,2026-11-10');
 });
@@ -164,9 +171,9 @@ test('an unconfirmed upload is not called synced', async ({ page }) => {
   await expect(page.getByTestId('sync-status')).toContainText('Not synced');
 });
 
-/* 2.1 — an entry put back from the safety copy stays, even though Dropbox
+/* 2.1 — an entry put back from a backup file stays, even though Dropbox
    remembers it as deleted: putting it back counts as the newest change */
-test('an entry put back is not deleted again by the sync', async ({ page }) => {
+test('an entry put back (restored from a file) is not deleted again by the sync', async ({ page }) => {
   const box = { rev:1, file:{ accounts:ACC, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[], at:'2026-10-02T10:00:00.000Z' } },
     deleted:{ '2026-07-01':'2026-10-05T10:00:00.000Z', '2026-08-01':'2026-10-05T10:00:00.000Z' } } };
   await fakeDropbox(page, box);
@@ -175,10 +182,8 @@ test('an entry put back is not deleted again by the sync', async ({ page }) => {
   await openHub(page, { accounts:ACC, extra:{ ...CONNECTED,
     'amshub.wealth.snaps':JSON.stringify([{ day:'2026-09-02', n:3, accounts:ACC, entries:{ ...old, '2026-10-01':box.file.entries['2026-10-01'] } }]) },
     entries:{ '2026-10-01':box.file.entries['2026-10-01'] } });
-  await expect.poll(() => box.uploads).toBeGreaterThanOrEqual(0);
-  page.on('dialog', d => d.accept());
-  await page.getByTestId('wealth-pen').click();
-  await page.locator('#wRestoreSnap').click();
+  await expect.poll(() => box.downloads).toBeGreaterThan(0);
+  await importBackup(page, old);
   await expect.poll(() => Object.keys(box.file.entries).sort().join(), { timeout:10000 }).toBe('2026-07-01,2026-08-01,2026-10-01');
   await expect.poll(async () => Object.keys(await localEntries(page)).sort().join()).toBe('2026-07-01,2026-08-01,2026-10-01');
 });
@@ -201,29 +206,6 @@ test('the hub still waits for the code after it restarts', async ({ page, browse
   await expect(p2.getByTestId('sync-code')).toBeVisible();
   await expect(p2.getByTestId('sync-connect')).toHaveCount(0);
   await ctx.close();
-});
-
-/* 2.2 — a small mark on the Wealth tile says Dropbox sync is on, and turns amber when it is not getting through */
-test('the Wealth tile shows the synced mark only when Dropbox sync is on', async ({ page }) => {
-  const box = {};
-  await fakeDropbox(page, box);
-  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
-  const mark = page.getByTestId('tile-wealth').getByTestId('wealth-synced');
-  await expect(mark).toHaveAttribute('data-state', 'ok');
-});
-test('no synced mark when Dropbox is not connected', async ({ page }) => {
-  await openHub(page);
-  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-total')).toBeVisible();
-  await expect(page.getByTestId('wealth-synced')).toHaveCount(0);
-});
-test('the synced mark turns amber when Dropbox refuses', async ({ page }) => {
-  await page.route(/dropboxapi\.com/, route => {
-    const cors = { 'Access-Control-Allow-Origin':'*', 'Access-Control-Allow-Headers':'*' };
-    if(route.request().method() === 'OPTIONS') return route.fulfill({ status:204, headers:cors });
-    return route.fulfill({ status:500, headers:cors, body:'down' });
-  });
-  await openHub(page, { accounts:ACC, extra:CONNECTED, entries:{ '2026-10-01':{ v:{ a1:500000, a2:500000 }, c:[] } } });
-  await expect(page.getByTestId('tile-wealth').getByTestId('wealth-synced')).toHaveAttribute('data-state', 'err');
 });
 
 /* 2.2 — Dropbox is the automatic backup: one full backup file a day, the newest 30 kept */

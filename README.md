@@ -2,9 +2,10 @@
 
 One shelf for every AMS app. A small offline-capable PWA that shows a card per
 app — hand-drawn icon, one-line description, and a **live version chip**
-fetched straight from each app — plus a MAC ONLY section for the local apps and
-a **Your links** section for personal dashboards (stored only on the device,
-never in this public repo).
+fetched straight from each app — plus a Mac tools shelf for the local apps and
+a **Your links** section for personal links (stored only on the device,
+never in this public repo). Three small tiles on top: Retirement, The year,
+Apps.
 
 Live at: https://marsch124.github.io/AMS-MainHub/
 
@@ -24,53 +25,28 @@ mixes each one's `dot` colour 76% into the night card (`#26221e`) instead of
 using its pale day `tint`; cards behind a door (`kidTint()`) go 88%. The main
 button is the accent colour by night, never the pale ink.
 
-## The workbook cross-check
+## Retired on 24 Nov 2026 (version 2.5)
 
-On the Mac the engine's `/wealth` series is compared with his own newest
-entry. When they differ, the Wealth tile shows an amber `workbook …` line
-(`data-testid="wealth-mismatch"`); its tip gives the gap and direction. On
-the header strip it replaces the "since" line. When they agree, nothing.
+Money matters now live in the native app AMS Financial Steward, so the hub
+shows only three tiles (Retirement, The year, Apps) and three shelves
+(Everyday apps, Mac tools, Your links). Retired and no longer shown or linked:
+the Wealth and Wealth · 0 tiles, the pencil and the wealth window (History,
+New entry, Accounts, Year), the forecast, the growth line, the monthly
+reminder, the workbook cross-check (amber line, pencil dot, History marks),
+Send to Excel, the Finance tile, and the FINANCE shelf with its cards (AMS
+Finance Hub, Spend Dashboard, Finance Dashboard, Latest report). Sam moved to
+the Mac tools shelf. Nothing was deleted: the stored wealth accounts and
+entries stay on each device, in every backup file and Dropbox backup, and
+Dropbox sync still keeps them equal on iPhone and Mac. The old Finance Hub page
+(`localhost:7780/finance`), the two claude.ai dashboards and Sam's monthly
+finance report are an archive. On the Mac the hub is still served at
+`localhost:7780/hub/` by the small engine that starts at login.
 
-History marks the month too: under the TOTAL of each month's **last** entry
-whose workbook figure differs, an amber `workbook …` line
-(`data-testid="hist-mismatch"`, `data-month="YYYY-MM"`, same tip). The
-Earlier entries rows carry the same mark. Months that agree show nothing.
+The sections below that describe wealth, the workbook check, the forecast, the
+sync mark and the top-area grid are **history** of how those parts were built
+(the data and the Dropbox sync underneath still work as described).
 
-Since 1.60 the mark is a `<button data-hedit>`: tapping it opens that
-entry exactly as Adjust does. And the Wealth pencil carries an amber dot
-(`data-testid="pen-dot"`) whenever **any** month's last entry disagrees
-(`offMonths()`), not only the newest; its `aria-label` and tip give the
-count. `markPen()` runs after every redraw of the Wealth tile.
-
-Since 1.61 the tile's amber line is a `<button data-tedit="YYYY-MM-DD">`
-(the newest entry); one document-level click listener opens the sheet and
-calls `editEntry(d)` — the same function Adjust and the History marks use.
-It sits above the pen's big invisible target (`z-index:2`); on a phone it
-is cut short with an ellipsis. The pen dot now holds the count of
-`offMonths()` (white figure by day, `#1b1815` by night, 16px pill).
-This closes the amber workbook-check work.
-
-Since 1.62 the tile's grey line under the total shows **this year's growth**
-(`data-testid="wealth-growth"`, `yearGrowth()`): newest entry against the
-first entry dated this calendar year; if the newest is the only one this
-year, against the last entry before 1 January ("since Jan"). Under 10% one
-decimal, else whole; "−" for a fall; no line if the newest entry is from an
-earlier year or there is nothing to compare with. It takes the place of the
-old "+… since <date>" line (the Wealth · 0 tile keeps "all of it, from
-zero"); the amber workbook line still overrides it on the header strip.
-From the 8th of a month with no entry yet, a honey `<button data-tremind>`
-(`data-testid="wealth-reminder"`, `missingMonth()`) reads "Nov not entered
-yet"; tapping it opens the sheet on New entry (dated today). Saving an
-entry for that month redraws the tile and the line is gone.
-
-Since 1.63 the growth line's `title` gives the change in kronor
-("+650k kr since 31 Jan 2026"). From 1 to 7 January, when the newest entry
-is from last year, `yearGrowth()` shows last year's result ("+14% in
-2026"): that year's last entry against the last entry before it began
-(else that year's first entry). From the 8th it is gone until a January
-entry exists.
-
-## 2.0 — Dropbox sync, forecast, Year
+## 2.0 — Dropbox sync, forecast, Year (forecast and Year are retired in 2.5; sync and backups still run)
 
 **Sync.** `DBX_KEY` is the hub's Dropbox app key (App folder access, public by
 design: PKCE, no secret). Connect = PKCE "code" flow *without* a redirect URI (since 2.1.3 `dbxPrepare()` builds the authorize URL when the section renders and Connect is a plain `<a target=_blank>` — iOS standalone blocks a `window.open` after an `await`):

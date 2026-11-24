@@ -1,31 +1,35 @@
-/* Test 1 — the hub opens, and the Wealth tile shows the newest total.
-   Guards: start-up finishing, the saved wealth data being read, and the
-   total on the tile being the newest entry (not an older one, not blank). */
+/* Test 1 — the hub opens and shows its three tiles.
+   Guards: start-up finishing without errors, the three tiles being there, and
+   his saved wealth data (kept although the hub no longer shows it) being left
+   exactly as it was. */
 const { test, expect } = require('@playwright/test');
-const { openHub, NEWEST_TOTAL_M } = require('./helpers');
+const { openHub, SEED } = require('./helpers');
 
-test('the hub opens and the Wealth tile shows the newest total', async ({ page }) => {
+test('the hub opens, shows its three tiles and leaves saved data alone', async ({ page }) => {
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
 
   await openHub(page);
 
-  const tile  = page.getByTestId('tile-wealth');
-  const total = tile.getByTestId('wealth-total');
+  for(const id of ['tile-retire', 'tile-year', 'tile-versions'])
+    await expect(page.getByTestId(id)).toBeVisible();
+  await expect(page.locator('#miniRow').getByTestId('tile-retire')).toBeVisible();
 
-  await expect(tile).toBeVisible();
-  await expect(total).toBeVisible();
-  /* it must have real data behind it, not the "—" stand-in */
-  await expect(total).toHaveAttribute('data-have', 'yes');
-  await expect(total).toContainText(NEWEST_TOTAL_M);
-  /* and the pen must be there to open the sheet with */
-  await expect(tile.getByTestId('wealth-pen')).toBeVisible();
+  const kept = await page.evaluate(() => ({
+    accounts: JSON.parse(localStorage.getItem('amshub.wealth.accounts') || 'null'),
+    entries:  JSON.parse(localStorage.getItem('amshub.wealth.entries')  || 'null'),
+  }));
+  expect(kept.accounts).toEqual(SEED.accounts);
+  expect(kept.entries).toEqual(SEED.entries);
 
   expect(errors, 'the page must start up without errors').toEqual([]);
 });
 
-test('with no saved data the tile says so instead of showing a number', async ({ page }) => {
+test('with no saved data the hub still opens with its three tiles', async ({ page }) => {
+  const errors = [];
+  page.on('pageerror', e => errors.push(String(e)));
   await openHub(page, null);
-  const total = page.getByTestId('tile-wealth').getByTestId('wealth-total');
-  await expect(total).toHaveAttribute('data-have', 'no');
+  for(const id of ['tile-retire', 'tile-year', 'tile-versions'])
+    await expect(page.getByTestId(id)).toBeVisible();
+  expect(errors).toEqual([]);
 });

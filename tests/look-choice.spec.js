@@ -28,7 +28,8 @@ test('Night holds by day, Day holds by night, and the choice is kept', async ({ 
   await page.getByTestId('look-day').click();
   expect(await paper(page)).toBe(DAY);
   /* the tiles follow the choice, not the device */
-  expect(await page.getByTestId('tile-wealth').evaluate(el => getComputedStyle(el).backgroundColor)).toBe('rgb(250, 238, 203)');
+  const tile = await page.getByTestId('tile-retire').evaluate(el => getComputedStyle(el).backgroundColor.match(/\d+/g).map(Number));
+  expect((tile[0] * .299 + tile[1] * .587 + tile[2] * .114) / 255).toBeGreaterThan(0.6);   /* pale, though the device is dark */
 
   await page.getByTestId('look-auto').click();
   expect(await paper(page)).toBe(NIGHT);
