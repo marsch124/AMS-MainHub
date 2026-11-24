@@ -141,21 +141,6 @@
   .cname{display:block; font-size:18px; font-weight:800; letter-spacing:-.01em; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--ink);}
   .csub{font-size:12.5px; color:var(--ink-dim); margin-top:3px; font-weight:500; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
 
-  /* ---------- a front door and the rooms behind it ----------
-     The Finance Hub leads to the two dashboards and the monthly report. In
-     BOTH views the door is the big card and the rooms are a `.nest` — one
-     block, stepped in from the left, with a rail down its edge. The Mac's
-     grid is the view that matters most here, so it is written first: the
-     door spans the whole shelf as a banner and the nest spans the row under
-     it, holding its own smaller tiles. */
-
-  .nest{position:relative; margin-left:36px;}
-  /* a hairline in the margin, not a bar on the cards — the rail says where
-     the group starts; it must never make these three louder than the door */
-  .nest::before{
-    content:''; position:absolute; left:-21px; top:-8px; width:2px;
-    border-radius:2px; background:var(--kin, var(--accent)); opacity:.28;
-  }
   /* small badges sit straight — the tilt is charm at 56px and a wobble at 34 */
   .cardrow.kid .badge{transform:none; opacity:.88;}
   /* a card that cannot do its job on this device: the glyph goes grey and the
@@ -166,13 +151,8 @@
   /* a white pill reads LOUDER on a pale card than it did on a strong one, so
      the calm labels lose their pill here — but "n months behind" is a real
      warning and keeps its voice */
-  .cardrow.kid .stalelbl:not(.behind),
+  
   .cardrow.kid .maclbl{background:transparent; opacity:.62;}
-
-  /* ---- the Mac: grid = the home screen ----
-     Every card is a small tile — icon and name, like the iPhone's home screen —
-     so all the shelves fit on one screen. The Finance Hub and the dashboards behind
-     it sit side by side as ordinary tiles. */
 
   /* ---- the iPhone: list ---- */
   body:not(.gridview) .cardrow.parent{padding:20px; gap:17px;}
@@ -183,14 +163,7 @@
     white-space:normal; line-height:1.18;
     display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical;
   }
-  body:not(.gridview) .nest{display:flex; flex-direction:column; gap:8px; margin-top:6px;}
-  /* the rail stops at the middle of the last room, and turns into each one */
-  body:not(.gridview) .nest::before{bottom:23px;}
-  body:not(.gridview) .nest .cardrow.kid::after{
-    content:''; position:absolute; left:-21px; top:calc(50% - 1px);
-    width:21px; height:2px; border-radius:2px;
-    background:var(--kin, var(--accent)); opacity:.28;
-  }
+
   body:not(.gridview) .cardrow.kid{
     /* width:auto matters — .cardrow sets width:100%, which the nest's left
        margin would then push off the right edge of the shelf */
@@ -201,7 +174,7 @@
   body:not(.gridview) .cardrow.kid .badge .hi{width:17px; height:17px;}
   body:not(.gridview) .cardrow.kid .cname{font-size:14px; font-weight:700;}
   body:not(.gridview) .cardrow.kid .csub{font-size:10.5px; margin-top:0;}
-  body:not(.gridview) .cardrow.kid .stalelbl,
+  
   body:not(.gridview) .cardrow.kid .maclbl{font-size:9px;}
   /* the where-icons stand down on these three: a row this short clips the
      sub-line before ever reaching them, and each already says where it lives
@@ -231,10 +204,7 @@
   }
   .verchip.on{opacity:1;}
   .maclbl{font-size:10.5px; font-weight:700; color:var(--ink-dim); letter-spacing:.12em;}
-  /* a dashboard card admits how far behind the newest data it is */
-  .stalelbl{font-size:10px; font-weight:800; letter-spacing:.08em; padding:4px 8px; border-radius:9px;
-            background:rgba(255,255,255,.6); color:var(--ink-dim); white-space:nowrap;}
-  .stalelbl.behind{color:var(--warn); background:#fdecc8;}
+
   .verglance{text-align:right; font-size:9px; font-weight:700; letter-spacing:.06em;
              color:var(--ink-dim); padding:1px 10px 0; opacity:.85;}
   .rowbtn{
@@ -246,8 +216,8 @@
   /* ---------- arrange mode (▲▼ + palette on every card) ---------- */
   .cluster{display:none; gap:6px;}
   body.custom .cluster{display:flex;}
-  body.custom .verchip, body.custom .maclbl, body.custom .stalelbl{display:none;}
-  body.custom [data-edit], body.custom [data-editfin]{display:none;}
+  body.custom .verchip, body.custom .maclbl{display:none;}
+  body.custom [data-edit]{display:none;}
 
   /* ---------- mini tiles (all five side by side) ---------- */
   .mrow{display:grid; grid-template-columns:repeat(auto-fit, minmax(148px, 1fr)); gap:10px; margin-bottom:16px;}
@@ -261,8 +231,7 @@
   header .mbody{flex:1; min-width:0; margin:0;}
   header .mbig{font-size:16px; line-height:1.15;}
   header .msub{margin-top:0; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  header .mspark{display:none;}
-  header .mdots{margin-top:3px;} header .mdot{width:7px; height:7px;}
+
   header .mbar{margin-top:4px; height:5px;}
   /* on the header strip the ✎ sits at the tile's right end: the label's box steps
      aside (display:contents keeps its colour and type, which inherit through it) so
@@ -276,7 +245,7 @@
     header .mlab{display:contents;}
     header .mlab > span, header .mtog{order:1;}
     header .mbody{order:2;}
-    header .mpen{order:3; margin-left:auto;}
+    
   }
   /* a phone (2.2): the tiles sit three across in a tidy grid, each a small stack —
      name (with the pencil beside it, never on top), the number on one line, then up to
@@ -311,82 +280,26 @@
   .mbig{font-size:23px; font-weight:800; letter-spacing:-.02em; line-height:1.12; font-variant-numeric:tabular-nums;}
   .msub{font-size:10.5px; color:var(--ink-dim); font-weight:600; margin-top:3px; line-height:1.35;}
   .msub a{color:inherit; font-weight:800; text-decoration:none;}
-  .msub.mwarn{color:var(--warn); font-weight:800;}
-  /* a button since 1.61: tapping it opens that month's entry */
-  button.mwarn{display:block; padding:0; border:none; background:none; font-family:inherit; cursor:pointer;
-               text-align:left; text-decoration:underline dotted; text-underline-offset:2px;
-               position:relative; z-index:2;}   /* above the pen's big invisible target */
-  @media (max-width:600px){   /* "wor…" on a phone, as before */
-    button.mwarn{width:100%; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;}
-  }
-  /* 1.62: this year's growth, and the gentle monthly reminder (a button: opens New entry) */
-  .msub.mgrow{color:var(--ink); font-weight:800;}
-  button.mremind{display:block; padding:0; border:none; background:none; font-family:inherit; cursor:pointer;
-                 text-align:left; font-weight:800; white-space:normal; text-decoration:underline dotted;
-                 text-underline-offset:2px; position:relative; z-index:2;}
-  header .msub.mgrow, header button.mremind, header .msub.mfore{white-space:normal; overflow:visible;}
-  /* 2.0: the forecast on the Retirement tile */
-  .msub.mfore{color:var(--ink); font-weight:800;}
-  /* 2.3: on a phone the forecast is the number alone, on one line */
-  @media (max-width:600px){ header .msub.mfore{white-space:nowrap; display:block;} .mfore .fby{display:none;} }
+  
   /* 2.3: the list of Dropbox backups under Restore from Dropbox */
   .dbxlist{margin:2px 0 8px;}
   .dbxlist .btn{margin:4px 0;}
   .dbxlist .dbxrow{display:flex; justify-content:space-between; gap:8px; text-align:left; padding-top:8px; padding-bottom:8px;}
   .dbxlist .dbxrow span{color:var(--ink-dim); font-weight:600;}
   .dbxlist p{margin:6px 0;}
-  /* 2.0: the year review */
-  .yrnav{margin:4px 0 10px;}
-  .yhead{font-size:22px; font-weight:800; letter-spacing:-.01em; margin:4px 0 0;}
-  .yhead span{font-size:15px; color:var(--ink-dim); font-weight:700;}
-  .ysub{font-size:13px; color:var(--ink-dim); margin:2px 0 10px;}
-  table.htab td.up{color:#2f8f57;} table.htab td.down{color:#c4553c;}
-  html[data-look="night"] table.htab td.up{color:#6fcf97;} html[data-look="night"] table.htab td.down{color:#f0907a;}
-  .ymonths{display:flex; gap:8px; margin-top:10px;}
-  .ymonths div{flex:1; border-radius:12px; padding:8px 10px; background:var(--bg); border:1px solid var(--line); font-size:13px;}
-  .ymonths b{display:block; font-size:10.5px; letter-spacing:.08em; color:var(--ink-dim);}
   /* 2.0: Dropbox sync in Settings */
   .syncsum{margin-left:auto; font-size:12px; font-weight:700; color:var(--ink-dim);}
   .syncsum + .chev{margin-left:8px !important;}
   .syncline{font-size:14px; margin:8px 0 0;}
   .syncline.err{color:var(--warn); font-weight:700;}
-  /* 2.2: the small sync mark beside WEALTH — on in the tile's colour, amber when not getting through */
-  .msync{display:inline-block; width:11px !important; height:11px !important; margin-left:4px; vertical-align:-1px; stroke-width:2.4; opacity:.85;}
-  .msync[data-state="err"]{color:var(--warn); opacity:1;}
-  html[data-look="night"] .pdot{color:#1b1815;}   /* dark figure on the light night amber */
-  /* on the header strip there is room for one line of detail: the warning takes it */
-  header .mbody:has(.mwarn) .msub:not(.mwarn):not(.mremind){display:none;}
-  .mspark{width:100%; height:22px; display:block; margin-top:7px;}
+
   .mbar{height:7px; border-radius:5px; background:rgba(42,36,32,.11); overflow:hidden; margin-top:8px;}
   .mbar > div{height:100%; border-radius:5px;}
-  .mdots{display:flex; gap:5px; margin-top:9px;}
-  .mdot{width:9px; height:9px; border-radius:50%; background:rgba(42,36,32,.15);}
-  .mpen{
-    /* invisible, so it can be a huge target: on the Mac it fills the tile's whole right end */
-    flex:0 0 auto; width:76px; height:59px; border-radius:12px; border:none; margin:-6px -11px -6px 0;
-    background:transparent; color:var(--ink-dim);   /* just a grey pen, on the tile's own colour */
-    display:flex; align-items:center; justify-content:center; cursor:pointer; padding:0;
-  }
-  .mpen .hi{width:38px; height:38px;}
-  /* a phone: the tile is narrow and stacked, so the pen floats in its top-right corner
-     instead of sitting in the label row (which would make the tile taller) */
-  /* a phone (2.2): a small pen at the end of the name row — beside the name, never on
-     it. Its invisible target still reaches well past the drawn pen, so it is easy to hit. */
+
   @media (max-width:600px){
     header .mtile{position:relative;}
-    header .mpen{position:relative; flex:0 0 auto; width:40px; height:34px; margin:-9px -9px -9px auto;
-                 border-radius:12px; align-items:center; justify-content:center; padding:0;}
-    header .mpen .hi{width:19px; height:19px;}
-    header .pdot{top:-6px; right:-8px; min-width:14px; height:14px; font-size:9.5px; line-height:14px;}
+
   }
-  /* 1.60: an amber dot on the pen's top-right when any month disagrees with the workbook */
-  .pwrap{position:relative; display:flex;}
-  /* 1.61: the dot carries how many months are off */
-  .pdot{position:absolute; top:-5px; right:-7px; min-width:16px; height:16px; padding:0 4px; box-sizing:border-box;
-        border-radius:8px; background:var(--warn); color:#fff; font-size:10.5px; font-weight:800; line-height:16px;
-        text-align:center; font-variant-numeric:tabular-nums;}
-  .mpen:hover{background:rgba(42,36,32,.07); color:var(--ink);}   /* a faint tint only under the pointer */
-  .mpen:active{transform:scale(.92);}
   /* choosing which tiles to show — the toggles only exist in arrange mode */
   .mtog{
     flex:0 0 auto; width:19px; height:19px; border-radius:50%; padding:0; cursor:pointer;
@@ -396,7 +309,7 @@
   .mtog::after{content:""; display:block; width:100%; height:100%; border-radius:50%;}
   .mtog.on::after{background:currentColor;}
   body.custom .mtog{display:block;}
-  body.custom .mpen{display:none;}
+  
   .mtile.off{display:none;}
   body.custom .mtile.off{display:flex; opacity:.45;}
 
@@ -432,111 +345,6 @@
   .looklbl{font-size:13px; font-weight:700; color:var(--ink-dim);}
   .lookrow .looknav{flex:1; margin:0;}
   .looknav .wtab{padding:8px 6px;}
-  .wrow{display:flex; align-items:center; gap:8px; margin-top:9px;}
-  .wrow .wm{flex:0 0 84px; font-size:13.5px; font-weight:700; color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .wrow input{flex:1; min-width:0; min-height:42px; padding:8px 12px; text-align:right; font-variant-numeric:tabular-nums;}
-  .wrow .wkr{font-size:12.5px; font-weight:700; color:var(--ink-dim);}
-  .wlink{
-    flex:0 0 auto; width:34px; height:34px; border-radius:12px; background:rgba(28,32,40,.06);
-    display:flex; align-items:center; justify-content:center; color:var(--accent);
-  }
-  .wlink .hi{width:17px; height:17px;}
-  .wlink.none{background:none;}
-  .wtot{display:flex; align-items:baseline; justify-content:space-between; margin-top:16px; padding-top:12px; border-top:1px solid var(--line);}
-  .wtot span{font-size:13px; color:var(--ink-dim); font-weight:600;}
-  .wtot b{font-size:24px; font-weight:800; letter-spacing:-.02em; font-variant-numeric:tabular-nums;}
-  .wnote{font-size:13px !important; margin:6px 0 0 !important;}
-  /* the date, only as wide as it needs, and Send to Excel on the right of the same row */
-  .wdaterow{display:flex; align-items:stretch; justify-content:space-between; gap:8px;}
-  .wdaterow #wDate{flex:0 0 auto; width:auto;}
-  .wsend{display:flex; align-items:center; gap:9px; flex:0 0 auto; padding:5px 14px; border-radius:12px;
-         border:1px solid #bfe0cc; background:#e7f4ec; color:#1d6b45; font:inherit; cursor:pointer; text-align:left;}
-  .wsend .hi{width:18px; height:18px;}
-  .wsend:hover{border-color:#8fcaa6;}
-  .wsend:disabled{opacity:.6; cursor:default;}
-  .wsendtx{display:flex; flex-direction:column; align-items:flex-start; line-height:1.15;}
-  .wsendtx b{font-size:13.5px; font-weight:700;}
-  .wsendtx small{font-size:10.5px; font-weight:600; opacity:.75;}
-  .wsend.sent small{opacity:1; font-weight:700;}
-  /* the notes under the date: there when wanted, small and out of the way */
-  .whint{font-size:10.5px !important; text-align:right; margin:4px 0 0 !important; line-height:1.35;}
-  .whint:not(.warn){opacity:.75;}
-  /* opens the Excel workbook the grey cross-check is read from (Mac + engine only) */
-  .wbook{display:flex; align-items:center; gap:9px; width:100%; margin-top:14px; padding:10px 12px;
-         border:1px solid var(--line); border-radius:12px; background:var(--card, transparent);
-         font:inherit; font-size:14px; font-weight:600; color:var(--ink); cursor:pointer; text-align:left;}
-  .wbook:hover{border-color:var(--ink-dim);}
-  .wbook span{flex:1;}
-  .wbook .hi{width:18px; height:18px; color:var(--ink-dim);}
-  .wbook .hi.out{width:15px; height:15px;}
-  .wnote.warn{color:var(--warn);}
-  .arow{display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--line);}
-  .arow .anum{flex:0 0 18px; font-size:12px; font-weight:800; color:var(--ink-dim);}
-  .arow .amid{flex:1; min-width:0;}
-  .arow .aname{font-size:15px; font-weight:700;}
-  .arow .aurl{font-size:12px; color:var(--ink-dim); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
-  .arow .asum{font-size:15px; font-weight:800; font-variant-numeric:tabular-nums; white-space:nowrap;}
-  .arow .rowbtn{background:rgba(28,32,40,.06);}
-  .arow .rowbtn:disabled{opacity:.25;}
-  .wsafe{font-size:12.5px; color:var(--ink-dim); margin-top:14px; line-height:1.5;}
-  .wsafe.warnline{color:var(--warn); font-weight:600;}
-
-  /* History as a table: accounts down the side, the three newest entries across */
-  .htwrap{overflow-x:auto; -webkit-overflow-scrolling:touch; margin-top:4px;}
-  table.htab{width:100%; border-collapse:collapse; font-size:13px;
-             font-variant-numeric:tabular-nums;}
-  table.htab th, table.htab td{padding:7px 8px; text-align:right; white-space:nowrap;
-             border-bottom:1px solid var(--line);}
-  table.htab thead .dhead{text-align:center; font-size:10.5px; letter-spacing:.08em;
-             text-transform:uppercase; color:var(--ink-dim); font-weight:800; border-bottom:none;
-             padding-bottom:2px;}
-  table.htab thead .ahead{text-align:left; font-weight:800;}
-  table.htab thead tr:last-child th{font-size:11.5px; color:var(--ink-dim); font-weight:700;}
-  table.htab tbody th{text-align:left; font-weight:600; color:var(--ink);}
-  table.htab .corner{border-bottom:none;}
-  table.htab td.none{color:var(--ink-dim); opacity:.5;}
-  /* carried forward, not typed — paler, so a repeated figure never looks like fresh work */
-  table.htab td.carried{color:var(--ink-dim);}
-  table.htab tr.retired th{color:var(--ink-dim);}
-  table.htab tr.retired i{font-style:normal; font-size:10.5px; opacity:.7;}
-  table.htab tr.tot th, table.htab tr.tot td{font-weight:800; color:var(--ink);
-             border-top:2px solid var(--line); border-bottom:none; padding-top:9px;}
-  table.htab tfoot td{border-bottom:none; padding-top:10px;}
-  /* the month the workbook disagrees with — the tile's amber, under that column's total */
-  /* a button since 1.60: tapping it opens that month's entry, like Adjust */
-  .hwarn{display:block; margin:2px 0 0 auto; padding:0; border:none; background:none; font:inherit;
-         font-size:11px; font-weight:800; color:var(--warn); cursor:pointer; text-align:right;
-         text-decoration:underline dotted; text-underline-offset:2px;}
-  .amid .hwarn{margin-left:0; text-align:left;}
-  table.htab td.acts{text-align:right; white-space:nowrap;}
-  /* Adjust / delete, used by the table and by the earlier-entry rows below it */
-  /* small and quiet — it is a way back into an entry, not something to reach for */
-  .hadj{appearance:none; cursor:pointer; font:inherit; font-size:10px; font-weight:700;
-        letter-spacing:.05em; text-transform:uppercase; color:var(--accent);
-        background:none; border:none; border-radius:6px; padding:2px 3px;}
-  .hadj:hover{background:var(--tint);}
-  .arow .hadj{margin-left:8px;}
-  .htab .dshort{display:none;}
-  /* entries the phone's table has no room for — listed under Earlier entries there instead */
-  .arow.hxrow, h3.hxrow{display:none;}
-  @media (max-width:600px){
-    table.htab .hx{display:none;}
-    .arow.hxrow{display:flex;}
-    h3.hxrow{display:block;}
-  }
-  /* on a phone the table has to fit: no year in the heading, tighter cells, and the
-     account name may wrap rather than force the column wide */
-  @media (max-width:430px){
-    table.htab{font-size:12px;}
-    table.htab th, table.htab td{padding:6px 3px;}
-    table.htab thead .ahead{font-size:10.5px;}
-    .htab .dfull{display:none;}
-    .htab .dshort{display:inline;}
-    table.htab tbody th{white-space:normal; line-height:1.25;}
-    /* Adjust and × sit one above the other, or that cell alone would set the
-       width of every column in the table */
-    .hadj{font-size:9.5px; letter-spacing:.03em;}
-  }
 
   /* colour swatches */
   .swgrid{display:grid; grid-template-columns:repeat(5,1fr); gap:10px; margin-top:16px;}
@@ -561,8 +369,7 @@
      pressed — arrange buttons, the pencil on a link or a dashboard address — and one
      real warning: a dashboard that has fallen months behind. */
   body.gridview .cards{display:grid; grid-template-columns:repeat(auto-fill, minmax(98px, 1fr)); gap:6px;}
-  body.gridview .nest{display:contents;}
-  body.gridview .nest::before, body.gridview .nest .cardrow.kid::after{display:none;}
+
   body.gridview .cardrow{flex-direction:column; align-items:center; justify-content:flex-start; text-align:center;
                          gap:6px; position:relative; padding:10px 5px 9px; border-radius:14px; grid-column:auto; min-width:0;}
   body.gridview .badge{width:40px; height:40px; border-radius:12px;}
@@ -574,9 +381,8 @@
   body.gridview .csub, body.gridview .cwhere{display:none !important;}
   body.gridview .kindpill{margin-top:4px; font-size:8.5px; padding:2px 6px;}
   body.gridview .cright{position:absolute; top:4px; right:4px; gap:3px;}
-  body.gridview .cright .verchip, body.gridview .cright .maclbl,
-  body.gridview .cright .stalelbl:not(.behind){display:none;}
-  body.gridview .cright .stalelbl.behind{font-size:8px; padding:2px 5px;}
+  body.gridview .cright .verchip, body.gridview .cright .maclbl{display:none;}
+  
   body.gridview .cright .rowbtn{width:22px; height:22px; border-radius:7px;}
   body.gridview .cright .rowbtn .hi{width:12px; height:12px;}
   /* arranging: the ▲▼ and palette sit across the bottom of the tile instead */
@@ -609,12 +415,7 @@
   .sheet h2 .hi{color:var(--accent);}
   .sheet h3{font-size:15px; color:var(--accent); margin:18px 0 6px;}
   .sheet p, .sheet li{font-size:14.5px; line-height:1.55; color:var(--ink);}
-  /* the quiet notes under the History table (carried figures, the safety copy): small and
-     pale — they need .sheet in front, or the rule above wins and prints them full size.
-     The amber warnings share .wsafe but are real news, so they stay readable. */
-  .sheet .wsafe{font-size:11px; line-height:1.3; color:var(--ink-dim); opacity:.75; margin:8px 0 0;}
-  .sheet .wsafe + .wsafe{margin-top:1px;}   /* two notes in a row sit tight together */
-  .sheet .wsafe.warnline{font-size:12.5px; color:var(--warn); font-weight:600; opacity:1;}
+  
   .sheet .dim{color:var(--ink-dim);}
   /* the map of everything, in the guide */
   .mapwrap{overflow-x:auto; margin-top:8px;}
@@ -626,19 +427,7 @@
   .hb ol{padding-left:22px; margin:8px 0;}
   .hb ol li{margin:7px 0; padding-left:4px;}
   .hb ul{margin:8px 0;}
-  .hbnote{
-    background:var(--card); border:1.5px solid var(--line); border-radius:14px;
-    padding:11px 13px; margin:12px 0; font-size:13.5px; line-height:1.5;
-  }
-  .hbnote b:first-child{color:var(--accent);}
-  .layers{display:flex; flex-direction:column; gap:6px; margin:10px 0 4px;}
-  .layer{
-    border-radius:14px; padding:10px 13px; font-size:13.5px; line-height:1.5;
-  }
-  .layer b{display:block; font-size:10.5px; letter-spacing:.12em; margin-bottom:2px;}
-  .larrow{text-align:center; color:var(--ink-dim); font-size:14px; line-height:1;}
-  .hbstate{font-size:12.5px; color:var(--ink-dim); margin:4px 0 0; padding-left:2px;}
-  .hbstate b{color:var(--ink);}
+
   label{display:block; font-size:13px; color:var(--ink-dim); margin:14px 0 6px; letter-spacing:.03em; font-weight:600;}
   input[type=text], input[type=url], input[type=date]{
     width:100%; padding:13px 14px; border-radius:13px; border:1px solid var(--line);
@@ -721,18 +510,13 @@
     --warn:#f0b35a;
   }
   html[data-look="night"] .panel{background:rgba(255,255,255,.025);}
-  html[data-look="night"] .hpill, html[data-look="night"] .wtabs{box-shadow:none;}
+  html[data-look="night"] .hpill{box-shadow:none;}
   html[data-look="night"] .hpill button:hover, html[data-look="night"] .wtab:hover{background:#2f2a25;}
   html[data-look="night"] .hpill button:active, html[data-look="night"] .wtab:active{background:#36302a;}
-  html[data-look="night"] .kindpill, html[data-look="night"] .maclbl, html[data-look="night"] .stalelbl, html[data-look="night"] .rowbtn, html[data-look="night"] .cwhere span{background:rgba(0,0,0,.22);}
-  html[data-look="night"] .stalelbl.behind{background:#4a3412;}
+  html[data-look="night"] .kindpill, html[data-look="night"] .maclbl, html[data-look="night"] .rowbtn, html[data-look="night"] .cwhere span{background:rgba(0,0,0,.22);}
+  
   html[data-look="night"] .mbar{background:rgba(255,255,255,.12);}
-  html[data-look="night"] .mdot{background:rgba(255,255,255,.18);}
-  html[data-look="night"] .mpen:hover{background:rgba(255,255,255,.08);}
-  html[data-look="night"] .wlink, html[data-look="night"] .arow .rowbtn{background:rgba(255,255,255,.07);}
-  html[data-look="night"] .wlink.none{background:none;}
-  html[data-look="night"] .wsend{border-color:#2f6b4a; background:#173326; color:#8fd6ac;}
-  html[data-look="night"] .wsend:hover{border-color:#4a9a6c;}
+
   html[data-look="night"] .sw{border-color:rgba(255,255,255,.10);}
   html[data-look="night"] .addrow{border-color:rgba(255,255,255,.22);}
   html[data-look="night"] .overlay{background:rgba(0,0,0,.55);}
@@ -741,7 +525,7 @@
   html[data-look="night"] .btn.primary{background:var(--accent); border-color:var(--accent); color:#fff;}
   html[data-look="night"] .btn.danger{color:#ef7a7a; border-color:rgba(239,122,122,.4);}
   html[data-look="night"] #toast{background:#3a332d; color:var(--ink); box-shadow:0 8px 30px rgba(0,0,0,.5);}
-  html[data-look="night"] .layer{background:var(--bg) !important;}
+  
 </style>
 </head>
 <body>
@@ -1093,7 +877,7 @@
         <p>Cards sit on three shelves, grouped by what you want to do — not by where the code happens to run:</p>
         <ul>
           <li><b>EVERYDAY APPS</b> — the apps you type into: packing, instructions, habits, and the rest.</li>
-          <li><b>MAC TOOLS</b> — things that only exist on the Mac, like the Timers board, and <b>Sam</b>, the assistant you talk to in Cowork.</li>
+          <li><b>MAC TOOLS</b> — the Timers board, AMS WatchLater, <b>AMS Financial Steward</b> (your money) and <b>Sam</b>, the assistant you talk to in Cowork.</li>
           <li><b>YOUR LINKS</b> — anything else you want a card for.</li>
         </ul>
           </div>
@@ -1136,7 +920,7 @@
         <details class="sub">
           <summary>Mac only, iPhone only<svg class="hi chev"><use href="#icon-chevron"/></svg></summary>
           <div class="subbody">
-        <p>Timers lives on the Mac itself, not on the internet, so its card is marked <b>MAC ONLY</b>; tapping it on the iPhone does nothing useful — that's expected. In the same way, an app that exists only on the iPhone is marked <b>iPHONE APP</b> and stands greyed on the Mac; tapping it says so.</p>
+        <p>Timers lives on the Mac itself, not on the internet, so its card is marked <b>MAC ONLY</b>; tapping it on the iPhone does nothing useful — that's expected. AMS Financial Steward is its own app on the Mac, iPad and iPhone; its card cannot start it, so a tap says “open it from its own icon”. In the same way, an app that exists only on the iPhone is marked <b>iPHONE APP</b> and stands greyed on the Mac; tapping it says so.</p>
           </div>
         </details>
 
@@ -1167,7 +951,7 @@
         <p>Every card carries a row of tiny <b>hand-drawn icons</b> showing where that app keeps its stuff. Point at them with the mouse on the Mac — or tap them on the iPhone — and the full story appears in words. The icons:</p>
         <ul>
           <li><b>A phone</b> — the app stores everything on the device you use it on (each device has its own copy; that's what the app's backup buttons are for).</li>
-          <li><b>Phone + Mac + cloud together</b> — AMS Packing is the special one: its catalogue lives on each device <i>and</i> syncs between iPhone and Mac through a Dexie Cloud account.</li>
+          <li><b>Phone + Mac + cloud together</b> — the app keeps its data in itself and iCloud keeps it the same on your devices (AMS Packing, AMS Financial Steward).</li>
           <li><b>A Mac screen</b> — the app and its data live on the Mac itself.</li>
           <li><b>A grid sheet</b> — the data sits in an Excel workbook (AMS Workout Sync keeps its plan in one, in Dropbox).</li>
           <li><b>A gem</b> — Sam, the robot assistant, keeps notes and memory as plain files in the Obsidian vault on the Mac.</li>
@@ -1238,7 +1022,7 @@
         <ul>
           <li><b>A small number on a card, in the card’s colour</b> — the version that app is running right now. Shown in the list layout. No number: the hub could not reach that app.</li>
           <li><b>MAC ONLY</b> — it exists on the Mac only (Timers).</li>
-          <li><b>MAC + iPHONE</b> — it exists on both, as one app (AMS WatchLater).</li>
+          <li><b>MAC + iPHONE</b> — a real app that exists on both (AMS Packing, AMS WatchLater, AMS Financial Steward). The label shows on the Mac only; on the iPhone it is left off so the card’s words have room. Packing and WatchLater open with a tap. Steward cannot be opened from here yet: a tap tells you to use its own icon.</li>
           <li><b>iPHONE APP</b> — an app that lives only on the iPhone. On the Mac its card is greyed, and a tap tells you so.</li>
           <li><b>COWORK</b> — Sam, the assistant, is run in Cowork.</li>
           <li><b>A greyed card</b> — it cannot open on this device.</li>
@@ -1378,6 +1162,8 @@
 
 /* ============ version log — newest first; [0].v is THE app version ============ */
 const VERSIONLOG = [
+  { v:'2.6', when:'24 Nov 2026',
+    what:'A CARD FOR YOUR MONEY, A PACKING CARD THAT WORKS AGAIN, AND A TIDY-UP. (1) AMS FINANCIAL STEWARD HAS A CARD. Before, nothing on the Hub pointed to where your money lives now. Now the Mac tools shelf has a fourth card, AMS Financial Steward, in indigo with the coin, between AMS WatchLater and Sam (4 cards: Timers, AMS WatchLater, AMS Financial Steward, Sam). The card cannot start the app yet — Steward has no address a web page can open — so its line says "opens from its own icon", and a tap shows a short message: open Finance Steward from its own icon; on the Mac, type its name in Raycast. Once Steward gets such an address the card will open it directly. (2) THE AMS PACKING CARD OPENS THE APP. Before, the card still pointed at the old web page, which no longer exists since the real app took over — a tap led to "not found", and the Apps tile said 9/10 for ever because Packing never answered. Now the card opens the AMS Packing app itself, on the iPhone and on the Mac, and on the Mac it is marked MAC + iPHONE. On the iPhone the MAC + iPHONE label is left off all cards: before, it squeezed AMS WatchLater to "AMS WatchLa…"; now the full names and lines fit. The Apps tile counts the 9 apps that can answer, so it reads 9/9 when all is well. (3) TIDY-UP. The styling left over from the retired Wealth window, the Wealth tile extras and the Finance shelf is removed from the page; nothing you see changes. (4) HOW THIS WORKS and SIGNS IN THIS APP are updated for the two cards. (5) TESTS. One new test checks the Steward card and its message, and that the Packing card opens the app and no longer asks the old web page.' },
   { v:'2.5', when:'24 Nov 2026',
     what:'MONEY HAS MOVED TO AMS FINANCIAL STEWARD — THE HUB IS A PLAIN FRONT DOOR AGAIN. You now enter and read your wealth in AMS Financial Steward (it matched the Hub to the krona for September 2026), and the old monthly finance tools are retired. So their places on the Hub are cleared. NOTHING OF YOURS IS DELETED. (1) THE TOP AREA: 3 TILES INSTEAD OF 6. Before, six tiles in two rows: Wealth, Wealth · 0, Retirement, The Year, Finance, Apps. Gone: Wealth, Wealth · 0 and Finance. Now three tiles in one row, on the iPhone and on the Mac: Retirement, The Year, Apps. (2) EVERYTHING THAT HUNG ON THE WEALTH TILE IS GONE WITH IT: the pencil and its amber dot, the wealth window with its four pages (History, New entry, Accounts, Year), the "+9.8% since Jan" growth line, the "Nov not entered yet" reminder, the amber workbook line, the small Dropbox mark beside the name, and Send to Excel on the Mac. (3) THE RETIREMENT TILE. Before, three lines: the days, "days · 1 Jul 2028" and the forecast "≈ 8.27M kr by then". The forecast is gone — it would have stayed frozen on your last Hub entry. Now two lines: the days and the date. (4) SHELVES: 3 INSTEAD OF 4. Before: Finance, Everyday apps, Mac tools, Your links. The Finance shelf is gone, and with it four cards: AMS Finance Hub, Spend Dashboard, Finance Dashboard and Latest report. Sam moved to Mac tools and keeps his COWORK label, so Mac tools now has three cards: Timers, AMS WatchLater, Sam. The Apps tile counts one app fewer (the Finance Hub is no longer asked whether it answers). (5) WHAT IS KEPT. The wealth accounts and entries you typed into the Hub stay stored on each device, exactly as they were. Every backup still carries them — Save a backup file, Copy backup, the daily Dropbox backup and Back up now. Import / restore and Restore from Dropbox still put back what is missing and delete nothing. Dropbox sync still keeps them the same on iPhone and Mac. The two dashboard addresses you once typed are kept in the backups too. They are simply no longer shown. (6) SETTINGS. Dropbox sync and Your data work as before; their two explaining lines now say that the old wealth entries are kept and not shown. A restore now says "old wealth entries put back in storage (they are kept, not shown)". (7) THE MAC. The hub still opens from its Dock icon exactly as before; the small engine behind it keeps running and still opens the Mac files and folders under Your links. (8) FOUR MESSAGES NO LONGER NAME "AMS FINANCE". Before, when the Mac could not open a file or save a backup, the Hub said "open AMS Finance from the Dock" — an app that no longer exists under that name. Now they say the hub’s engine on the Mac is not answering, and that it starts with the Mac. (9) HOW THIS WORKS is rewritten for all of this — three shelves, three tiles, "Where your wealth went" — and has a new last part, SIGNS IN THIS APP: every mark, label and colour on the Hub, each with its meaning in a few words. (10) TESTS. Nine tests about the retired parts are removed. A new one checks every time the Hub is published that the three tiles are there, that the retired tiles and cards are gone, that the Hub no longer asks the Mac for wealth or finance figures, and — most important — that your old wealth entries are untouched and still inside a backup.' },
   { v:'2.4', when:'4 Nov 2026',
@@ -1523,9 +1309,11 @@ const VERSIONLOG = [
 /* ============ the shelf ============ */
 const GH = 'https://marsch124.github.io/';
 const WEB_APPS = [
-  { id:'packing',  name:'AMS Packing',      sub:'Packing lists for every trip',          icon:'suitcase',  dot:'#1f9e93', tint:'#d7f2ef', url:GH+'AMS-Packing/',
-    store:'On each device, synced iPhone↔Mac via Dexie Cloud · Excel export', where:['iphone','mac','cloud'],
-    probe:{ path:'AMS-Packing/service-worker.js', rx:/ams-packing-list-v(\d+)/, pre:'v' } },
+  /* 2.6: the real app (iPhone + Mac, TestFlight). The old web page's address answers
+     "not found" since the app took over, so the card opened nothing and the Apps tile
+     stayed one short. It opens the app through its own address now, like WatchLater. */
+  { id:'packing',  name:'AMS Packing',      sub:'Packing lists for every trip',          icon:'suitcase',  dot:'#1f9e93', tint:'#d7f2ef', url:'amspacking://',
+    native:true, macToo:true, store:'In the app, kept the same on iPhone and Mac through iCloud', where:['iphone','mac','cloud'] },
   { id:'instr',    name:'AMS Instructions', sub:'Every manual, three digits away',       icon:'pagelist',  dot:'#d84f86', tint:'#fbdeeb', url:GH+'AMS-Instructions/',
     store:'On this device only · backup files', where:['iphone'],
     probe:{ path:'AMS-Instructions/sw.js', rx:/APP_VERSION\s*=\s*'([^']+)'/, pre:'v' } },
@@ -1568,6 +1356,12 @@ const MAC_APPS = [
      its own address; the old web app and its engine on 7821 are retired */
   { id:'watchlater', name:'AMS WatchLater', sub:'Videos, articles and your notes — Mac and iPhone', icon:'playring', dot:'#1a6b56', tint:'#dcefe8', url:'amswatchlater://',
     native:true, macToo:true, store:'In your iCloud Drive, shared by the Mac and the iPhone', where:['mac'] },
+  /* 2.6: where the money lives now. The app has no address a web page can open, so the
+     card cannot start it — a tap says where to find it (`note`). When Steward gets its
+     own address, give this card `url` + `native:true` and drop the note. */
+  { id:'steward', name:'AMS Financial Steward', sub:'Your money — opens from its own icon', icon:'coin', dot:'#5868c9', tint:'#e2e6fa',
+    macToo:true, note:'Finance Steward is its own app — open it from its own icon. On the Mac, type “Finance Steward” in Raycast.',
+    store:'In the app, shared by Mac, iPad and iPhone through iCloud', where:['mac','iphone','cloud'] },
   /* 2.5: Sam moved here when the FINANCE shelf was retired; the card opens nothing,
      it says where Sam lives */
   { id:'sam',     name:'Sam',              sub:'The robot assistant, run in Cowork', icon:'bubble', dot:'#9a5fc9', tint:'#f0e3fa',
@@ -1796,6 +1590,8 @@ function appRow(a, right, sect){
   if(a.openId) return `<div class="${cls}" data-app="${a.id}" data-open="${esc(a.openId)}" style="${sty}" ${tip}>${mid}</div>`;
   if(a.away) return `<div class="${cls}" data-app="${a.id}" data-away="1" style="${sty}" ${tip}>${mid}</div>`;
   if(a.native) return `<a class="${cls}" data-app="${a.id}" data-native="1" href="${esc(a.url)}" style="${sty}" ${tip}>${mid}</a>`;
+  /* no address to open: with a `note` a tap says where the thing is found */
+  if(!a.url && a.note) return `<div class="${cls}" data-app="${a.id}" data-note="${esc(a.note)}" role="button" tabindex="0" style="${sty}; cursor:pointer" ${tip}>${mid}</div>`;
   if(!a.url) return `<div class="${cls}" data-app="${a.id}" style="${sty}; cursor:default" ${tip}>${mid}</div>`;
   return `<a class="${cls}" data-app="${a.id}" href="${esc(a.url)}" target="_blank" rel="noopener"
             style="${sty}" ${tip}>${mid}</a>`;
@@ -1803,7 +1599,7 @@ function appRow(a, right, sect){
 
 function renderShelf(){
   $('webCards').innerHTML = ordered(WEB_APPS, 'web').map(a =>
-    appRow(a, (a.native && !a.iosUrl) ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>${IS_IOS ? '' : ' <span class="maclbl">iPHONE APP</span>'}` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
+    appRow(a, (a.native && !a.iosUrl) ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>${IS_IOS ? '' : ` <span class="maclbl">${a.macToo ? 'MAC + iPHONE' : 'iPHONE APP'}</span>`}` : `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span>`, 'web')).join('');
   document.querySelectorAll('#webCards [data-away]').forEach(el => {
     el.addEventListener('click', () => {
       if(document.body.classList.contains('custom')) return;
@@ -1814,8 +1610,15 @@ function renderShelf(){
     /* a Mac tool that announces its version gets a live chip too, the same way
        the web apps do — the label alone said nothing about whether
        the thing was actually running. */
-    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}<span class="maclbl">${a.lbl || (a.macToo ? 'MAC + iPHONE' : 'MAC ONLY')}</span>`, 'mac')).join('');
+    appRow(a, `${a.probe ? `<span class="verchip" id="ver-${a.id}" style="color:${lookFor(a).dot}"></span> ` : ''}${(a.macToo && !a.lbl && IS_IOS) ? '' : `<span class="maclbl">${a.lbl || (a.macToo ? 'MAC + iPHONE' : 'MAC ONLY')}</span>`}`, 'mac')).join('');
   fillChips();
+
+  /* a card with nothing to open says, when tapped, where the thing is found */
+  document.querySelectorAll('.cards [data-note]').forEach(el => {
+    const say = () => { if(!document.body.classList.contains('custom')) showToast(el.dataset.note, null, null, 7000); };
+    el.addEventListener('click', say);
+    el.addEventListener('keydown', e => { if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); say(); } });
+  });
 
   /* home-screen guard: inside the hub app, another AMS app would open in a
      separate storage box with none of the real data — warn instead of navigating */
