@@ -25,6 +25,25 @@ mixes each one's `dot` colour 76% into the night card (`#26221e`) instead of
 using its pale day `tint`; cards behind a door (`kidTint()`) go 88%. The main
 button is the accent colour by night, never the pale ink.
 
+## 2.6 (24 Nov 2026) — cards that lead to real apps
+
+- **AMS Financial Steward** has a card on the Mac tools shelf (id `steward`,
+  indigo, the coin; order: Timers, AMS WatchLater, AMS Financial Steward, Sam).
+  The app has no address a web page can open, so the card has no `url`; it
+  carries a `note` instead, and a tap (or Enter / Space) shows that note as a
+  message: open Finance Steward from its own icon. Any card without a `url`
+  can carry a `note`. When Steward gets its own address, give the card `url`
+  and `native:true` and drop the note.
+- **AMS Packing** opens the app itself (`amspacking://`, `native:true`,
+  `macToo:true`). The old web page answers "not found" since the app took
+  over, so the card has no version probe any more and the Apps tile counts 9
+  apps.
+- The **MAC + iPHONE** label shows on the Mac only; on the iPhone it is left
+  off (it cut the card names short). MAC ONLY and COWORK still show everywhere.
+- The styling of the retired wealth window, Wealth tile extras and Finance
+  shelf is removed.
+- Test: `tests/own-icon-cards.spec.js`.
+
 ## Retired on 24 Nov 2026 (version 2.5)
 
 Money matters now live in the native app AMS Financial Steward, so the hub
