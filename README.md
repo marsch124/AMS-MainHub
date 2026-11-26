@@ -4,8 +4,8 @@ One shelf for every AMS app. A small offline-capable PWA that shows a card per
 app — hand-drawn icon, one-line description, and a **live version chip**
 fetched straight from each app — plus a Mac tools shelf for the local apps and
 a **Your links** section for personal links (stored only on the device,
-never in this public repo). Three small tiles on top: Retirement, The year,
-Apps.
+never in this public repo). Three small tiles on top: Retirement (the date is a setting kept on the
+device and in backups, never in this repo), The year, Apps.
 
 Live at: https://marsch124.github.io/AMS-MainHub/
 
